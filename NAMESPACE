@@ -1,0 +1,95 @@
+useDynLib(MRIaggr)
+
+# import
+import(Rcpp)
+import(methods)
+import(Matrix)
+import(ROCR)
+importFrom("spam","t","rowSums","as.dgRMatrix.spam","nearest.dist")
+importFrom("fields","image.plot")
+importFrom("mritc","mritc","mritc.bayes")
+importFrom("oro.dicom","readDICOMFile")
+importFrom("oro.nifti","readANALYZE","readNIfTI")
+importFrom("stats4","summary")
+importFrom("RANN","nn2")
+
+# export fonctions
+export(
+	"constCarto3D",
+	"constMRIaggr",
+	"constSweave",
+	"array2df",
+	"Carto3D2MRIaggr",
+	"df2array",
+	"calcAUPRC",
+	"calcGR",
+	"calcGroupsCoords",
+	"calcGroupsW",
+	"calcThreshold",	
+	"initFilter",
+	"initNeighborhood",
+	"outline",
+	"pointsOutline",
+	"readMRI"
+	)
+
+# export classes
+exportClasses(
+	"MRIaggr",
+	"Carto3D"
+	)
+	
+# export Methodes
+exportMethods(
+	"affectContrast<-",
+	"affectClinic<-",
+	"affectDescStats<-",
+	"affectHemisphere<-",
+	"affectNormalization<-",
+	"affectTable<-",
+	"calcBrainMask",
+	"calcControlateral",
+	"calcDistTissues",
+	"calcDistMask",
+	"calcFilter",
+	"calcGroupsMask",
+	"calcHemisphere",	
+	"calcNormalization",
+	"calcRegionalContrast",
+	"calcROCthreshold",
+	"calcSmoothMask",
+	"calcTableHypoReperf",
+	"calcTableLesion",
+	"calcThresholdMRIaggr",
+	"calcTissueType",
+	"calcW",
+	"constCompressMRIaggr",
+	"constReduceMRIaggr",
+	"boxplotMask",
+	"heatmapMRIaggr",
+	"multiplot",
+	"outlineMRIaggr",
+	"plotDistClass",
+	"pointsHemisphere",
+	"plotLesion3D",
+	"plotTableLesion",
+	"selectContrast",
+	"selectCoords",
+	"selectClinic",
+	"selectDefault_value",
+	"selectDescStats",
+	"selectHemispheres",
+	"selectHistory",
+	"selectIdentifier",
+	"selectMidplane",
+	"selectN",
+	"selectNormalization",
+	"selectParameter",
+	"selectTable",
+	"selectParameter",
+	"selectVoxelDim",
+	"selectVoxelSize",
+	"summary",
+	"supprContrast<-",
+	"supprDescStats<-"	
+)
