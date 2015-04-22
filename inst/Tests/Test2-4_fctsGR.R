@@ -21,7 +21,7 @@ data(MRIaggr.Pat1_red, package="MRIaggr")
 
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 seed <- indexN[which.max(carto[indexN,"TTP_t0"])]
@@ -83,7 +83,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP_t0",num=3,hemisphere="lesion",legend=FALSE
 #   radius <- iter
 #   coords <- cbind(expand.grid(1:n,1:n),1)
 #   contrast <- as.numeric(sqrt((coords[,1]-n/2)^2+(coords[2]-n/2)^2)<radius)
-#   # W <- calcW(coords,distband=sqrt(2),upper=NULL)
+#   # W <- calcW(coords,range=sqrt(2),upper=NULL)
 #   
 #   # multiplot(coords,
 #   #              contrast)
@@ -119,7 +119,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP_t0",num=3,
 ## extract raw parameter, coordinates and compute the neighborhood matrix
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 ## the seed is taken to be the point with the largest TTP in the lesion mask
 indexN <- which(carto$MASK_DWI_t0==1)
@@ -197,7 +197,7 @@ data(MRIaggr.Pat1_red, package="MRIaggr")
 ## select data
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 seed <- indexN[which.max(carto[indexN,"TTP_t0"])]
@@ -222,7 +222,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP_t0",num=3,
 
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0","T2_FLAIR_t2"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 seed <- indexN[which.max(carto[indexN,"TTP_t0"])]
@@ -247,7 +247,7 @@ multiplot(coords[resGR0$GR,],
 #### T2 
 carto <- selectContrast(MRIaggr.Pat1_red,param=c("TTP_t0","MASK_DWI_t0","T2_FLAIR_t2"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 
@@ -290,7 +290,7 @@ data(MRIaggr.Pat1_red, package="MRIaggr")
 
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 seed <- indexN[which.max(carto[indexN,"TTP_t0"])]

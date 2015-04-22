@@ -3,7 +3,7 @@
 \alias{constCompressMRIaggr}
 \alias{constCompressMRIaggr,MRIaggr-method}
 \description{
-Construct a \code{\linkS4class{MRIaggr}} object with lower spatial resolution in the axial plan.
+Generate from an existing \code{\linkS4class{MRIaggr}} object a new one with lower spatial resolution.
 }
 \usage{
 \S4method{constCompressMRIaggr}{MRIaggr}(object,factor,param=NULL,mask=NULL,threshold=0.49,trace=FALSE)

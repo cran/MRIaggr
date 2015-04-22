@@ -42,6 +42,9 @@ Display a correlation map of the contrast parameters.
   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.}
 }
 \details{
+
+This function with argument type set to \code{image.plot} requires to have installed the \emph{field} package to work.
+
 ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 

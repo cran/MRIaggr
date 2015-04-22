@@ -115,12 +115,12 @@ multiplot(MRIaggr.Pat1,param="T2_FLAIR_t2_2D_M3",main="2D_M3",num.main=FALSE,
               num=1,window=NULL,legend=FALSE,breaks=c(-100,seq(0,600),900))
 
 #### 5- computation of the lesion spatial groups ####
-res <- calcGroupsMask(MRIaggr.Pat1,mask="MASK_DWI_t0",spatial_res=c(1.875,1.875,6),as.logical=TRUE,
-                           distband=6)
+res <- calcGroupsMask(MRIaggr.Pat1,mask="MASK_DWI_t0",W.spatial_res=c(1.875,1.875,6),as.logical=TRUE,
+                      W.range=6)
 
 res <- calcGroupsMask(MRIaggr.Pat1,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
-                      spatial_res=c(1.875,1.875,6),as.logical=TRUE,
-                      distband=6,update.object=TRUE,overwrite=TRUE)
+                      W.spatial_res=c(1.875,1.875,6),as.logical=TRUE,
+                      W.range=6,update.object=TRUE,overwrite=TRUE)
 
 selectDescStats(MRIaggr.Pat1,name="GroupsLesion")
 
@@ -229,13 +229,12 @@ multiplot(res$data[,c("i","j","k")],
 
 
 #### 5- computation of the neighborhood matrix and the regional values ####
-res <- calcW(MRIaggr.Pat1_red,distband=10,spatial_res=c(1.875,1.875,6),
+res <- calcW(MRIaggr.Pat1_red,range=10,spatial_res=c(1.875,1.875,6),
               upper=TRUE,
               update.object=TRUE,overwrite=TRUE)
 
 res  <- calcRegionalContrast(MRIaggr.Pat1_red,param=c("DWI_t0","MTT_t0","TTP_t0","T2_FLAIR_t2"),
-							 distband_EDK=1.875,
-                             update.object=TRUE,overwrite=TRUE)
+							 bandwidth=1.875,update.object=TRUE,overwrite=TRUE)
 
 par(mfrow=c(2,4),mar=rep(1.5,4),mgp=c(2,0.5,0))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,

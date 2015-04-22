@@ -20,7 +20,7 @@ The fourth character refers to the type of filter among : \code{"M"}, \code{"G"}
  \itemize{
  \item \code{"M"} : median filter (by default a weight of 1 is attributed to each site)
  \item \code{"G"} : gaussian filter (sites are weight with a gaussian kernel)
- \item \code{"S"} : sobel filter (gradient in the x, y or z direction)
+ \item \code{"S"} : sobel filter (gradient in the i, j or k direction)
  \item \code{"I"} : influence filter (sites with distance to the central site inferior or equal to \code{sqrt(p)} have weight 1, otherwise 0)
  }
 The last one or two characters indicates the size p of the filter except for the sobel filter where it indicates the direction of the gradient (\code{"x"}, \code{"y"} or \code{"z"})

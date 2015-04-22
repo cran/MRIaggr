@@ -1,0 +1,21 @@
+	CHANGES IN VERSION 1.0 and 1.1
+
+SIGNIFICANT USER-VISIBLE CHANGES
+o  Arugments distband of calcW have been renamed in range.
+o  Arugments distband of calcRegionalContrast, calcThresholdMRIaggr and calcThresholdMRIaggr have been renamed in W.range.
+o  Arugments distband_EDK and power_EDK of calcRegionalContrast, calcThresholdMRIaggr and calcThresholdMRIaggr have been renamed in distband and range.
+o  Description of the output of the readMRI function has been corrected in the .Rd file.
+
+NEW FEATURES
+o  Function readMRI to import imaging data files.
+o  Function writeMRI and writeMRIaggr to export R objects into imaging data files.
+
+BUG FIXES
+o    Fix an issue with summary.
+o    Fix an issue with calcFilter.
+
+INTERNAL CHANGES
+o    Minor modification of the R code of functions calcGroupMask, calcRegionalContrast, calcThresholdMRIaggr.
+o    Optimisation of the calcHemisphere method.
+o    Slots names of the MRIaggr object have been modified
+

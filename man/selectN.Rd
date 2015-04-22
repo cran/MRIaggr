@@ -1,11 +1,14 @@
 \name{selectN}
 \title{Extract the number of observations}
 \alias{selectN}
+\alias{selectN,Carto3D-method}
 \alias{selectN,MRIaggr-method}
 \description{
 Extract the number of observations contained in a \code{\linkS4class{Carto3D}} or in a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
+\S4method{selectN}{Carto3D}(object,num=NULL)
+		 
 \S4method{selectN}{MRIaggr}(object,num=NULL,hemisphere="both",subset=NULL)
 }
 \arguments{

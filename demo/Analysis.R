@@ -19,8 +19,8 @@ res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NU
                          distband=1,lambda=1,
                          trace=TRUE,overwrite=TRUE,update.object=TRUE)
 
-res <- calcRegionalContrast(MRIaggr.Pat1_red,param=c("DWI_t0","MTT_t0","TTP_t0"),
-                       distband=6,distband_EDK=1.875,spatial_res=c(1.875,1.875,6),
+res <- calcRegionalContrast(MRIaggr.Pat1_red,bandwidth=1.875,param=c("DWI_t0","MTT_t0","TTP_t0"),
+                       W.range=6,W.spatial_res=c(1.875,1.875,6),
                        trace=TRUE,overwrite=TRUE,update.object=TRUE)
 
 res <- calcNormalization(MRIaggr.Pat1_red,param=c("DWI_t0","MTT_t0","TTP_t0","T2_FLAIR_t2",
@@ -100,7 +100,7 @@ data <- selectContrast(MRIaggr.Pat1_red,param=param,coords=TRUE,
                     hemisphere="lesion",
                     norm_mu="controlateral",norm_sigma="controlateral")
 data$MASK_T2_FLAIR_t2 <- as.logical(selectContrast(MRIaggr.Pat1_red,
-                                                   param="MASK_T2_FLAIR_t2",hemisphere="lesion"))
+                           param="MASK_T2_FLAIR_t2",hemisphere="lesion",format="vector"))
 
 glm_test <- glm(MASK_T2_FLAIR_t2 ~ DWI_t0+TTP_t0+MTT_t0+
                 DWI_t0_regional+MTT_t0_regional+TTP_t0_regional,

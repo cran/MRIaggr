@@ -181,23 +181,27 @@ setMethod(
 # selectContrast
 setMethod(f ="selectContrast",
           signature ="MRIaggr",
-          definition = function(object,param=NULL,num=NULL,format="any",slice_var="k",
+          definition = function(object,param=NULL,num=NULL,format="data.frame",slice_var="k",
                                 coords=FALSE,hemisphere="both",norm_mu=FALSE,norm_sigma=FALSE,
                                 na.rm=FALSE,subset=NULL)
           { 
-            ## preparation
+            #### initialisation ####
+            # coords
             if(identical(coords,TRUE)){coords <- c("i","j","k")}
             if(identical(coords,FALSE)){coords <- NULL}
             
+            # param
             param <- c(coords,param)
             param <- initParameter(object=object,param=param,test=TRUE,init=TRUE,accept.coords=TRUE,
-                                   method="selectContrast")            
+                                            method="selectContrast")  
             paramMRI <- param[param %in% c("index","i","j","k")==FALSE]
             
+            
+            # subset
             if(!is.null(subset) && length(subset)==1 && is.character(subset)){
               
               initParameter(object=object,param=subset,test=TRUE,init=FALSE,accept.coords=FALSE,
-                            arg_name="subset",long_name="subset",method="selectContrast")              
+                                     arg_name="subset",long_name="subset",method="selectContrast")              
               subset <- object@contrast[,subset]
               
               if(is.logical(subset)==FALSE){
@@ -208,11 +212,13 @@ setMethod(f ="selectContrast",
               subset <- which(subset)
               
             }
- 
+            
+            # hemisphere
             if(hemisphere %in% c("left","right","both") == FALSE){
               hemisphere <- selectHemispheres(object,hemisphere=hemisphere)
             }
             
+            # norm
             if(is.null(norm_mu) || norm_mu %in% c(FALSE,"global","controlateral","global_1slice","controlateral_1slice","global_3slices","controlateral_3slices","default_value") ==FALSE)
             {stop("selectContrast[MRIaggr] : wrong specification of \'norm_mu\' \n",
                   "valid normalisations  : FALSE \"global\" \"controlateral\" \"c_global\" \"c_controlateral\" \"c3_global\" \"c3_controlateral\" \"default_value\" \n",
@@ -223,18 +229,24 @@ setMethod(f ="selectContrast",
                   "valid normalisations  : FALSE \"global\" \"controlateral\" \"c_global\" \"c_controlateral\" \"c3_global\" \"c3_controlateral\" \n",
                   "requested normalisation : ",norm_sigma,"\n")}
             
-            ## tests    
+            # num
+            num <- initNum(object,num,test=TRUE,init=TRUE,slice_var=slice_var,method="selectContrast")
+            
+            #### tests ####
             if( (hemisphere!="both") && ("hemisphere" %in% names(object@contrast) == FALSE) )
             {stop("selectContrast[MRIaggr] : \'hemisphere\' is missing in \'object\' \n",
                   "use the affectHemisphere function to affect it to \'object\' (and calcHemisphere function if you need to compute it) \n",
                   "the function must be called with the default \'hemisphere\' argument (\"both\") \n")}
             
-            if( ( format %in% c("data.frame","matrix","any")  ) == FALSE)
+            if( ( format %in% c("data.frame","matrix","vector")  ) == FALSE)
             {stop("selectContrast[MRIaggr] : wrong specification of \'format\' \n",
-                  "valid formats : \"any\" \"data.frame\" \"matrix\" \n",
+                  "valid formats : \"data.frame\" \"matrix\" \"vector\" \n",
                   "requested format : ",format,"\n")}
             
-            num <- initNum(object,num,test=TRUE,init=TRUE,slice_var=slice_var,method="selectContrast")
+            if( (format == "vector") && (length(param)>1) ){
+              stop("selectContrast[MRIaggr] : wrong specification of \'format\' \n",
+                   "vector format is not available when several parameters are requested \n",
+                   "requested parameters : ",paste(param,collpase=" "),"\n")}
             
             if( hemisphere %in% c("both","right","left") == FALSE)
             {stop("selectContrast[MRIaggr] : wrong specification of \'hemisphere\'  \n",
@@ -441,7 +453,7 @@ setMethod(f ="selectContrast",
             # gestion des coordonnees
             res <- res[,param]
             
-            if(format=="any")
+            if(format=="vector")
             {return(res)}
             
             if(format=="data.frame")
@@ -478,7 +490,7 @@ setMethod(f ="selectCoords",
             }
             
             res <- selectContrast(object,param=coords,num=num,hemisphere=hemisphere,
-                                  format=format,subset=subset,slice_var=slice_var)
+                                           format=format,subset=subset,slice_var=slice_var)
             
             if(spatial_res[1]!=1 && "i" %in% coords){res$i <- res$i * spatial_res[1]}
             if(spatial_res[2]!=1 && "j" %in% coords){res$j <- res$j * spatial_res[2]}
@@ -518,7 +530,7 @@ setMethod(f ="selectDefault_value",
           { 
             
             param <- initParameter(object=object,param=param,test=TRUE,init=TRUE,
-                                   accept.coords=FALSE,accept.mask=FALSE,accept.index=FALSE,method="selectDefault_value")
+                                            accept.coords=FALSE,accept.mask=FALSE,accept.index=FALSE,method="selectDefault_value")
             
             default_value <- object@default_value[param]
             if(as.numeric){             
@@ -554,7 +566,7 @@ setMethod(f ="selectDescStats",
             if(name %in% c("W_euclidean")){
               
               if(is.null(subset_W)){
-                subset_W <- as.vector(selectContrast(object,param="index",hemisphere=hemisphere,num=num,slice_var="k"))
+                subset_W <- selectContrast(object,param="index",hemisphere=hemisphere,num=num,slice_var="k",format="vector")
               }
               
               if(min(subset_W) < 1 || max(subset_W) > selectN(object))
@@ -601,7 +613,7 @@ setMethod(f ="selectHemispheres",
             if(hemisphere=="right"){
               return(object@hemispheres[,"right"])
             }
-
+            
             if(hemisphere=="lesion"){ 
               hemiLesion <- object@hemispheres=="lesion"
               
@@ -797,7 +809,7 @@ setMethod(f ="selectTable",
                     "proposed type : ",type,"\n")
             }    
             
-             res <- switch(type,
+            res <- switch(type,
                           "lesion"=object@table_lesion,
                           "reperfusion"=object@table_reperfusion,
                           "hypoperfusion"=object@table_hypoperfusion)
@@ -947,20 +959,20 @@ setReplaceMethod(f ="affectContrast",
                      
                      if(length(param_commun)==1){                    
                        cat("affectContrast[MRIaggr] : Cartography \"",param_commun,"\"",
-                           " has been successfully updated \n",sep="")                      
+                           " has been updated \n",sep="")                      
                      }
                      if(length(param_commun)>1){                    
                        cat("affectContrast[MRIaggr] : Cartographies \"",paste(param_commun,collapse="\" \""),"\"",
-                           " have been successfully updated \n",sep="")                      
+                           " have been updated \n",sep="")                      
                      }
                      
                      if(length(param_nouveaux)==1){                    
                        cat("affectContrast[MRIaggr] : Cartography \"",param_nouveaux,"\"",
-                           " has been successfully affected \n",sep="")                      
+                           " has been affected \n",sep="")                      
                      }
                      if(length(param_nouveaux)>1){                    
                        cat("affectContrast[MRIaggr] : Cartographies \"",paste(param_nouveaux,collapse="\" \""),"\"",
-                           " have been successfully affected \n",sep="")                      
+                           " have been affected \n",sep="")                      
                      }                 
                      
                    }
@@ -1000,7 +1012,7 @@ setReplaceMethod(f = "affectClinic",
                      validObject(object)
                      
                      if(trace){
-                       cat("affectClinic[MRIaggr] : @clinic has been successfully ",
+                       cat("affectClinic[MRIaggr] : @clinic has been ",
                            if(sum(!is.na(sauveClinic))==0){"affected"}else{"updated"},"\n",sep="")                                       
                      }
                      
@@ -1025,11 +1037,11 @@ setReplaceMethod(f = "affectClinic",
                      validObject(object)
                      if(length(names_affect)>0){
                        cat("affectClinic[MRIaggr] : parameter",if(length(names_affect)>1){"s"},
-                           " \"",paste(names_affect,collapse="\" \""),"\" ",if(length(names_affect)==1){"has"}else{"have"}," been successfully added to @clinic \n",sep="")
+                           " \"",paste(names_affect,collapse="\" \""),"\" ",if(length(names_affect)==1){"has"}else{"have"}," been added to @clinic \n",sep="")
                      }
                      if(length(names_replace)>0){
                        cat("affectClinic[MRIaggr] : parameter",if(length(names_replace)>1){"s"},
-                           " \"",paste(names_replace,collapse="\" \""),"\" ",if(length(names_replace)==1){"has"}else{"have"}," been successfully updated in @clinic \n",sep="")
+                           " \"",paste(names_replace,collapse="\" \""),"\" ",if(length(names_replace)==1){"has"}else{"have"}," been updated in @clinic \n",sep="")
                      }
                      
                    }
@@ -1087,17 +1099,17 @@ setReplaceMethod(f ="affectDescStats",
                    if(trace){
                      
                      if(length(param_commun)==1){
-                       cat("affectDescStats[MRIaggr] : Element \"",param_commun,"\" has been successfully updated \n",sep="")
+                       cat("affectDescStats[MRIaggr] : Element \"",param_commun,"\" has been updated \n",sep="")
                      }
                      if(length(param_commun)>1){
-                       cat("affectDescStats[MRIaggr] : Elements \"",paste(param_commun,collapse="\" \""),"\" have been successfully updated \n",sep="")
+                       cat("affectDescStats[MRIaggr] : Elements \"",paste(param_commun,collapse="\" \""),"\" have been \n",sep="")
                      }
                      
                      if(length(param_nouveaux)==1){
-                       cat("affectDescStats[MRIaggr] : Element \"",param_nouveaux,"\" has been successfully affected \n",sep="")
+                       cat("affectDescStats[MRIaggr] : Element \"",param_nouveaux,"\" has been affected \n",sep="")
                      }
                      if(length(param_nouveaux)>1){
-                       cat("affectDescStats[MRIaggr] : Elements \"",paste(param_nouveaux,collapse="\" \""),"\" have been successfully affected \n",sep="")
+                       cat("affectDescStats[MRIaggr] : Elements \"",paste(param_nouveaux,collapse="\" \""),"\" have been affected \n",sep="")
                      }                     
                    }
                    
@@ -1160,12 +1172,12 @@ setReplaceMethod(f = "affectHemisphere",
                    
                    if(trace){
                      if("midplane" %in% names(value)){
-                       cat("affectHemisphere[MRIaggr] : @midplane has been successfully ")
+                       cat("affectHemisphere[MRIaggr] : @midplane has been ")
                        if(sum(!is.na(sauveMidplane))==0){cat("affected \n")}else{cat("updated\n ")}
                      }
                      
                      if("hemispheres" %in% names(value)){
-                       cat("affectHemisphere[MRIaggr] : @hemispheres has been successfully ")
+                       cat("affectHemisphere[MRIaggr] : @hemispheres has been ")
                        if(sum(sauveHemispheres!="undefined")==0){cat("affected \n")}else{cat("updated\n ")}
                      }                       
                    }
@@ -1203,7 +1215,7 @@ setReplaceMethod(f = "affectNormalization",
                    
                    validObject(object)
                    if(trace){
-                     cat("affectNormalization[MRIaggr] : @normalization has been successfully ")
+                     cat("affectNormalization[MRIaggr] : @normalization has been ")
                      if(length(sauveNormalization)==0){cat("affected \n")}else{cat("updated\n ")}                    
                    }
                    return(object)
@@ -1248,7 +1260,7 @@ setReplaceMethod(f = "affectTable",
                    
                    validObject(object)
                    if(trace){
-                     cat(paste("affectTable[MRIaggr] : @table_",type," has been successfully",sep=""))
+                     cat(paste("affectTable[MRIaggr] : @table_",type," has been ",sep=""))
                      if(sum(!is.na(saveTable))==0){cat(" affected \n")}else{cat(" updated \n ")}
                    }
                    return(object)
@@ -1260,7 +1272,7 @@ setReplaceMethod(f ="supprContrast",
                  definition = function(object,trace=TRUE,value)
                  {
                    nom <- initParameter(object=object,param=value,test=TRUE,init=TRUE,accept.coords=FALSE,accept.index=FALSE,
-                                        arg_name="value",method="supprContrast")  
+                                                 arg_name="value",method="supprContrast")  
                    
                    value.default <- which( (names(selectDefault_value(object)) %in% nom)*(selectDefault_value(object)!="mask") == 1)
                    value <- which( names(object@contrast) %in% nom )
@@ -1274,9 +1286,9 @@ setReplaceMethod(f ="supprContrast",
                    if(trace){
                      cat("supprContrast[MRIaggr] : ")
                      if(length(nom)==1){
-                       cat("Cartography \"",nom,"\" has been successfully removed \n",sep="")
+                       cat("Cartography \"",nom,"\" has been removed \n",sep="")
                      }else{
-                       cat("Cartographies \"",paste(nom,collapse="\" \""),"\" have been successfully removed \n",sep="")                      
+                       cat("Cartographies \"",paste(nom,collapse="\" \""),"\" have been removed \n",sep="")                      
                      }                  
                    }
                    
@@ -1305,9 +1317,9 @@ setReplaceMethod(f ="supprDescStats",
                    if(trace){
                      cat("supprDescStats[MRIaggr] : ")
                      if(length(value)==1){
-                       cat("Element \"",value,"\" has been successfully removed \n",sep="")
+                       cat("Element \"",value,"\" has been removed \n",sep="")
                      }else{
-                       cat("Elements \"",paste(value,collapse="\" \""),"\" have been successfully removed \n",sep="")                      
+                       cat("Elements \"",paste(value,collapse="\" \""),"\" have been \n",sep="")                      
                      }                     
                    }
                    
@@ -1331,7 +1343,7 @@ setMethod(f ="calcBrainMask",
                                 trace=TRUE,update.object=FALSE,overwrite=FALSE){
             
             initParameter(object=object,param=param,test=TRUE,init=FALSE,
-                          accept.coords=FALSE,accept.index=FALSE,accept.mask=FALSE,method="calcBrainMask")
+                                   accept.coords=FALSE,accept.index=FALSE,accept.mask=FALSE,method="calcBrainMask")
             carto <- selectContrast(object,param=param,format="data.frame")
             coords <- selectCoords(object)
             
@@ -1344,7 +1356,7 @@ setMethod(f ="calcBrainMask",
             
             if(plot==TRUE){
               scale <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                  n.plot=1,mfrow=c(1,1),xlim=NULL,ylim=NULL,method="calcBrainMask[MRIaggr]")$scale
+                                           n.plot=1,mfrow=c(1,1),xlim=NULL,ylim=NULL,method="calcBrainMask[MRIaggr]")$scale
             }
             
             if(type == "threshold"){
@@ -1472,9 +1484,9 @@ setMethod(f ="calcBrainMask",
               #### select observations ####
               
               if(th.upper){
-                res$best_group <- selectContrast(object,param=param) > as.numeric(res$th_opt["Th",th.select_optima])
+                res$best_group <- selectContrast(object,param=param,format="vector") > as.numeric(res$th_opt["Th",th.select_optima])
               }else{
-                res$best_group <-  selectContrast(object,param=param) < as.numeric(res$th_opt["Th",th.select_optima])
+                res$best_group <-  selectContrast(object,param=param,format="vector") < as.numeric(res$th_opt["Th",th.select_optima])
               }
               
               res$mask_name <- paste(param,"threshold",th.select_optima,sep=".")
@@ -1484,9 +1496,9 @@ setMethod(f ="calcBrainMask",
               if(plot==TRUE){
                 
                 initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                                  mfrow=c(p,2),bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(2,0.5,0))
+                                           mfrow=c(p,2),bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(2,0.5,0))
                 
-                plot(res$analysis[,"threshold"],res$analysis[,"Nb"],xlab=param,ylab="Nb",main="Number of voxel",type="o")
+                plot(res$analysis[,"threshold"],res$analysis[,"Nb"],xlab=param,ylab="Nb",main="Number of voxels",type="o")
                 points(breaks[optima[-th.select_optima]],res$analysis[optima[-th.select_optima],"Nb"],col=rainbow(length(optima))[-th.select_optima],pch=15)
                 points(breaks[optima[th.select_optima]],res$analysis[optima[th.select_optima],"Nb"],col=rainbow(length(optima))[th.select_optima],pch=8,cex=2)
                 abline(v=breaks[optima[th.select_optima]],col=rainbow(length(optima))[th.select_optima])
@@ -1565,7 +1577,7 @@ setMethod(f ="calcBrainMask",
                   res$potential[paste(combin_tempo,collapse="."),"nb_groups"] <- kmeans.n_groups[iter_group]
                   
                   V <- calcFilter(df2array(contrast=as.logical(kmeans_logical),coords=coords)$contrast[[1]],
-                                  filter=paste("3D_I",kmeans.Neighborhood,sep=""),norm=FALSE)$res
+                                           filter=paste("3D_I",kmeans.Neighborhood,sep=""),norm=FALSE)$res
                   
                   res$potential[paste(combin_tempo,collapse="."),"V"] <- mean(V[kmeans_logical==1])
                   
@@ -1589,8 +1601,8 @@ setMethod(f ="calcBrainMask",
               if(trace){cat("skull groups : ")}
               
               initParameter(object=object,param=skull.param,test=TRUE,init=FALSE,
-                            accept.coords=FALSE,accept.index=FALSE,accept.mask=FALSE,method="calcBrainMask",
-                            arg_name="skull.param",long_name="skull parameter")
+                                     accept.coords=FALSE,accept.index=FALSE,accept.mask=FALSE,method="calcBrainMask",
+                                     arg_name="skull.param",long_name="skull parameter")
               
               carto <- selectContrast(object,param=skull.param,format="data.frame")
               res$potential_skull <- data.frame(matrix(NA,ncol=2,
@@ -1616,7 +1628,7 @@ setMethod(f ="calcBrainMask",
                 
                 # evaluation
                 V <- calcFilter(df2array(contrast=kmeans_logical,coords=coords)$contrast[[1]],
-                                filter=paste("3D_I",kmeans.Neighborhood,sep=""),norm=FALSE)$res
+                                         filter=paste("3D_I",kmeans.Neighborhood,sep=""),norm=FALSE)$res
                 
                 res$potential_skull[iter_kmeans+1,] <- c(skull.n_groups[iter_kmeans],mean(V[kmeans_logical==1]))
                 
@@ -1663,7 +1675,7 @@ setMethod(f ="calcControlateral",
           {stop("calcControlateral[MRIaggr] : argument \'param.ref\' must be specified if \'type\' is \"1NN_penalised\" \n")}
           
           if(type=="1NN_penalised"){
-            sd <- sd(as.vector(selectContrast(object,param=param.ref,num=num,format="matrix")),na.rm=TRUE) 
+            sd <- sd(selectContrast(object,param=param.ref,num=num,format="vector"),na.rm=TRUE) 
           }else{
             sd <- 0
             param.ref <- param[1]
@@ -1705,10 +1717,10 @@ setMethod(f ="calcControlateral",
             param_C <- unique(c(param,param.ref))
             
             res <- calcContro_cpp(contrast=as.matrix(data[index_k,param_C,drop=FALSE]), 
-                                  coords_px=as.matrix(data_miroir[index_k,c("i_hemisphere","j_hemisphere")]), 
-                                  index_k=index_k_lesion-1, index_k_contro=index_k_contro-1,
-                                  d_lim=distband, lambda=lambda, param_ref=which(names(data[,param_C,drop=FALSE]) == param.ref)-1, var_ref=sd,
-                                  type_moy=type_moy, type_med=type_med, type_NN=type_NN, trace=trace)
+                                           coords_px=as.matrix(data_miroir[index_k,c("i_hemisphere","j_hemisphere")]), 
+                                           index_k=index_k_lesion-1, index_k_contro=index_k_contro-1,
+                                           d_lim=distband, lambda=lambda, param_ref=which(names(data[,param_C,drop=FALSE]) == param.ref)-1, var_ref=sd,
+                                           type_moy=type_moy, type_med=type_med, type_NN=type_NN, trace=trace)
             data_miroir[index_k[index_k_lesion],paste(param,"_contro",sep="")] <- res$valeur_NormContro[,param_C %in% param]
             index.plot_lesionL <- c(index.plot_lesionL,index_k[index_k_lesion[which(res$index_plot_k)]])
             index.plot_controL <- c(index.plot_controL,index_k[index_k_contro[which(res$index_plot_k_contro)]])                
@@ -1740,10 +1752,10 @@ setMethod(f ="calcControlateral",
             param_C <- unique(c(param,param.ref))
             
             res <- calcContro_cpp(contrast=as.matrix(data[index_k,param_C,drop=FALSE]), 
-                                  coords_px=as.matrix(data_miroir[index_k,c("i_hemisphere","j_hemisphere")]), 
-                                  index_k=index_k_lesion-1, index_k_contro=index_k_contro-1,
-                                  d_lim=distband, lambda=lambda, param_ref=which(names(data[,param_C,drop=FALSE]) == param.ref)-1, var_ref=sd,
-                                  type_moy=type_moy, type_med=type_med, type_NN=type_NN, trace=trace)
+                                           coords_px=as.matrix(data_miroir[index_k,c("i_hemisphere","j_hemisphere")]), 
+                                           index_k=index_k_lesion-1, index_k_contro=index_k_contro-1,
+                                           d_lim=distband, lambda=lambda, param_ref=which(names(data[,param_C,drop=FALSE]) == param.ref)-1, var_ref=sd,
+                                           type_moy=type_moy, type_med=type_med, type_NN=type_NN, trace=trace)
             
             data_miroir[index_k[index_k_lesion],paste(param,"_contro",sep="")] <- res$valeur_NormContro[,param_C %in% param]
             index.plot_lesionR <- c(index.plot_lesionR,index_k[index_k_lesion[which(res$index_plot_k)]])
@@ -1771,9 +1783,14 @@ setMethod(f ="calcDistMask",
                                 spatial_res=c(1,1,1),as.logical=FALSE,Neighborhood="3D_N10",
                                 trace=TRUE,update.object=FALSE,overwrite=FALSE){
             
+            test.package <- requireNamespace("RANN",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("calcDistMask[MRIaggr] : this function requires to have installed the RANN package to work \n")
+            }
+            
             initParameter(object=object,param=mask,test=TRUE,init=FALSE,
-                          accept.coords=FALSE,accept.index=FALSE,method="calcDistMask",
-                          arg_name="mask",long_name="mask")
+                                   accept.coords=FALSE,accept.index=FALSE,method="calcDistMask",
+                                   arg_name="mask",long_name="mask")
             
             p <- length(mask)
             
@@ -1801,16 +1818,8 @@ setMethod(f ="calcDistMask",
               if(trace){cat(iter_mask," ",sep="")}
               
               # test logical 
-              if(as.logical==TRUE){
-                data[,mask[iter_mask]] <- as.logical(data[,mask[iter_mask]])
-              }
-              
-              if(is.logical(data[,mask[iter_mask]])==FALSE){
-                stop("calcDistMask[MRIaggr] : some parameters of \'mask\' were are not logical \n",
-                     "non logical parameter : ",mask[iter_mask],"\n",
-                     "fist element of non logical parameter : ",paste(selectContrast(object,param=mask[iter_mask])[1,],collapse=" "),"\n",
-                     "to force the conversion to logical set \'as.logical\'= TRUE \n")
-              }
+              data[,mask[iter_mask]] <- initMask(object,mask[iter_mask],test=TRUE,init=as.logical,
+                                                          arg_name="mask",long_name="mask",method="calcDistMask",format="vector")
               
               index_mask <- which(data[,mask[iter_mask]]==TRUE)
               
@@ -1893,7 +1902,7 @@ setMethod(f ="calcFilter",
           { 
             # preparation
             initParameter(object=object,param=param,test=TRUE,init=FALSE,
-                          accept.coords=FALSE,accept.index=FALSE,method="calcFilter")
+                                   accept.coords=FALSE,accept.index=FALSE,method="calcFilter")
             p <- length(param)
             
             if(is.null(name_newparam)){
@@ -1912,8 +1921,8 @@ setMethod(f ="calcFilter",
             
             carto <- selectContrast(object,param=param,coords=TRUE,format="data.frame")
             carto <- df2array(contrast=carto[,param],
-                              range.coords=object@voxelDim,
-                              coords=carto[,c("i","j","k")])
+                                       range.coords=object@voxelDim,
+                                       coords=carto[,c("i","j","k")])
             
             res <- data.frame(matrix(NA,ncol=p+3,nrow=selectN(object)))
             names(res) <- c("i","j","k",name_newparam)
@@ -1924,11 +1933,11 @@ setMethod(f ="calcFilter",
               if(trace){cat(param[iter_param]," ",sep="")}
               
               tempo <- calcFilter(carto$contrast[[iter_param]],filter=filter,norm=norm,
-                                  w_contrast=w_contrast,na.rm=na.rm)
+                                           w_contrast=w_contrast,na.rm=na.rm)
               Mfilter <- tempo$filter
               index_NNA <- which(!is.na(tempo$res))
               tempo <- array2df(array=tempo$res,
-                                name_newparam=name_newparam[iter_param],names_coords=c("i","j","k"))
+                                         name_newparam=name_newparam[iter_param],names_coords=c("i","j","k"))
               
               res[which(indexData %in% index_NNA),name_newparam[iter_param]] <- tempo[,name_newparam[iter_param]] 
             }
@@ -1945,44 +1954,36 @@ setMethod(f ="calcFilter",
 
 setMethod(f ="calcGroupsMask",
           signature ="MRIaggr",
-          definition = function(object,mask,distband,spatial_res=c(1,1,1),as.logical=FALSE,W="ifany",
+          definition = function(object,mask,as.logical=FALSE,
+                                W="ifany",W.range,W.spatial_res=c(1,1,1),
                                 trace=TRUE,update.object=FALSE,overwrite=TRUE)
           { 
             #### preliminaries 
             # test parameter
             initParameter(object=object,param=mask,test=TRUE,init=FALSE,
-                          accept.coords=FALSE,accept.index=FALSE,method="calcGroupsMask",
-                          arg_name="mask",long_name="parameters")
+                                   accept.coords=FALSE,accept.index=FALSE,method="calcGroupsMask",
+                                   arg_name="mask",long_name="parameters")
             p <- length(mask)
             
             # coords
             coords <- selectCoords(object)
-            if(length(spatial_res)!=3 || is.numeric(spatial_res)==FALSE){
-              stop("calcGroupsMask[MRIaggr] : wrong specification of \'spatial_res\' \n",
+            if(length(W.spatial_res)!=3 || is.numeric(W.spatial_res)==FALSE){
+              stop("calcGroupsMask[MRIaggr] : wrong specification of \'W.spatial_res\' \n",
                    "it must be a numeric vector of length 3 \n",
-                   "proposed 'spatial_res' : ",paste(spatial_res,collapse=" "),"\n")
+                   "proposed 'W.spatial_res' : ",paste(W.spatial_res,collapse=" "),"\n")
             }
             
             # data lesion
             carto <- selectContrast(object,param=mask,format="data.frame")
-            if(as.logical==TRUE){
-              for(iter_param in mask){carto[,iter_param] <- as.logical(carto[,iter_param])}
-            }
-            test.mask <- unlist(lapply(mask,function(y){is.logical(carto[,y])}))
             
-            if(any(test.mask==FALSE)){
-              stop("calcGroupsMask[MRIaggr] : some parameters of \'mask\' were are not logical \n",
-                   "non logical parameters : ",paste(mask[test.mask==FALSE],collapse=" "),"\n",
-                   "fist element of non logical parameters : ",paste(selectContrast(object,param=mask[test.mask==FALSE])[1,],collapse=" "),"\n",
-                   "to force the conversion to logical set \'as.logical\'= TRUE \n")
-            }
             
-            if(!is.null(W) && length(W)==1 && W=="ifany"){
-              if("W_euclidean" %in% selectParameter(object,"ls_descStats")){
-                W <- selectDescStats(object,"W_euclidean")
-              }else{
-                W <- NULL
-              }
+            carto[,mask] <- initMask(object,mask,test=TRUE,init=as.logical,
+                                              arg_name="mask",long_name="mask",method="calcGroupsMask",format="matrix")
+            
+            if(identical(W,"ifany") && "W_euclidean" %in% selectParameter(object,"ls_descStats")){
+              W <- selectDescStats(object,"W_euclidean")
+            }else{
+              W <- NULL
             }
             
             if(!is.null(W) && "dgCMatrix" %in% class(W) == FALSE){
@@ -2013,8 +2014,8 @@ setMethod(f ="calcGroupsMask",
               
               if(length(index_N)>1){
                 if(is.null(W)){
-                  W_lesion <- calcW(coords[index_N,],method="euclidean",distband=distband,
-                                    upper=NULL,format="dgCMatrix",row.norm=FALSE,spatial_res=spatial_res)
+                  W_lesion <- calcW(coords[index_N,],method="euclidean",range=W.range,
+                                             upper=NULL,format="dgCMatrix",row.norm=FALSE,spatial_res=W.spatial_res)
                 }else{              
                   W_lesion <- W[index_N,index_N]
                 }
@@ -2054,11 +2055,14 @@ setMethod(f ="calcGroupsMask",
 setMethod(f ="calcHemisphere",
           signature ="MRIaggr",
           definition = function(object,param,num=NULL,p=1,subset=NULL,penalty="symmetry",mask=NULL,as.logical=FALSE,
-                                i_test=5,j_test=5,angle_test=5,unit_angle="radian",n.points=100,                                                                                                
+                                i_test=5,j_test=5,angle_test=5,unit_angle="radian",n.points=100,
+                                #gridSearch=TRUE,NelderMead=TRUE,maxit=500,abstol=10^{-4},reltol=10^{-4},
                                 plot=TRUE,window=FALSE,filename=paste(object@identifier,"_calcHemisphere",sep=""),
                                 width=1000,height=700,path=NULL,unit="px",res=NA,
                                 trace=TRUE,update.object=FALSE,overwrite=FALSE)
-          { 
+          { gridSearch <- TRUE
+            NelderMead <- FALSE
+            
             #### preliminary tests ####
             if(!is.numeric(p) || p<=0)
             {stop("calcHemisphere[MRIaggr] : \'p\' must be a positive number \n",
@@ -2084,8 +2088,8 @@ setMethod(f ="calcHemisphere",
             
             if(!is.null(mask)){
               initParameter(object=object,param=mask,test=TRUE,init=FALSE,
-                            accept.coords=FALSE,accept.index=FALSE,method="calcHemisphere",
-                            arg_name="mask",long_name="mask")
+                                     accept.coords=FALSE,accept.index=FALSE,method="calcHemisphere",
+                                     arg_name="mask",long_name="mask")
               
               mask <- selectContrast(object,param=mask,format="matrix")
               if(as.logical==TRUE){mask <- apply(mask,2,as.logical)}
@@ -2100,16 +2104,46 @@ setMethod(f ="calcHemisphere",
             
             if(plot==TRUE){
               scale <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                  n.plot=1,mfrow=c(1,1),xlim=NULL,ylim=NULL,method="calcHemisphere[MRIaggr]")$scale
+                                           n.plot=1,mfrow=c(1,1),xlim=NULL,ylim=NULL,method="calcHemisphere[MRIaggr]")$scale
             }
             
             #### initialisation ####
-            if(is.null(num)){
-              num <- seq(1,object@voxelDim$k,by=1)
+            
+            #### data
+            num <- initNum(object,num=num,method="calcHemisphere")
+                        
+            data <- selectContrast(object,param=param,num=num,subset=subset,coord=TRUE)
+            data <- data[is.na(data[,param])==FALSE,]
+            n <- nrow(data)
+            n.num <- length(num)
+            ls.indexK <- lapply(num,function(x){which(data$k==x)-1})
+            
+            sd_data <- sd(data[,param],na.rm=TRUE)
+            sdp_data <- sd_data^p
+            
+            if(n<2)
+            {stop("calcHemisphere[MRIaggr] : there is not enougth data to distinguish 2 hemispheres \n",
+                  "nrow(data) : ",n,"\n")
+            }
+            
+            #### seed
+            i_median <- median(unique(data$i))
+            j_median <- median(unique(data$j))
+            angle_median <- 0
+            
+            #### grid search
+            if(gridSearch==TRUE){
+              
+              if(length(i_test)==1 && i_test %% 1 == 0){
+              i_test <- seq(i_median-i_test,i_median+i_test,by=1) 
+            }
+            
+            if(length(j_test)==1 && j_test %% 1 == 0){              
+              j_test <- seq(j_median-j_test,j_median+j_test,by=1) 
             }
             
             if(length(angle_test)==1 && angle_test %% 1 == 0){
-              angle_test=seq(-angle_test,angle_test,by=1)
+              angle_test=seq(angle_median-angle_test,angle_median+angle_test,by=1)
               unit_angle <- "degre"    
             }
             
@@ -2117,120 +2151,117 @@ setMethod(f ="calcHemisphere",
               angle_test <- 2*pi*angle_test/360
             }
             
-            data <- selectContrast(object,param=param,num=num,subset=subset,coord=TRUE)
-            data <- data[is.na(data[,param])==FALSE,]
-            sd_data <- sd(data[,param],na.rm=TRUE)
-            sdp_data <- sd_data^p
-            
-            if(nrow(data)<2)
-            {stop("calcHemisphere[MRIaggr] : there is not enougth data to distinguish 2 hemispheres \n",
-                  "nrow(data) : ",nrow(data),"\n")
-            }
-            
-            if(length(i_test)==1 && i_test %% 1 == 0){
-              i_tempo <- unique(data$i)
-              i_test <- seq(median(i_tempo)-i_test,median(i_tempo)+i_test,by=1) 
-            }
-            
-            if(length(j_test)==1 && j_test %% 1 == 0){              
-              j_tempo <- unique(data$j)
-              j_test <- seq(median(j_tempo)-j_test,median(j_tempo)+j_test,by=1) 
-            }
+            grid <- expand.grid(i=i_test,j=j_test,angle=angle_test)
+            grid$rank_i <- as.numeric(as.factor(rank(grid$i-i_median)))
+            grid$rank_j <- as.numeric(as.factor(rank(grid$j-j_median)))
+            grid$rank_angle <- as.numeric(as.factor(rank(grid$angle)))
+            grid$rank <- grid$rank_i+grid$rank_j+grid$rank_angle-3
             
             n.i_test <- length(i_test)
             n.j_test <- length(j_test)
             n.angle_test <- length(angle_test)
+            n.grid <- nrow(grid)
             
-            asymetrie <- list(penalty=array(data=0,dim=c(n.i_test,n.j_test,n.angle_test)),
-                              nb=array(data=0,dim=c(n.i_test,n.j_test,n.angle_test)), 
-                              moy=array(data=0,dim=c(n.i_test,n.j_test,n.angle_test)))
+            grid$penalty <- 0
+            grid$nb <- 0
+            grid$moy <- 0
             
+            if(penalty=="symmetry"){optimum <- -Inf}else{optimum <- +Inf}  
+            order_optimum <- +Inf
             
-            #### computation of the criterion for each plan ####
-            if(trace && length(num)==1){cat("(slice ",num,") i : ",sep="")}
-            if(trace && length(num)>1){cat("i :",sep="")}
+            if(trace==TRUE){
+              index_trace <- round(c(1,seq(1,n.grid,length.out=10)[c(-1,-10)],n.grid))
+            }
             
-            for(iter_posI in 1:n.i_test)
-            { 
-              if(trace){cat(" ",i_test[iter_posI],sep="")}
+            }
+            
+            #### grid search ####
+            if(gridSearch==TRUE){
               
-              for(iter_posJ in 1:n.j_test)
-              { 
-                for(iter_angle in 1:n.angle_test)
-                { 
-                  # changement de repere
-                  i_pos <- i_test[iter_posI]
-                  alpha <- angle_test[iter_angle]
-                  i_nouveau <- cos(alpha)*(data$i-i_pos) - sin(alpha)*(data$j-j_test[iter_posJ])
-                  j_nouveau <- sin(alpha)*(data$i-i_pos) + cos(alpha)*(data$j-j_test[iter_posJ])
-                  
-                  # identification des hemispheres
-                  hemiL <- which(i_nouveau>0)
-                  hemiR <- which(i_nouveau<0)
-                  
-                  
-                  for(iter_k in num){
-                    index_kG <- intersect(hemiL,which(data$k==iter_k))
-                    index_kD <- intersect(hemiR,which(data$k==iter_k))
-                    
-                    res_cpp <- calcHemi_cpp(px_hemiL=cbind(i_nouveau[index_kG],j_nouveau[index_kG],data[index_kG,param]),
-                                            px_hemiR=cbind(i_nouveau[index_kD],j_nouveau[index_kD],data[index_kD,param]),
-                                            sd_data=sd_data, p=p, symetrie=penalty=="symmetry")
-                    
-                    asymetrie$penalty[iter_posI,iter_posJ,iter_angle] <- asymetrie$penalty[iter_posI,iter_posJ,iter_angle] + res_cpp$asymetrie_valeur
-                    asymetrie$nb[iter_posI,iter_posJ,iter_angle] <- asymetrie$nb[iter_posI,iter_posJ,iter_angle] + res_cpp$asymetrie_nb
-                  }
-                  
+              if(trace==T){cat("Grid Search : ")}
+              
+            for(iter_grid in 1:n.grid){ 
+              
+              if(trace==T && iter_grid %in% index_trace){cat("*")}
+              
+              res_cpp <- calcHemi_cpp(coordsI=data$i, coordsJ=data$j, ls_indexK=ls.indexK,  n_num=n.num, value=data[,param], n=n,
+                                          i_pos=grid[iter_grid,"i"], j_pos=grid[iter_grid,"j"], angle_pos=grid[iter_grid,"angle"],
+                                          sd_data=sd_data, p=p, symetrie=(penalty=="symmetry"))
+              
+              grid[iter_grid,"penalty"] <- res_cpp$asymetrie_valeur
+              grid[iter_grid,"nb"] <- res_cpp$asymetrie_nb
+              grid[iter_grid,"moy"] <- res_cpp$asymetrie_moy
+              
+              if(penalty=="symmetry"){
+                if(res_cpp$asymetrie_moy > optimum || (res_cpp$asymetrie_moy == optimum)&&(grid$rank[iter_grid]<order_optimum) ){
+                  optimum <- res_cpp$asymetrie_moy
+                  order_optimum <- grid$rank[iter_grid]
+                }
+              }else{
+                optimum <- +Inf
+                if(res_cpp$asymetrie_moy < optimum || (res_cpp$asymetrie_moy == optimum)&&(grid$rank[iter_grid]<order_optimum) ){
+                  optimum <- res_cpp$asymetrie_moy
+                  order_optimum <- grid$rank[iter_grid]
                 }
               }
-            }  
-            
+            }
             
             if(trace){cat("\n")}
             
-            #### post-treatment for defining the mid saggital plan ####
-            asymetrie$moy <- asymetrie$penalty/asymetrie$nb
-            if(penalty=="symmetry"){
-              min_asy <- max(asymetrie$moy)
+            index_optimum <- which.min(abs(grid$moy-optimum))
+            
+            df.optimum <- data.frame(position_i=grid[index_optimum,"i"],
+                                     position_j=grid[index_optimum,"j"],
+                                     angle_rad=grid[index_optimum,"angle"],
+                                     asymetrie=optimum)
             }else{
-              min_asy <- min(asymetrie$moy)
-            }           
-            index_min <- which(asymetrie$moy==min_asy,arr.ind=TRUE)
+              df.optimum <- data.frame(position_i=i_median,
+                                       position_j=j_median,
+                                       angle_rad=angle_median,
+                                       asymetrie=NA)  
+            }
             
-            if(!is.null(dim(index_min)) && nrow(index_min)>1)
-            {warning("calcHemisphere[MRIaggr] : there are several optima \n",
-                     "one is retain, the closest to the median \"i\" \"j\" and \"angle\" test value \n")
-             #M <- matrix(c(ceiling(length(i_test)/2),ceiling(length(j_test)/2),ceiling(length(angle_test)/2)),byrow=TRUE,ncol=3,nrow=dim(index_min)[1])
-             M <- matrix(c(median(i_test),median(j_test),median(angle_test)),byrow=TRUE,ncol=3,nrow=nrow(index_min))
-             index_min <- index_min[which.min(rowSums(abs(index_min-M))),] }
+            #### optimization ####
+            if(NelderMead==TRUE){
+              
+              if(trace==TRUE){cat("Nelder-Mead with optim \n")}
+            dim_carto <- selectVoxelDim(object)
             
-            asymetrie$optimum <- data.frame(position_i=i_test[index_min[1]],
-                                            position_j=j_test[index_min[2]],
-                                            angle_rad=angle_test[index_min[3]],
-                                            asymetrie=asymetrie$moy[index_min[1],index_min[2],index_min[3]])
+            res <- optim(par=list(df.optimum$position_i,df.optimum$position_j,df.optimum$angle_rad),
+                         fn=function(value){
+                           calcHemi_cpp(coordsI=data$i, coordsJ=data$j, ls_indexK=ls.indexK,  n_num=n.num, value=data[,param], n=n,
+                                        i_pos=value[1], j_pos=value[2], angle_pos=value[3],
+                                        sd_data=sd_data, p=p, symetrie=(penalty=="symmetry"))$asymetrie_moy
+                         },
+                         method="Nelder-Mead",
+                         control=list(fnscale=-1,maxit=maxit,abstol=abstol,reltol=reltol,trace=if(trace>1){trace}else{0}) # 
+            )
             
+            df.optimum$position_i <- res$par[1]
+            df.optimum$position_j <- res$par[2]
+            df.optimum$angle_rad <- res$par[3]
+            df.optimum$asymetrie <- res$value
+            }
+            
+            #### midplane ####
             j <- seq(min(data$j),max(data$j),length.out=n.points)
-            asymetrie$midplane <-  data.frame(i=asymetrie$optimum$position_i + sin(asymetrie$optimum$angle_rad)*(j-asymetrie$optimum$position_j),j=j )
-            
-            rm(data)
-            gc()
+            midplane <-  data.frame(i=df.optimum$position_i + sin(df.optimum$angle_rad)*(j-df.optimum$position_j),j=j )
             
             #### hemisphere caracterization ####      
             data_miroir <- data.frame(matrix(NA,nrow=selectN(object),ncol=8))
-            names(data_miroir) <- c("index","i","j","k","i_hemisphere","j_hemisphere","hemisphere","mask")
+            names(data_miroir) <- c("index","i","j","k","i_hemisphere","j_hemisphere","hemisphere")
             data_miroir[,c("i","j","k")] <- selectCoords(object)
-            data_miroir$index <- selectContrast(object,"index")
-            data_miroir$mask <- mask
+            data_miroir$index <- selectContrast(object,"index",format="vector")
+            if(!is.null(mask)){data_miroir$mask <- mask}
             
             # changement de repere
-            data_miroir$i_hemisphere <- cos(asymetrie$optimum$angle_rad)*(data_miroir$i-asymetrie$optimum$position_i) - sin(asymetrie$optimum$angle_rad)*(data_miroir$j-asymetrie$optimum$position_j)
-            data_miroir$j_hemisphere <- sin(asymetrie$optimum$angle_rad)*(data_miroir$i-asymetrie$optimum$position_i) + cos(asymetrie$optimum$angle_rad)*(data_miroir$j-asymetrie$optimum$position_j)
+            data_miroir$i_hemisphere <- cos(df.optimum$angle_rad)*(data_miroir$i-df.optimum$position_i) - sin(df.optimum$angle_rad)*(data_miroir$j-df.optimum$position_j)
+            data_miroir$j_hemisphere <- sin(df.optimum$angle_rad)*(data_miroir$i-df.optimum$position_i) + cos(df.optimum$angle_rad)*(data_miroir$j-df.optimum$position_j)
             
             data_miroir$hemisphere <- "undefined"
             data_miroir$hemisphere[data_miroir$i_hemisphere>0] <- "left"
             data_miroir$hemisphere[data_miroir$i_hemisphere<0] <- "right"
             
-            asymetrie$data <- data_miroir[,c("i_hemisphere","j_hemisphere","hemisphere")]
             
             if(!is.null(mask)){
               hemispheres <- data.frame(left="undefined",right="undefined",stringsAsFactors=FALSE)
@@ -2249,66 +2280,107 @@ setMethod(f ="calcHemisphere",
               }else{
                 hemispheres$right <- "controlateral"
               }
-              
-              asymetrie$hemispheres <- hemispheres
             }else{
-              asymetrie$hemispheres <- NULL
+              hemispheres <- NULL
             }
             
             #### display ####
-            if(plot==TRUE){
+            if(plot==TRUE && gridSearch==TRUE){
               
               initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                                mfrow=c(1,3),bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(2,0.5,0))
+                                         mfrow=c(1,3),bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(2,0.5,0))
+              plot.seq_moy <- seq(min(grid$moy),max(c(grid$moy,df.optimum$asymetrie)),length.out=5)
+              plot.seq_i <- unique(grid$i)
+              plot.seq_j <- unique(grid$j)
+              plot.seq_angle <- unique(grid$angle)
               
-              # optimum
-              n_paramx <- length(i_test)
-              n_paramy <- length(j_test)
-              n_paramangle <- length(angle_test)
+              # optimum selon i
+              palette <- rainbow(n.angle_test)
+              plot(NA,
+                   xlim=range(c(plot.seq_i,df.optimum$position_i)),xlab="position_i",
+                   ylim=c(plot.seq_moy[1],plot.seq_moy[5]),ylab=penalty,
+                   axes=FALSE,main="color=angles ; lty=j ")
+              box()
               
-              col <- rainbow(n_paramangle)
-              matplot(NA,xlim=c(1,n_paramx),ylim=c(range(asymetrie$moy)),xlab="position_i",ylab=penalty,
-                      axes=FALSE,main="color=angles ; lty=j ")
-              for(iter in 1:n_paramangle){
-                matplot(asymetrie$moy[,,iter],type="l",add=TRUE,col=colorRampPalette(c(col[iter],"black"))(n_paramangle))
+              axis(1,at=plot.seq_i,label=round(plot.seq_i,4))
+              axis(2,at=plot.seq_moy,label=round(plot.seq_moy,4))
+              
+              for(iter_angle in unique(grid$rank_angle)){
+                  index_angle <- which(grid$rank_angle==iter_angle)
+                  col <- palette[iter_angle]
+                  
+                for(iter_j in unique(grid$rank_j)){
+                  index_j <- which(grid$rank_j==iter_j)
+                  points(grid[intersect(index_j,index_angle),c("i","moy")],lty=iter_j,col=col,type="l")
+                }
               }
-              points(index_min[1],
-                     asymetrie$moy[which(asymetrie$moy==asymetrie$optimum$asymetrie)[1]],col="red",cex=2,pch=15)
-              axis(1,at=1:n_paramx,label=as.character(i_test))
-              axis(2)
+              points(df.optimum[,c("position_i","asymetrie")],col="black",cex=2,pch=15)
               
-              col <- rainbow(n_paramx)
-              matplot(NA,xlim=c(1,n_paramy),ylim=c(range(asymetrie$moy)),xlab="position_j",ylab=penalty,
-                      axes=FALSE,main="color=i ; lty=angles")
-              for(iter in 1:n_paramx){
-                matplot(asymetrie$moy[iter,,],type="l",add=TRUE,col=colorRampPalette(c(col[iter],"black"))(n_paramx))
-              }
-              points(index_min[2],
-                     asymetrie$moy[which(asymetrie$moy==asymetrie$optimum$asymetrie)][1],col="red",cex=2,pch=15)
-              axis(1,at=1:n_paramy,label=as.character(j_test))
-              axis(2)
+             # optimum selon j
+              palette <- rainbow(n.i_test)
+              plot(NA,
+                  xlim=range(c(plot.seq_j,df.optimum$position_j)),xlab="position_j",
+                  ylim=c(plot.seq_moy[1],plot.seq_moy[5]),ylab=penalty,
+                  axes=FALSE,main="color=i ; lty=angle")
+              box()
+              axis(1,at=plot.seq_j,label=round(plot.seq_j,4))
+              axis(2,at=plot.seq_moy,label=round(plot.seq_moy,4))
               
-              col <- rainbow(n_paramx)
-              matplot(NA,xlim=c(1,n_paramangle),ylim=c(range(asymetrie$moy)),xlab="angle",ylab=penalty,
-                      axes=FALSE,main="color=i ; lty=j ")
-              for(iter in 1:n_paramx){
-                matplot(t(asymetrie$moy[iter,,]),type="l",add=TRUE,col=colorRampPalette(c(col[iter],"black"))(n_paramx))
+              for(iter_i in unique(grid$rank_i)){
+                index_i <- which(grid$rank_i==iter_i)
+                col <- palette[iter_i]
+                
+                for(iter_angle in unique(grid$rank_angle)){
+                  index_angle <- which(grid$rank_angle==iter_angle)
+                  
+                  points(grid[intersect(index_angle,index_i),c("j","moy")],lty=iter_angle,col=col,type="l")
+                }
               }
-              points(index_min[3],
-                     asymetrie$moy[which(asymetrie$moy==asymetrie$optimum$asymetrie)][1],col="red",cex=2,pch=15)
-              axis(1,at=1:n_paramangle,label=as.character(round(angle_test,digit=3)))
-              axis(2)
+             points(df.optimum[,c("position_j","asymetrie")],col="black",cex=2,pch=15)
+              
+              # optimum selon angle
+              palette <- rainbow(n.j_test)
+              plot(NA,
+                  xlim=range(c(plot.seq_angle,df.optimum$angle_rad)),xlab="position_angle",
+                  ylim=c(plot.seq_moy[1],plot.seq_moy[5]),ylab=penalty,
+                  axes=FALSE,main="color=j ; lty=i")
+              box()
+              axis(1,at=plot.seq_angle,label=round(plot.seq_angle,4))
+              axis(2,at=plot.seq_moy,label=round(plot.seq_moy,4))
+              
+              for(iter_j in unique(grid$rank_j)){
+                index_j <- which(grid$rank_j==iter_j)
+                col <- palette[iter_j]
+                
+                for(iter_i in unique(grid$rank_i)){
+                  index_i <- which(grid$rank_i==iter_i)
+                  
+                  points(grid[intersect(index_i,index_j),c("angle","moy")],lty=iter_i,col=col,type="l")
+                }
+              }
+             points(df.optimum[,c("angle_rad","asymetrie")],col="black",cex=2,pch=15)
               
               if(!is.null(window) && window %in% c("eps","svg","png","pdf")){dev.off()}
               
             }
+                        
+            #### export ####
+            res <- list()
             
-            if(index_min[1] == 1 || index_min[1] == dim(asymetrie$moy)[1] ||
-                 index_min[2] == 1 || index_min[2] == dim(asymetrie$moy)[2] ||
-                 index_min[3] == 1 || index_min[3] == dim(asymetrie$moy)[3])
-            {asymetrie$cv <- FALSE}else{asymetrie$cv <- TRUE}
+            res$data <- data_miroir[,c("i_hemisphere","j_hemisphere","hemisphere")]
+            res$hemispheres <- hemispheres
+            res$midplane <- midplane
+            res$optimum <- df.optimum
+            res$grid <- grid
+			  
+            test.bordI <- df.optimum$position_i %in% c(i_test[1],tail(i_test,1))
+            test.bordJ <- df.optimum$position_j %in% c(j_test[1],tail(j_test,1))
+            test.bordAngle <- df.optimum$angle_rad %in% c(angle_test[1],tail(angle_test,1))
+            if(test.bordI || test.bordJ || test.bordAngle){
+              res$cv <- FALSE}else{res$cv <- TRUE
+            }
             
-            return(list(res=asymetrie,
+            return(list(res=res,
                         trace=trace,
                         update.object=update.object,
                         overwrite=overwrite))
@@ -2505,65 +2577,59 @@ setMethod(f ="calcNormalization",
 
 setMethod(f ="calcRegionalContrast",
           signature ="MRIaggr",
-          definition = function(object,param,num=NULL,hemisphere="both",W="ifany",spatial_res=c(1,1,1),distband,
-                                distband_EDK,power_EDK=2,diagonal=FALSE,
+          definition = function(object,param,bandwidth,power=2,diagonal=FALSE,                                
+                                W="ifany",W.range,W.spatial_res=c(1,1,1),
+                                num=NULL,hemisphere="both",
                                 trace=TRUE,name_newparam=paste(param,"regional",sep="_"),update.object=FALSE,overwrite=FALSE){
             
             # definition de la matrice de voisinage
-            if(!is.null(W) && length(W)==1 && W=="ifany"){
-              if("W_euclidean" %in% selectParameter(object,"ls_descStats")){
-                if(trace){cat(" loading W ... ")}
-                
-                W <- selectDescStats(object,"W_euclidean",num=num,hemisphere=hemisphere)
-                
-                # test symetrie
-                indexP_tempo <- which(W@p>0)[1]-1 # ou which(diff(W@p)>0)
-                indexI_tempo <- W@i[1]+1
-                
-                if(abs(W[indexP_tempo,indexI_tempo]-W[indexI_tempo,indexP_tempo])>0){
-                  W <- W + spam::t(W)
+            if(identical(W,"ifany") && "W_euclidean" %in% selectParameter(object,"ls_descStats")){
+              if(trace){cat(" loading W ... ")}
+              
+              W <- selectDescStats(object,"W_euclidean",num=num,hemisphere=hemisphere)
+              
+              # test symetrie
+              #               indexP_tempo <- which(W@p>0)[1]-1 # ou which(diff(W@p)>0)
+              #               indexI_tempo <- W@i[1]+1
+              #               if(abs(W[indexP_tempo,indexI_tempo]-W[indexI_tempo,indexP_tempo])>0){
+              if(any(spam::rowSums(W)-spam::colSums(W)>0.001)){
+                if(trace==TRUE){
+                  cat("\'W\' is not symetrical \n",
+                      "it might be because \'W\' is stored as a upper or a lower matrix \n",
+                      "\'W\' is replace by W+t(W) \n")
                 }
-                W <- drop0(W,is.Csparse=TRUE)      
-                
-                if(diagonal==TRUE){
-                  diag(W) <- -1
-                  W@x[W@x>0] <- EDK(W@x[W@x>=0],distband=distband_EDK,power=power_EDK)  
-                  W@x[W@x==-1] <- EDK(0,distband=distband_EDK,power=power_EDK)    
-                }else{
-                  W@x <- EDK(W@x,distband=distband_EDK,power=power_EDK)                    
-                }
-                
-                Rsum <- spam::rowSums(W)   
-                Rsum[is.na(Rsum)] <- -1                
-                W <- W/Rsum
-              }else{
-                W <- NULL
+                W <- W+spam::t(W)
               }
-            }
-            
-            if(is.null(W)){
+              W <- drop0(W,is.Csparse=TRUE)      
+              
+            }else if(is.null(W) || identical(W,"ifany")){
               if(trace){cat(" computing W ... ")}
               
-              W <- calcW(selectCoords(object,num=num,hemisphere=hemisphere),spatial_res=spatial_res,
-                         distband=distband,upper=NULL,format="dgCMatrix",row.norm=FALSE)
-              if(diagonal==TRUE){
-                diag(W) <- -1
-                W@x[W@x>0] <- EDK(W@x[W@x>=0],distband=distband_EDK,power=power_EDK)  
-                W@x[W@x==-1] <- EDK(0,distband=distband_EDK,power=power_EDK)    
-              }else{
-                W@x <- EDK(W@x,distband=distband_EDK,power=power_EDK)                    
-              }      
-              Rsum <- spam::rowSums(W)   
-              Rsum[is.na(Rsum)] <- -1       
-              W <- W/Rsum
+              W <- calcW(selectCoords(object,num=num,hemisphere=hemisphere),spatial_res=W.spatial_res,
+                                  range=W.range,upper=NULL,format="dgCMatrix",row.norm=FALSE)               
             }
-            if(trace){cat("W ready \n ")}
             
             if("dgCMatrix" %in% class(W) == FALSE){
               stop("calcRegionalContrast[MRIaggr] : wrong specification of \'W\' \n",
                    "\'W\' must be of class dgCMatrix \n",
                    "proposed class of \'W\' : ",paste(class(W),collapse=" "),"\n")
             }
+            
+            # convert distance to weights
+            if(diagonal==TRUE){
+              diag(W) <- -1
+              W@x[W@x>0] <- EDK(W@x[W@x>=0],bandwidth=bandwidth,power=power)  
+              W@x[W@x==-1] <- EDK(0,bandwidth=bandwidth,power=power)    
+            }else{
+              W@x <- EDK(W@x,bandwidth=bandwidth,power=power)                    
+            }
+            
+            # normalization
+            Rsum <- spam::rowSums(W)   
+            Rsum[is.na(Rsum)] <- -1                
+            W <- W/Rsum
+            
+            if(trace){cat("W ready \n ")}
             
             carto <- selectContrast(object,param=param,num=num,hemisphere=hemisphere,format="matrix")
             p <- length(param)
@@ -2608,9 +2674,14 @@ setMethod(f ="calcROCthreshold",
                                 width=1000,height=700,path=NULL,unit="px",res=NA,
                                 trace=TRUE,update.object=FALSE,overwrite=FALSE){
             
+            test.package <- requireNamespace("ROCR",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("calcROCthreshold[MRIaggr] : this function requires to have installed the ROCR package to work \n")
+            }
+            
             initParameter(object=object,param=c(mask,param),test=TRUE,init=FALSE,
-                          accept.coords=FALSE,accept.index=FALSE,
-                          arg_name="mask/param",method="calcROCthreshold")     
+                                   accept.coords=FALSE,accept.index=FALSE,
+                                   arg_name="mask/param",method="calcROCthreshold")     
             
             if(length(mask)!=length(param)){
               stop("calcROCthreshold[MRIaggr] : \'mask\' and \'param\' must have the same length \n",
@@ -2629,7 +2700,7 @@ setMethod(f ="calcROCthreshold",
             if(plot!=FALSE){
               
               res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                     n.plot=p,mfrow=NULL,xlim=NULL,ylim=NULL,method="calcROCthreshold[MRIaggr]")
+                                              n.plot=p,mfrow=NULL,xlim=NULL,ylim=NULL,method="calcROCthreshold[MRIaggr]")
               scale <- res.init$scale
               mfrow <- res.init$mfrow
             }
@@ -2637,17 +2708,8 @@ setMethod(f ="calcROCthreshold",
             #### mise en place du JDD ####
             data <- selectContrast(object,param=c(mask,param))
             
-            if(as.logical==TRUE){
-              for(iter_param in mask){data[,iter_param] <- as.logical(data[,iter_param])}
-            }
-            test.mask <- unlist(lapply(mask,function(y){is.logical(data[,y])}))
-            
-            if(any(test.mask==FALSE)){
-              stop("calcROCthreshold[MRIaggr] : some parameters of \'mask\' were are not logical \n",
-                   "non logical parameters : ",paste(mask[test.mask==FALSE],collapse=" "),"\n",
-                   "fist element of non logical parameters : ",paste(selectContrast(object,param=mask[test.mask==FALSE])[1,],collapse=" "),"\n",
-                   "to force the conversion to logical set \'as.logical\'= TRUE \n")
-            }         
+            data[,mask] <- initMask(object,mask,test=TRUE,init=as.logical,
+                                             arg_name="mask",long_name="mask",method="calcROCthreshold",format="matrix")
             
             if(!is.null(digit)){
               for(iter_param in param){data[,iter_param] <- round(data[,iter_param],digit=digit)}
@@ -2723,7 +2785,7 @@ setMethod(f ="calcROCthreshold",
               }
               
               initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                                mfrow=mfrow,bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(1.5,0.5,0))  
+                                         mfrow=mfrow,bg=NULL,pty=NULL,mar=rep(3,4),mgp=c(1.5,0.5,0))  
               
               for(iter_param in 1:p){             
                 
@@ -2838,7 +2900,7 @@ setMethod(f ="calcSmoothMask",
             if( identical(size_2Dgroup,FALSE)==FALSE && length(index_mask)>0)
             { if(trace){cat("rm small2D : ")}       
               group2D <- calcGroupsCoords(coords=coords[index_mask,],
-                                          Neighborhood=Neighborhood_2D,trace=trace)
+                                                   Neighborhood=Neighborhood_2D,trace=trace)
               
               valid_group2D <- numeric()
               for(iter_num in 1:n.slices){
@@ -2869,7 +2931,7 @@ setMethod(f ="calcSmoothMask",
             {  if(trace){cat("add hole2D : ")}
                
                group2D <- calcGroupsCoords(coords=coords[index_fond,],
-                                           Neighborhood=Neighborhood_2D,trace=trace)
+                                                    Neighborhood=Neighborhood_2D,trace=trace)
                
                valid_group2D <- numeric()
                for(iter_num in 1:n.slices){
@@ -2895,7 +2957,7 @@ setMethod(f ="calcSmoothMask",
             { if(trace){cat("rm small3D : ")}
               
               group3D <- calcGroupsCoords(coords=coords[index_mask,],
-                                          Neighborhood=Neighborhood_3D,trace=trace)
+                                                   Neighborhood=Neighborhood_3D,trace=trace)
               
               if(size_3Dgroup=="unique"){
                 valid_group3D <- which.max(group3D$group_size)
@@ -2919,12 +2981,12 @@ setMethod(f ="calcSmoothMask",
               if(trace){cat("erosion : ")}
               
               Amask <- df2array(rep(0,n),
-                                coords=coords)$contrast[[1]]              
+                                         coords=coords)$contrast[[1]]              
               
               # identification des observations a eroder
               Amask[index_fond] <- FALSE
               Amask[index_mask] <- TRUE
-              Vlocal <- calcFilter(Amask,filter=Neighborhood_V,norm=FALSE)$res
+              Vlocal <- calcFilter(Amask,filter=Neighborhood_V,norm=TRUE)$res
               
               index_erosion <- intersect(which(Vlocal<erosion_th),index_mask)
               
@@ -2936,7 +2998,7 @@ setMethod(f ="calcSmoothMask",
               Amask[index_mask] <- TRUE
               
               group3D <- calcGroupsCoords(array=Amask,
-                                          Neighborhood=Neighborhood_3D,trace=trace)
+                                                   Neighborhood=Neighborhood_3D,trace=trace)
               
               valid_group3D <- which.max(group3D$group_size)
               
@@ -2966,7 +3028,7 @@ setMethod(f ="calcSmoothMask",
             {  if(trace){cat("add hole3D : ")}
                
                group3D <- calcGroupsCoords(coords=coords[index_fond,],
-                                           Neighborhood=Neighborhood_3D,trace=trace)
+                                                    Neighborhood=Neighborhood_3D,trace=trace)
                
                valid_group3D <- which.max(group3D$group_size)                         
                index_unvalid <- group3D$df.group$index[group3D$df.group$group %in%  valid_group3D == FALSE]
@@ -2986,7 +3048,7 @@ setMethod(f ="calcSmoothMask",
               if(trace){cat("smoothing (add/rm) : ")}
               
               Amask <- df2array(rep(0,n),
-                                coords=coords)$contrast[[1]]
+                                         coords=coords)$contrast[[1]]
               iter_max <- 20
               iter <- 1
               n.modif <- 1
@@ -2996,7 +3058,7 @@ setMethod(f ="calcSmoothMask",
                 Amask[index_mask] <- TRUE
                 n.modif <- 0
                 
-                Vlocal <- calcFilter(Amask,filter=Neighborhood_V,norm=FALSE)$res
+                Vlocal <- calcFilter(Amask,filter=Neighborhood_V,norm=TRUE)$res
                 
                 if(!is.null(Vmask_min)){
                   index_rm <-  intersect(index_mask,which(Vlocal<Vmask_min))
@@ -3059,21 +3121,21 @@ setMethod(f ="calcTableHypoReperf",
             ## mise en place 
             param_time1 <- paste(param,time[1],sep=sep)
             initParameter(object=object,param=param_time1,test=TRUE,init=FALSE,accept.coords=FALSE,
-                          arg_name="param_time1",method="calcTableHypoReperf")
+                                   arg_name="param_time1",method="calcTableHypoReperf")
             if(length(time)==2){
               param_time2 <- paste(param,time[2],sep=sep)
               initParameter(object=object,param=param_time2,test=TRUE,init=FALSE,accept.coords=FALSE,
-                            arg_name="param_time2",method="calcTableHypoReperf")
+                                     arg_name="param_time2",method="calcTableHypoReperf")
             }
             if(!is.null(mask)){
               initParameter(object=object,param=mask,test=TRUE,init=FALSE,accept.coords=FALSE,
-                            arg_name="mask",method="calcTableHypoReperf")
+                                     arg_name="mask",method="calcTableHypoReperf")
             }
             
             n.param <- length(param)
             n.threshold <- length(threshold)
             
-            index_mask <- selectContrast(object,param="index",format="any")
+            index_mask <- selectContrast(object,param="index",format="vector")
             n.mask <- length(index_mask)
             
             res <- list()
@@ -3101,15 +3163,10 @@ setMethod(f ="calcTableHypoReperf",
             dataRaw.time1[dataRaw.time1>threshold[n.threshold]] <- threshold[n.threshold]
             
             if(!is.null(mask)){
-              data.mask <- selectContrast(object,param=mask,norm_mu=norm_mu,norm_sigma=norm_sigma)
-              if(as.logical==TRUE){data.mask <- as.logical(data.mask) }
-              if(is.logical(data.mask)==FALSE){
-                stop("calcTableHypoReperf[MRIaggr] : wrong specification of \'mask\'\n",
-                     "must be a logical vector indicating the lesioned observations \n",
-                     "is \'mask\' : ",paste(is(data.mask),collapse=" "),"\n",
-                     "set \'as.logical\' to TRUE \n")
-              }
-              if(!is.null(mask)){test.mask <- (data.mask==FALSE)}
+              data.mask <- initMask(object,mask,test=TRUE,init=as.logical,
+                                    arg_name="mask",long_name="mask",method="calcTableHypoReperf")
+              
+              test.mask <- (data.mask==FALSE)
             }
             
             #### reperfusion ####
@@ -3244,26 +3301,18 @@ setMethod(f ="calcTableLesion",
             
             #### tests preliminaires : maskN
             initParameter(object=object,param=maskN,test=TRUE,init=FALSE,accept.coords=TRUE,
-                          arg_name="maskN",long_name="parameters",method="calcTableLesion")          
+                                   arg_name="maskN",long_name="parameters",method="calcTableLesion")          
             n.maskN <- length(maskN)
             
             data <- selectContrast(object,param=maskN,coords="k",format="data.frame")
-            if(as.logical==TRUE){
-              for(iter_param in maskN){data[,iter_param] <- as.logical(data[,iter_param])}
-            }
-            test.maskN <- unlist(lapply(maskN,function(y){is.logical(data[,y])}))
             
-            if(any(test.maskN==FALSE)){
-              stop("calcTableLesion[MRIaggr] : some parameters of \'maskN\' were are not logical \n",
-                   "non logical parameters : ",paste(maskN[test.maskN==FALSE],collapse=" "),"\n",
-                   "fist element of non logical parameters : ",paste(selectContrast(object,param=maskN[test.maskN==FALSE])[1,],collapse=" "),"\n",
-                   "to force the conversion to logical set \'as.logical\'= TRUE \n")
-            }
+            data[,maskN] <- initMask(object,maskN,test=TRUE,init=as.logical,
+                                              arg_name="mask",long_name="mask",method="calcTableLesion",format="matrix")
             
             #### tests preliminaires : mask
             if(length(mask)>0){
               if(is.character(mask)){
-                mask <- selectContrast(object,param=mask)
+                mask <- selectContrast(object,param=mask,format="vector")
               }else{
                 mask <- as.vector(mask)
                 if(!is.null(mask) && length(mask)!=selectN(object)){
@@ -3337,7 +3386,7 @@ setMethod(f ="calcTableLesion",
 setMethod(f ="calcThresholdMRIaggr",
           signature ="MRIaggr",
           definition = function(object,param,hemisphere="both",rm.CSF=FALSE,threshold=1:10,decreasing=FALSE,
-                                GRalgo=FALSE,W=NULL,seed=NULL,as.logical=FALSE,W.distband=NULL,W.spatial_res=rep(1,3),
+                                GRalgo=FALSE,W="ifany",seed=NULL,as.logical=FALSE,W.range,W.spatial_res=rep(1,3),
                                 name_newparam=paste(param,"Th",sep="_"),trace=TRUE,update.object=FALSE,overwrite=FALSE){
             
             #### test ####
@@ -3350,7 +3399,7 @@ setMethod(f ="calcThresholdMRIaggr",
             #### ####
             param_select <- param
             if(hemisphere!="both"){
-              param_select <- c(param_select,"hemisphere")
+              param_select <- c(param_select)
             }
             
             if(is.character(seed) && seed %in% selectParameter(object)){
@@ -3364,9 +3413,8 @@ setMethod(f ="calcThresholdMRIaggr",
               data <- data[data$CSF!=1,]
             }
             
-            
-            if(GRalgo==TRUE && is.null(W)){
-              if(is.null(W.distband) && "W_euclidean" %in% selectParameter(object,"ls_descStats")){
+            if(GRalgo==TRUE){
+              if(identical(W,"ifany") && "W_euclidean" %in% selectParameter(object,"ls_descStats")){
                 W <- selectDescStats(object,"W_euclidean",subset_W=data$index)
                 
                 if(any(spam::rowSums(W)-spam::colSums(W)>0.001)){
@@ -3377,21 +3425,23 @@ setMethod(f ="calcThresholdMRIaggr",
                   }
                   W <- W+spam::t(W)
                 }
-                
               }else{
                 if(trace==TRUE){cat("computing W ... \n")}
                 coords <- selectCoords(object)[data$index,]                
-                W <- calcW(coords,distband=W.distband,method="euclidean",upper=NULL,format="dgCMatrix",row.norm=TRUE,
-                           spatial_res=W.spatial_res)                
-              }
+                W <- calcW(coords,range=W.range,method="euclidean",upper=NULL,format="dgCMatrix",row.norm=TRUE,
+                                    spatial_res=W.spatial_res)                
+              }            
             }
+            
             
             if(GRalgo==TRUE && !is.null(seed) && is.character(seed)){              
               data[,seed] <- selectContrast(object,param=seed,format="matrix")[data$index,]                 
             }
             
-            res.th <- calcThreshold(contrast=data,param=param,hemisphere=NULL,rm.CSF=FALSE,threshold=threshold,decreasing=decreasing,
-                                    W=W,GRalgo=GRalgo,as.logical=as.logical,seed=seed,trace=trace)
+            res.th <- calcThreshold(contrast=cbind(data,CSF=0,hemisphere=hemisphere),param=param,hemisphere=if(hemisphere=="both"){NULL}else{hemisphere},rm.CSF=rm.CSF,threshold=threshold,decreasing=decreasing,
+                                             W=W,GRalgo=GRalgo,as.logical=as.logical,seed=seed,trace=trace)
+            #             res.th <- calcThreshold(contrast=data,param=param,hemisphere=NULL,rm.CSF=FALSE,threshold=threshold,decreasing=decreasing,
+            #                                     W=W,GRalgo=GRalgo,as.logical=as.logical,seed=seed,trace=trace)
             
             names(res.th) <- name_newparam
             
@@ -3415,13 +3465,18 @@ setMethod(f ="calcTissueType",
                                 beta=if(sub==TRUE){0.3}else{0.7},sub=TRUE,digit=0,trace=TRUE,
                                 name_newparam=c("CSF","GM","WM"),update.object=FALSE,overwrite=FALSE){
             
-            carto <- selectContrast(object,param=param)
+            test.package <- requireNamespace("mritc",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("calcTissueType[MRIaggr] : this function requires to have installed the mritc package to work \n")
+            }
+            
+            carto <- selectContrast(object,param=param,format="vector")
             coords <- selectCoords(object)
             
             init  <- mritc::initOtsu(round(carto,digit=digit), m=length(name_newparam)-1)
             
             mask <- df2array(rep(1,selectN(object)),
-                             coords,default_value=0)$contrast[[1]]
+                                      coords,default_value=0)$contrast[[1]]
             
             W <-  mritc::makeMRIspatial(mask, nnei=nnei,sub=sub)
             
@@ -3451,12 +3506,12 @@ setMethod(f ="calcTissueType",
 
 setMethod(f ="calcW",
           signature ="MRIaggr",
-          definition = function(object,distband,spatial_res=c(1,1,1),num=NULL,hemisphere="both",subset=NULL,
+          definition = function(object,range,spatial_res=c(1,1,1),num=NULL,hemisphere="both",subset=NULL,
                                 upper=TRUE,format="dgCMatrix",row.norm=FALSE,
                                 trace=TRUE,update.object=FALSE,overwrite=FALSE){
             
             W <- calcW(object=selectCoords(object,num=num,hemisphere=hemisphere,subset=subset),
-                       spatial_res=spatial_res,distband=distband,upper=upper,format=format,row.norm=row.norm)
+                                spatial_res=spatial_res,range=range,upper=upper,format=format,row.norm=row.norm)
             
             W <- drop0(W,is.Csparse=TRUE)       
             
@@ -3505,13 +3560,13 @@ setMethod(f ="boxplotMask",
             
             ### test export
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
-                                   method="boxplotMask[MRIaggr]")
+                                            n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
+                                            method="boxplotMask[MRIaggr]")
             scale <- res.init$scale
             
             #### display                       
             initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                              mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)              
+                                       mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)              
             
             if(is.null(ylim)){
               ylim <- range(carto)
@@ -3565,14 +3620,14 @@ setMethod(f ="heatmapMRIaggr",
             
             ### test export
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
-                                   method="boxplotMask[MRIaggr]")
+                                            n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
+                                            method="boxplotMask[MRIaggr]")
             scale <- res.init$scale
             
             
             #### display
             initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                              mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)
+                                       mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)
             
             if(type == "image"){
               image(1:p,1:p,carto.corr,col=col,breaks=breaks,
@@ -3601,6 +3656,11 @@ setMethod(f ="heatmapMRIaggr",
                 )
               }
               
+              test.package <- requireNamespace("fields",quietly=TRUE)
+              if(test.package==FALSE){
+                stop("heatmapMRIaggr[MRIaggr] : this function with argument type=\"image.plot\" requires to have installed the fields package to work \n")
+              }
+              
               fields::image.plot(1:p,1:p,carto.corr,col=col,legend.only=TRUE)
               
             }
@@ -3625,7 +3685,7 @@ setMethod(f ="multiplot",
                                 window=FALSE,legend=TRUE,mfrow=NULL,mar=rep(1.5,4),mgp=c(2,0.5,0),pty=NULL,asp=1,bg="lightblue",
                                 xlab="",ylab="",main=NULL,num.main=TRUE,cex.main=1.5,
                                 quantiles.legend=TRUE,digit.legend=3,cex.legend=1.5,mar.legend=c(2,7,2,2),main.legend=param,
-                                filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA){
+                                filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA){
             
             if(is.null(main)){
               main <- paste(paste(param,collapse="-")," : ", object@identifier," - slice ",slice_var,sep="")
@@ -3653,8 +3713,8 @@ setMethod(f ="multiplot",
             mar.init <- par()$mar
             
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=n.plot,mfrow=mfrow,xlim=xlim,ylim=ylim,
-                                   method="multiplot[MRIaggr]")
+                                            n.plot=n.plot,mfrow=mfrow,xlim=xlim,ylim=ylim,
+                                            method="multiplot[MRIaggr]")
             scale <- res.init$scale
             mfrow <- res.init$mfrow
             n.graph_par_window <- res.init$n.graph_par_window
@@ -3663,7 +3723,7 @@ setMethod(f ="multiplot",
             
             ## color and breaks   
             res.init <- initCol(contrast=contrast,coords=coords,param=param,pch=pch,col=col,palette=palette,breaks=breaks,legend=legend,type.breaks=type.breaks,
-                                method="multiplot[MRIaggr]")
+                                         method="multiplot[MRIaggr]")
             
             contrast <- res.init$contrast 
             palette <- res.init$palette 
@@ -3676,11 +3736,11 @@ setMethod(f ="multiplot",
             index_order <- res.init$index_order
             param <- res.init$param
             
-            ## index            
+            ## index  
             if(!is.null(index1)){
               res.init <- initIndex(object=object,index=index1,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[MRIaggr]",indexNum=1,
-                                    cex.default=1,pch.default=20,col.default="red",filter_default="2D_N4")
+                                             method="multiplot[MRIaggr]",indexNum=1,
+                                             cex.default=1,pch.default=20,col.default="red",filter_default="2D_N4")
               index1 <- res.init$coords
               indexindex1 <- res.init$index
               pch_index1 <- res.init$pch
@@ -3690,8 +3750,8 @@ setMethod(f ="multiplot",
             
             if(!is.null(index2)){
               res.init <- initIndex(object=object,index=index2,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[MRIaggr]",indexNum=2,
-                                    cex.default=1,pch.default=21,col.default="purple",filter_default="2D_N4")
+                                             method="multiplot[MRIaggr]",indexNum=2,
+                                             cex.default=1,pch.default=21,col.default="purple",filter_default="2D_N4")
               index2 <- res.init$coords
               indexindex2 <- res.init$index
               pch_index2 <- res.init$pch
@@ -3724,8 +3784,8 @@ setMethod(f ="multiplot",
               }
               
               res.init <- initIndex(object=object,index=index3,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[MRIaggr]",indexNum=3,
-                                    cex.default=1,pch.default=22,col.default="green",filter_default="2D_N4")
+                                             method="multiplot[MRIaggr]",indexNum=3,
+                                             cex.default=1,pch.default=22,col.default="green",filter_default="2D_N4")
               index3 <- res.init$coords 
               pch_index3 <- res.init$pch
               cex_index3 <- res.init$cex
@@ -3745,7 +3805,7 @@ setMethod(f ="multiplot",
                 filename_all <- paste(object@identifier,"_",filename,"_",param,"(",slice_var,"slice",num[iter_num],"-",min(max(num),num[iter_num+n.graph_par_window-1],na.rm=TRUE),"_",hemisphere,")",sep="")                  
                 
                 initDisplayWindow(window=window,filename=filename_all,path=path,width=width,height=height,scale=scale,res=res,
-                                  mfrow=mfrow,bg=bg,pty=pty,mar=mar,mgp=mgp)
+                                           mfrow=mfrow,bg=bg,pty=pty,mar=mar,mgp=mgp)
                 
               }
               
@@ -3802,17 +3862,17 @@ setMethod(f ="multiplot",
               {compteur <- 1}
               
             }
-            
+       
             #### legend ####
-            if(is.null(legend)){
-              compteur <- n.graph_par_window+1
+            if(is.null(legend)){ # affiche sur une fenetre a part
+              compteur <- 1
               mfrow <- c(1,1)
               legend <- TRUE
             }
-            
+         
             if(legend==TRUE){
               
-              if(!is.null(window) && compteur > n.graph_par_window){
+              if(!is.null(window) && compteur == 1){
                 
                 if(window %in% c("eps","svg","png","pdf") && iter_num>1){dev.off()}
                 filename_all <- paste(object@identifier,"_",filename,"_",param,"(",slice_var,"slice",min(num),"-",max(num),"_",hemisphere,")-legend",sep="")
@@ -3893,15 +3953,15 @@ setMethod(f ="plotDistClass",
             
             ### test export
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
-                                   method="plotDistClass[MRIaggr]")
+                                            n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
+                                            method="plotDistClass[MRIaggr]")
             scale <- res.init$scale
             
             #### display
             if(!is.null(window)){
               
               initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                                mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)      
+                                         mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)      
               
               if(is.null(ylim)){
                 ylim <- c(0,max_density)
@@ -3936,7 +3996,10 @@ setMethod(f ="plotLesion3D",
           definition = function(object,mask,edge=FALSE,Neighborhood="3D_N6",as.logical=FALSE,spatial_res=c(1,1,1),
                                 xlim=NULL,ylim=NULL,zlim=NULL,type.plot="shapelist3d",px_max=10000,
                                 radius=1,type="s",col="red",col.edge="black")
-          { requireNamespace("rgl")
+          { test.package <- requireNamespace("rgl",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("plotLesion3D[MRIaggr] : this function requires to have installed the rgl package to work \n")
+            }
             
             # import
             carto <- selectContrast(object,param=mask,coords=TRUE)
@@ -3962,7 +4025,7 @@ setMethod(f ="plotLesion3D",
             n.mask <- length(index_mask)
             
             if(edge){
-              carto_Wmask <- calcFilter(object,param=mask,filter=Neighborhood,norm=TRUE,trace=FALSE)
+              carto_Wmask <- calcFilter(object,param=mask,filter=Neighborhood,norm=FALSE,trace=FALSE)
               nb_neighbor <- max(carto_Wmask[,paste(mask,Neighborhood,sep="_")])
               index_core <- which(carto_Wmask[,paste(mask,Neighborhood,sep="_")]==nb_neighbor)
               index_edge <- setdiff(index_mask,index_core)
@@ -4060,13 +4123,13 @@ setMethod(f ="plotTableLesion",
             
             #### test export
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
-                                   method="boxplotMask[MRIaggr]")
+                                            n.plot=1,mfrow=1,xlim=NULL,ylim=NULL,
+                                            method="boxplotMask[MRIaggr]")
             scale <- res.init$scale
             
             #### display
             initDisplayWindow(window=window,filename=filename,path=path,width=width,height=height,scale=scale,res=res,
-                              mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)      
+                                       mfrow=NULL,bg=NULL,pty=NULL,mar=NULL,mgp=mgp)      
             
             if(type=="matplot"){
               matplot(table_lesion[num,mask],
@@ -4121,7 +4184,7 @@ setMethod(f ="outlineMRIaggr",
           signature ="MRIaggr",
           definition = function(object,param,index1=NULL,num=NULL,hemisphere="both",as.logical=FALSE,
                                 xlim=NULL,ylim=NULL,legend=FALSE,palette="terrain.colors",col=NULL,breaks=25,
-                                fill=TRUE,n=50,sequential=FALSE,min_dist=1,operator_index1="none",
+                                fill=TRUE,n=50,sequential=TRUE,min_dist=1,operator_index1="none",
                                 col.outline=c("blue","red","grey"),pch=20,cex=c(0.75,1,0.75),
                                 trace=TRUE,name_newparam="userMask",update.object=FALSE,overwrite=FALSE){
             
@@ -4148,21 +4211,21 @@ setMethod(f ="outlineMRIaggr",
             
             if(!is.null(index1)){
               index1 <- initIndex(object=object,index=index1,num=num,hemisphere=hemisphere,as.logical=as.logical,indexNum=1,
-                                  cex.default=1,pch.default=20,col.default="black",filter_default="2D_N4",method="outlineMRIaggr")
+                                           cex.default=1,pch.default=20,col.default="black",filter_default="2D_N4",method="outlineMRIaggr")
             }
             
+            graphics.off()
             for(iter_num in 1:length(num)){
-              graphics.off()
               
               # display 
               repeat.slice <- 1
               while(!is.na(repeat.slice) && repeat.slice==1){
                 
                 multiplot(object,param=param,num=num[iter_num],hemisphere=hemisphere,xlim=xlim,ylim=ylim,index1=index1,
-                          col=col,breaks=breaks,palette=palette,legend=legend)
+                                   col=col,breaks=breaks,palette=palette,legend=legend)
                 
                 res_outline <- outline(n=n,sequential=sequential,min_dist=min_dist,
-                                       col=col.outline,pch=pch,cex=cex)
+                                                col=col.outline,pch=pch,cex=cex)
                 
                 if(is.null(res_outline$edge)){
                   repeat.slice <- readline("Do you want to start again ? (answer 1)\n Otherwise the slice will be skipped  ")                
@@ -4182,7 +4245,6 @@ setMethod(f ="outlineMRIaggr",
                                  cbind(res_outline$surface[,c("i","j")],k=num[iter_num]))
               }
             }
-            graphics.off()
             
             newparam <- merge(x=newparam,y=data.frame(edge,edge=TRUE),by=c("i","j","k"),all.x=TRUE,all.y=FALSE)
             newparam <- merge(x=newparam,y=data.frame(surface,surface=TRUE),by=c("i","j","k"),all.x=TRUE,all.y=FALSE)
@@ -4225,10 +4287,19 @@ setMethod(f ="outlineMRIaggr",
           }           
 )
 
+setMethod(f ="show",
+          signature ="MRIaggr",
+          definition = function(object){
+         
+            summary(object,trace=0)
+            
+          }
+)
+            
+            
 setMethod(f ="summary",
           signature ="MRIaggr",
-          definition = function(object,param=FALSE,clinic=FALSE,descStats=FALSE,history=FALSE){
-            # summary.MRIaggr <- function(object, param=FALSE, clinic=FALSE, descStats=FALSE){            
+          definition = function(object,param=FALSE,clinic=FALSE,descStats=FALSE,history=FALSE,trace=1){
             if(!is.logical(param) || length(param)!=1){
               stop("summary[MRIaggr] : incorrect specification of \'param\' \n",
                    "must be a logical value \n",
@@ -4252,7 +4323,7 @@ setMethod(f ="summary",
             n <- selectN(object)
             Id <- selectIdentifier(object)            
             D <- selectVoxelDim(object)
-            Size <- as.character(selectVoxelSize(object))
+            Size <- as.matrix(selectVoxelSize(object))
             hemispheres <- selectHemispheres(object)
             midplane <- selectMidplane(object)
             
@@ -4262,7 +4333,7 @@ setMethod(f ="summary",
             df.clinic <- selectClinic(object)
             ncol.clinic <- ncol(df.clinic)
             
-            test.history <- object@history
+            test.history <- selectHistory(object)
             
             default_value <- selectDefault_value(object)
             ncol.TableLesion <- ncol(selectTable(object,type="lesion"))
@@ -4270,33 +4341,58 @@ setMethod(f ="summary",
             ncol.TableHypoperfusion <- ncol(selectTable(object,type="hypoperfusion"))
             
             test.normalization <- length(selectNormalization(object))>0
-
+            
             # print
             cat("Object of class \'MRIaggr\' with identifier : ",Id,"\n",sep="")
+            
             cat("  # image dimensions (i,j,k) : ",paste(D,collapse="x")," \n",sep="")
+            
             cat("  # voxel dimensions (i,j,k unit) : ",paste(Size[1:3],collapse="x")," ",Size[4]," \n",sep="")
-            cat("  # history : ",length(test.history)," calculations performed on the object \n",sep="")
-            if(history==TRUE){
-              cat(paste(names(test.history),collapse=" ")," \n",sep=" ")
+            
+            if(trace==1 || history==TRUE){
+              cat("  # history : ",length(test.history)," calculations performed on the object \n",sep="")
+              if(history==TRUE){
+                cat(paste(names(test.history),collapse=" ")," \n",sep=" ")
+              }
             }
+            
             cat("  # number of observations : ",n," \n",sep="")
+            
             cat("  # number of contrast parameters : ",p," \n",sep="")
             if(param==TRUE){
               str(selectContrast(object),max.level=1,give.attr=FALSE)
             }
-            cat("  # tables : lesion ",if(ncol.TableLesion>0){paste(ncol.TableLesion," columns",sep="")}else{"empty"},
+            
+            if(trace==1 || ncol.TableLesion>0 || ncol.TableHypoperfusion>0 || ncol.TableReperfusion>0){
+              cat("  # tables : lesion ",if(ncol.TableLesion>0){paste(ncol.TableLesion," columns",sep="")}else{"empty"},
                 ", hypoperfusion ",if(ncol.TableHypoperfusion>0){paste(ncol.TableHypoperfusion," columns",sep="")}else{"empty"},
                 ", reperfusion ",if(ncol.TableReperfusion>0){paste(ncol.TableReperfusion," columns",sep="")}else{"empty"},"\n",sep="")
-            cat("  # normalization values : ",if(test.normalization>0){"present"}else{"empty"},"\n",sep="")
-            cat("  # hemisphere left : ",hemispheres$left," | hemisphere right : ",hemispheres$right,"\n",sep="")
-            cat("  # midplane coordinates : ",if(sum(!is.na(midplane))>0){"present"}else{"empty"},"\n",sep="")
-            cat("  # ls_descStats : ",if(length.descStats==0){"empty"}else{if(descStats==FALSE){paste(length.descStats," elements",sep="")}},"\n",sep="")
-            if(length.descStats>0 && descStats==TRUE){
-              str(ls_descStats,max.level=1,give.attr=FALSE)              
             }
-            cat("  # clinic : ",if(ncol.clinic==0){"empty"}else{if(clinic==FALSE){paste(ncol.clinic," parameters",sep="")}},"\n",sep="")
-            if(ncol.clinic>0 && clinic==TRUE){
-              str(df.clinic,max.level=1,give.attr=FALSE)              
+            
+            if(trace==1 || test.normalization>0){
+              cat("  # normalization values : ",if(test.normalization>0){"present"}else{"empty"},"\n",sep="")
+            }
+            
+            if(trace==1 || hemispheres$left!="undefined" || hemispheres$right!="undefined"){
+              cat("  # hemisphere left : ",hemispheres$left," | hemisphere right : ",hemispheres$right,"\n",sep="")
+            }
+            
+            if(trace==1 || sum(!is.na(midplane))>0 ){
+              cat("  # midplane coordinates : ",if(sum(!is.na(midplane))>0){"present"}else{"empty"},"\n",sep="")
+            }
+            
+            if(trace==1 || length.descStats>0 ){
+              cat("  # ls_descStats : ",if(length.descStats==0){"empty"}else{if(descStats==FALSE){paste(length.descStats," elements",sep="")}},"\n",sep="")
+              if(length.descStats>0 && descStats==TRUE){
+                str(ls_descStats,max.level=1,give.attr=FALSE)              
+              }
+            }
+            
+            if(trace==1 || ncol.clinic>0 ){
+              cat("  # clinic : ",if(ncol.clinic==0){"empty"}else{if(clinic==FALSE){paste(ncol.clinic," parameters",sep="")}},"\n",sep="")
+              if(ncol.clinic>0 && clinic==TRUE){
+                str(df.clinic,max.level=1,give.attr=FALSE)              
+              }
             }
             
           }
@@ -4314,7 +4410,7 @@ setMethod(f ="constCompressMRIaggr",
             n_j.initial <- object@voxelDim$j
             n_slices <- object@voxelDim$k
             param <- initParameter(object,param=param,init=TRUE,test=TRUE,
-                                   accept.coords=FALSE,accept.index=FALSE,method="constCompressMRIaggr")
+                                            accept.coords=FALSE,accept.index=FALSE,method="constCompressMRIaggr")
             n.param <- length(param)
             
             #### tests ####
@@ -4367,9 +4463,9 @@ setMethod(f ="constCompressMRIaggr",
             for(iter_slice in 1:n_slices){
               if(trace){cat(iter_slice," ",sep="")}
               
-              data.slice <- df2array(contrast=selectContrast(object,num=iter_slice,param=param),
-                                     coords=selectCoords(object,num=iter_slice,c("i","j")),
-                                     range.coords=c(n_i.initial,n_j.initial))$contrast
+              data.slice <- df2array(contrast=selectContrast(object,num=iter_slice,param=param,format="data.frame"),
+                                              coords=selectCoords(object,num=iter_slice,c("i","j")),
+                                              range.coords=c(n_i.initial,n_j.initial))$contrast
               
               for(iter_param in 1:n.param){              
                 nom_param <- param[iter_param]
@@ -4416,7 +4512,7 @@ setMethod(f ="constCompressMRIaggr",
                 data.final[,iter_param] <- as.numeric(data.final[,iter_param] > threshold)
               }
             }
-
+            
             #### export ####
             y <- new(Class= "MRIaggr",
                      identifier = object@identifier,
@@ -4452,7 +4548,7 @@ setMethod(f ="constReduceMRIaggr",
           definition = function(object,mask,as.logical=FALSE,keep.index=TRUE)
           { 
             if(length(mask)==1 && is.character(mask)){                            
-              mask <- selectContrast(object,param=mask)              
+              mask <- selectContrast(object,param=mask,format="vector")              
               supprContrast(object) <- "mask"              
             }else{
               if(selectN(object)!=length(mask))
@@ -4470,7 +4566,7 @@ setMethod(f ="constReduceMRIaggr",
             index_mask <- which(mask)
             
             if(keep.index==TRUE){
-              affectDescStats(object,name="index_sauve") <- selectContrast(object,param="index")
+              affectDescStats(object,name="index_sauve") <- selectContrast(object,param="index",format="vector")
             }
             
             
@@ -4498,8 +4594,23 @@ setMethod(f ="constReduceMRIaggr",
           }
 )
 
-
-
+setMethod(f ="writeMRIaggr",
+          signature ="MRIaggr",
+          definition = function(object,param,num=NULL,norm_mu=FALSE,norm_sigma=FALSE,range.coords=NULL,default_value=NA,
+                                file, format, gzipped=TRUE, verbose=FALSE, size = "NA_integer_")
+          { 
+            data <- selectContrast(object,param=param,num=num,norm_mu=norm_mu,norm_sigma=norm_sigma)
+            coords <- selectCoords(object,num=num,format="matrix")
+           
+            array <- df2array(data,coords=coords,format="any",
+                              default_value=default_value,range.coords=range.coords)$contrast[[1]]
+            
+            writeMRI(data=array, file=file, format=format, gzipped=gzipped, verbose=verbose, size = size)              
+            
+          }
+)
+          
+          
 #### init. ####
 
 setMethod(f ="initNum",
@@ -4565,5 +4676,43 @@ setMethod(f ="initParameter",
             }
             
             return(invisible(param))
+          }
+)
+
+setMethod(f ="initMask",
+          signature ="MRIaggr",
+          definition = function(object,mask,test=TRUE,init=TRUE,format="data.frame",
+                                arg_name="mask",long_name="mask",method)
+          { 
+            
+            n.mask <- length(mask)
+            M.mask <- selectContrast(object,param=mask,format="matrix")
+            
+            # test logical 
+            if(init==TRUE){
+              M.mask <- apply(M.mask,2,function(x){as.logical(x)})
+            }
+            
+            test.logical <- apply(M.mask,2,is.logical)
+            
+            if(test==TRUE){
+              if(any(test.logical==FALSE)){
+                stop(method,"[MRIaggr] : wrong specification of \'",arg_name,"\' \n",
+                     "non logical values in : \'",paste(mask[test.logical==FALSE],collapse="\' \'"),"\' \n",
+                     "proposed values : ",paste( round(head(unique(as.vector( M.mask[,which(test.logical==FALSE)] ))),2), collapse=" " ),"\n",
+                     "to force the conversion to logical set \'as.logical\'= TRUE \n")
+              }
+            }
+            
+            if(format=="data.frame"){
+              M.mask <- as.data.frame(M.mask)
+              names(M.mask) <- mask
+            }
+            
+            if(format=="vector"){
+              M.mask <- as.vector(M.mask)              
+            }
+            
+            return(invisible(M.mask))
           }
 )

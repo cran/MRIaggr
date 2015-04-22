@@ -37,8 +37,8 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## automatic affectation
 \dontrun{
-calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,i_test=2,j_test=2,angle_test=2,
-                          update.object=TRUE,overwrite=TRUE)
+calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
+               update.object=TRUE,overwrite=TRUE)
 }
 \dontshow{
 resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,i_test=1,j_test=1,angle_test=1,
@@ -47,7 +47,7 @@ resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,i_test=1,j_te
 
 ## manual affectation
 \dontrun{
-resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,i_test=2,j_test=2,angle_test=2)
+resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0")
 }
 affectHemisphere(MRIaggr.Pat1_red,overwrite=TRUE) <- list(midplane=resHemi$midplane,
                                                           data=resHemi$data)

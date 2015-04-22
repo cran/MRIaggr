@@ -5,11 +5,20 @@
 C++ function called by \code{\link{calcHemisphere}} to compute the objective function that evaluates the consistency of the mid-saggital plan. For internal use.
 }
 \usage{
-calcHemi_cpp(px_hemiL, px_hemiR, sd_data, p, symetrie) 
+calcHemi_cpp(coordsI, coordsJ, ls_indexK, n_num, value, n,
+             i_pos, j_pos, angle_pos,
+             sd_data, p, symetrie) 
 }
 \arguments{
-  \item{px_hemiL}{the coordinates and the contrast of the observations in the left hemisphere for a given slice. \emph{matrix}.}
-  \item{px_hemiR}{the coordinates and the contrast of the observations in the right hemisphere for a given slice. \emph{matrix}.}
+  \item{coordsI}{the coordinates of each voxel along the first coordinate. \emph{integer vector}.}
+  \item{coordsJ}{the coordinates of each voxel along the second coordinate. \emph{integer vector}.}
+  \item{ls_indexK}{the index of the voxels on each slice. \emph{list}.}
+  \item{n_num}{the number of slices. \emph{integer}.}
+  \item{value}{the contrast parameter value for each voxel. \emph{numeric vector}.}
+  \item{n}{the number of voxels. \emph{integer}.}
+  \item{i_pos}{the first coordinate of the center of the mid-saggital plane. \emph{numeric}.}
+  \item{j_pos}{the second coordinate of the center of the mid-saggital plane. \emph{numeric}.}
+  \item{angle_pos}{the angle between the axis of the second coordinate and the mid-saggital plane. \emph{numeric}.}
   \item{sd_data}{the standard deviation of the parameter. \emph{numeric}.}
   \item{p}{the penalization factor. \emph{positive numeric}.}
   \item{symetrie}{the type of objective function. \code{TRUE} correspond to \code{"symmetry"} and \code{FALSE} to \code{"asymmetry"}.}

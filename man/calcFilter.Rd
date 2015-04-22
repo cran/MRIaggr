@@ -49,8 +49,8 @@ This lead to weight the neighboring value in order to offset the incomplete neig
 \examples{
 #### 1- array method ####
 ## load a nifti file
-path <- system.file(file.path("nifti"),package = "MRIaggr")
-nifti.Pat1_DWI_t0 <- readMRI(file=file.path(path,"DWI_t0"),format="nifti")
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
+nifti.Pat1_DWI_t0 <- readMRI(file=file.path(path.Pat1,"DWI_t0"),format="nifti")
 
 ## before filtering
 graphics::image(nifti.Pat1_DWI_t0[,,1,1])
@@ -74,13 +74,16 @@ calcFilter(MRIaggr.Pat1_red,param=c("T2_FLAIR_t2","DWI_t0","TTP_t0"),
            filter="2D_M3",na.rm=FALSE,update.object=TRUE,overwrite=TRUE)
 
 ## display
-par(mfrow=c(2,2))
+par(mfrow=c(2,2),mar=c(2,2,2,2))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",
-             num=1,window=NULL,breaks=c(-100,seq(0,450),601))
+          num.main=FALSE,main="raw",
+          num=1,window=NULL,breaks=c(-100,seq(0,450),601))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2_2D_G3",
-             num=1,legend=FALSE,window=NULL,breaks=c(-100,seq(0,450),601))
+          num.main=FALSE,main="2D_G3",
+          num=1,legend=FALSE,window=NULL,breaks=c(-100,seq(0,450),601))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2_2D_M3",
-             num=1,legend=FALSE,window=NULL,breaks=c(-100,seq(0,450),601))
+          num.main=FALSE,main="2D_M3",
+          num=1,legend=FALSE,window=NULL,breaks=c(-100,seq(0,450),601))
 
 ## see the results of the different filters
 # G : Gaussian filter
@@ -114,8 +117,8 @@ multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=3,
              breaks=breaks,window=NULL,legend=FALSE,
              main="no filtering",num.main=FALSE,main.legend="")
 multiplot(resS$res[,c("i","j","k")],contrast=resS$res[,4],
-             num=3,window=NULL,legend=FALSE,
-             palette="cm.colors",breaks=seq(-1000,1000),
+             num=1,window=NULL,legend=FALSE,
+             palette="cm.colors",breaks=seq(-100,100),
              main="sobelX filtering",num.main=FALSE)
 multiplot(resG$res[,c("i","j","k")],contrast=resG$res[,4],
              num=3,window=NULL,legend=FALSE,breaks=breaks,

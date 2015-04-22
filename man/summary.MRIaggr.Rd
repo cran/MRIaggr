@@ -1,11 +1,14 @@
 \name{summary-methods}
 \title{Summary Method for Class "MRIaggr"}
+\alias{show,MRIaggr-method}
 \alias{summary,MRIaggr-method}
 \description{
  Summarize some information of an object of class "MRIaggr". 
 }
 \usage{
-\S4method{summary}{MRIaggr}(object,param=FALSE,clinic=FALSE,descStats=FALSE,history=FALSE)
+\S4method{show}{MRIaggr}(object)
+
+\S4method{summary}{MRIaggr}(object,param=FALSE,clinic=FALSE,descStats=FALSE,history=FALSE,trace=1)
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -13,6 +16,7 @@
   \item{clinic}{should detailed information be printed for the clinical attribute ? \emph{logical}.}
   \item{descStats}{should detailed information be printed for the \code{ls_descStats} attribute ? \emph{logical}.}
   \item{history}{should the\code{calc} and \code{const} methods that have been applied to the object be listed ? \emph{logical}.}
+  \item{trace}{should a summary of all attributes should be displayed or only those which are non-empty ? \code{1} or \code{0}.}
 }
 \value{
   None.
@@ -20,7 +24,7 @@
 \examples{
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
-
+show(MRIaggr.Pat1_red)
 summary(MRIaggr.Pat1_red)
 }
 \concept{plot.}

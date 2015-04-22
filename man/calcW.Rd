@@ -7,16 +7,16 @@
 Computate a neighborhood matrix using spatial coordinates.
 }
 \usage{
-\S4method{calcW}{data.frame}(object,distband,method="euclidean",upper=NULL,
+\S4method{calcW}{data.frame}(object,range,method="euclidean",upper=NULL,
          format="dgCMatrix",row.norm=FALSE,spatial_res=rep(1,ncol(object)))
 
-\S4method{calcW}{MRIaggr}(object,distband,spatial_res=c(1,1,1),num=NULL,
+\S4method{calcW}{MRIaggr}(object,range,spatial_res=c(1,1,1),num=NULL,
          hemisphere="both",subset=NULL,upper=TRUE,format="dgCMatrix",row.norm=FALSE,
          trace=TRUE,update.object=FALSE,overwrite=FALSE)
 }
 \arguments{
   \item{object}{a \emph{data.frame} containing the coordinates of the observations or an \code{object} of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
-  \item{distband}{only distances smaller than delta are recorded. \code{postive numeric}. REQUIRED.}
+  \item{range}{only distances smaller than \code{range} are stored in \code{W}. \code{postive numeric}. REQUIRED.}
   \item{method}{the distance measure to be used. \emph{character}. This must be one of \code{"euclidean"}, \code{"maximum"}, \code{"minkowski"} or \code{"greatcircle"}.}  
   \item{spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.}
   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.}
@@ -34,7 +34,7 @@ Computate a neighborhood matrix using spatial coordinates.
 ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 
-Information about the \code{distband} argument can be found in \code{\link{nearest.dist}}.
+The \code{range} argument cooresponds to the \code{delta} argument of the \code{\link{nearest.dist}} function.
 
 Information about the \code{hemisphere} argument can be found in the details section of \code{\link{selectContrast}}.
 
@@ -57,27 +57,27 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 coords <- selectCoords(MRIaggr.Pat1_red,num=1:3,hemisphere="lesion")
 
 ## full W 
-W <- calcW(object=coords,distband=sqrt(2))
+W <- calcW(object=coords,range=sqrt(2))
 W[1:10,1:10]
 table(rowSums(W)    )
 
 ## full W normalized by row
-W <- calcW(object=coords,distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=coords,range=sqrt(2),row.norm=TRUE)
 W[1:10,1:10]
 table(rowSums(W)    )
 
 ## upper W 
-W <- calcW(object=coords,distband=sqrt(2),upper=TRUE)
+W <- calcW(object=coords,range=sqrt(2),upper=TRUE)
 W[1:10,1:10]
 
 #### 2- data.frame method ####
 
 ## compute W (regular lattice)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2),upper=NULL,num=1:3,hemisphere="lesion")
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2),upper=NULL,num=1:3,hemisphere="lesion")
 table(rowSums(W>0))
 
 ## compute W (irregular lattice)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2*1.875^2),upper=NULL,num=1:3,hemisphere="lesion",
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2*1.875^2),upper=NULL,num=1:3,hemisphere="lesion",
            spatial_res=c(1.875,1.875,6))
 table(rowSums(W>0))
 }

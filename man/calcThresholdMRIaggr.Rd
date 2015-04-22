@@ -8,9 +8,9 @@ Threshold a contrast parameter at one or several values.
 }
 \usage{
 \S4method{calcThresholdMRIaggr}{MRIaggr}(object,param,hemisphere="both",rm.CSF=FALSE,
-         threshold=1:10,decreasing=FALSE,GRalgo=FALSE,W=NULL,seed=NULL,
-         as.logical=FALSE,W.distband=NULL,W.spatial_res=rep(1,3),
-         name_newparam=paste(param,"Th",sep="_"),trace=TRUE,
+         threshold=1:10,decreasing=FALSE,
+		 GRalgo=FALSE,W="ifany",seed=NULL,as.logical=FALSE,W.range,
+         W.spatial_res=rep(1,3),name_newparam=paste(param,"Th",sep="_"),trace=TRUE,
          update.object=FALSE,overwrite=FALSE)
                  
 calcThreshold(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=1:10,
@@ -27,11 +27,11 @@ calcThreshold(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=1:10,
   \item{decreasing}{should the increasing thresholding (\code{FALSE}) or decreasing thresholding (\code{TRUE}) be used. \code{logical}.}
   
   \item{GRalgo}{should a Growing Region algorithm be used to clean the thresholded parameter ? \code{logical}.}
-  \item{W}{the neighborhood matrix. \code{dgCMatrix}.}
+  \item{W}{the neighborhood matrix. \emph{dgCMatrix} or \code{"ifany"} leading to use the neighborhood matrix stored in the \code{object} if any and else computate this matrix.}
   \item{seed}{the index of the seeds for the growing region algorithm . \code{positive integer vector}. }
   \item{as.logical}{should \code{seed} be converted to logical ? \emph{logical}.}
-  \item{W.distband}{only distances smaller than delta are recorded (for the computation of \code{W}). \code{postive numeric}.}
-  \item{W.spatial_res}{a dilatation factor for the coordinates (for the computation of \code{W}). \emph{positive numeric vector of size 3}.}
+  \item{W.range}{only distances smaller than \code{W.range} are stored in \code{W}. \code{postive numeric}.}
+  \item{W.spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.}
     
   \item{name_newparam}{the name of the new parameters. \code{character}.}
   \item{trace}{should the execution of the function be traced ? \emph{logical}.}
@@ -84,7 +84,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP.red_t0",main="TTP.red_t0 - slice",
 ## 2nd correction
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0"),threshold=1:10,
          rm.CSF=TRUE,hemisphere="lesion",name_newparam=c("TTP.GR_t0","MTT.GR_t0"),
-         GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W=NULL,W.distband=sqrt(2),
+         GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W.range=sqrt(2),
          update.object=TRUE,overwrite=TRUE)
 
 multiplot(MRIaggr.Pat1_red,param="TTP.GR_t0",main="TTP.GR_t0 - slice",
@@ -116,7 +116,7 @@ multiplot(selectCoords(MRIaggr.Pat1_red),main="TTP_t0_thC - slice",
 ## 2nd correction
 maskN <- c("MASK_T2_FLAIR_t2","MASK_DWI_t0")
 data[,maskN] <- selectContrast(MRIaggr.Pat1_red,param=maskN)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2*1.875^2+0.001),row.norm=TRUE,upper=NULL,
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2*1.875^2+0.001),row.norm=TRUE,upper=NULL,
                     spatial_res=c(1.875,1.875,6))
 max(rowSums(W>0))
 

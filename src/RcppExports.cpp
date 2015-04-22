@@ -7,17 +7,24 @@
 using namespace Rcpp;
 
 // calcHemi_cpp
-List calcHemi_cpp(const arma::mat& px_hemiL, const arma::mat& px_hemiR, double sd_data, int p, bool symetrie);
-RcppExport SEXP MRIaggr_calcHemi_cpp(SEXP px_hemiLSEXP, SEXP px_hemiRSEXP, SEXP sd_dataSEXP, SEXP pSEXP, SEXP symetrieSEXP) {
+List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, List ls_indexK, int n_num, const NumericVector& value, int n, double i_pos, double j_pos, double angle_pos, double sd_data, double p, bool symetrie);
+RcppExport SEXP MRIaggr_calcHemi_cpp(SEXP coordsISEXP, SEXP coordsJSEXP, SEXP ls_indexKSEXP, SEXP n_numSEXP, SEXP valueSEXP, SEXP nSEXP, SEXP i_posSEXP, SEXP j_posSEXP, SEXP angle_posSEXP, SEXP sd_dataSEXP, SEXP pSEXP, SEXP symetrieSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const arma::mat& >::type px_hemiL(px_hemiLSEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type px_hemiR(px_hemiRSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type coordsI(coordsISEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type coordsJ(coordsJSEXP);
+    Rcpp::traits::input_parameter< List >::type ls_indexK(ls_indexKSEXP);
+    Rcpp::traits::input_parameter< int >::type n_num(n_numSEXP);
+    Rcpp::traits::input_parameter< const NumericVector& >::type value(valueSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type i_pos(i_posSEXP);
+    Rcpp::traits::input_parameter< double >::type j_pos(j_posSEXP);
+    Rcpp::traits::input_parameter< double >::type angle_pos(angle_posSEXP);
     Rcpp::traits::input_parameter< double >::type sd_data(sd_dataSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< double >::type p(pSEXP);
     Rcpp::traits::input_parameter< bool >::type symetrie(symetrieSEXP);
-    __result = Rcpp::wrap(calcHemi_cpp(px_hemiL, px_hemiR, sd_data, p, symetrie));
+    __result = Rcpp::wrap(calcHemi_cpp(coordsI, coordsJ, ls_indexK, n_num, value, n, i_pos, j_pos, angle_pos, sd_data, p, symetrie));
     return __result;
 END_RCPP
 }

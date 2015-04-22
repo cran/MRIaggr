@@ -1,9 +1,9 @@
 \name{selectHemispheres}
-\title{Extract the position of the lesion in the hemispheres}
+\title{Extract the position of the lesion in each hemisphere}
 \alias{selectHemispheres}
 \alias{selectHemispheres,MRIaggr-method}
 \description{
-Extract the position of the lesion in the hemispheres from a \code{\linkS4class{MRIaggr}} object.
+Extract the position of the lesion in each hemisphere from a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
 \S4method{selectHemispheres}{MRIaggr}(object,hemisphere="both")

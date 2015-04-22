@@ -34,6 +34,9 @@ Perform a ROC analysis on a continuous variable for identifying a binary outcome
   \item{trace}{should the execution of the function be traced ? \emph{logical}.}
 }
 \details{
+
+This function requires to have installed the \emph{ROCR} package to work.
+
 ARGUMENTS: \cr
 Information about the \code{window}, \code{filename}, \code{width}, \code{height}, \code{path}, \code{unit} and \code{res} arguments can be found in the details section of \code{\link{initWindow}}.
 

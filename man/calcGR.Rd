@@ -46,9 +46,6 @@ This version of the Growing Region algorithm was been proposed by (Revol et al. 
 \references{
 Chantal Revol and Michel Jourlin. \emph{A new minimum varance region growing algorithm for image segmentation}. Pattern Recognition Letters, 18(3):249-258,1997.
 }
-\seealso{
-\code{\link{calcSigmaGR}} to find the optimal \code{sigma} value for a given clustering criterion.
-}
 \examples{
 ## load a MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
@@ -65,7 +62,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP.th_t0",num=3,as.logical=TRUE,
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,hemisphere="lesion",
                          param=c("TTP.th_t0","TTP_t0","MASK_DWI_t0"))
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 ## the seed is taken to be the point with the largest TTP in the lesion mask
 indexN <- which(carto$MASK_DWI_t0==1)

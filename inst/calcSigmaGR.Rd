@@ -71,14 +71,14 @@ data(MRIaggr.Pat1_red, package="MRIaggr")
 ## select data
 carto <- selectContrast(MRIaggr.Pat1_red,num=3,param=c("TTP_t0","MASK_DWI_t0"),hemisphere="lesion")
 coords <- selectCoords(MRIaggr.Pat1_red,num=3,hemisphere="lesion")
-W <- calcW(coords,distband=sqrt(2))
+W <- calcW(coords,range=sqrt(2))
 
 indexN <- which(carto$MASK_DWI_t0==1)
 seed <- indexN[which.max(carto[indexN,"TTP_t0"])]
 
 ## find optimal sigma
-resGR_sigma <- calcSigmaGR(contrast=carto$TTP_t0, W=W,seed=seed,
-                           sigma=seq(0.8,2,0.1),iter_max=50)
+resGR_sigma <- MRIaggr:::calcSigmaGR(contrast=carto$TTP_t0, W=W,seed=seed,
+                            sigma=seq(0.8,2,0.1),iter_max=50)
 }
 }
 \concept{calc.}

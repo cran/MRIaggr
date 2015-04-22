@@ -24,12 +24,13 @@ Information about the \code{num} argument can be found in the details section of
 }
 \examples{
 ## load nifti files 
-path <- system.file(file.path("nifti"),package = "MRIaggr")
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 
-Pat1.TTP.t0.nifti <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
-Pat1.DWI.t0.nifti <- readMRI(file=file.path(path,"DWI_t0"),format="nifti")
-Pat1.MASK_DWI.t0.nifti <- readMRI(file=file.path(path,"MASK_DWI_t0"),format="nifti")
-Pat1.MASK_T2_FLAIR.t2.nifti <- readMRI(file=file.path(path,"MASK_T2_FLAIR_t2"),format="nifti")
+Pat1.TTP.t0.nifti <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
+Pat1.DWI.t0.nifti <- readMRI(file=file.path(path.Pat1,"DWI_t0"),format="nifti")
+Pat1.MASK_DWI.t0.nifti <- readMRI(file=file.path(path.Pat1,"MASK_DWI_t0"),format="nifti")
+Pat1.MASK_T2_FLAIR.t2.nifti <- readMRI(file=file.path(path.Pat1,"MASK_T2_FLAIR_t2"),
+                                       format="nifti")
 
 ## convert them to Carto3D
 Pat1.TTP.t0.Carto3D <- constCarto3D(Pat1.TTP.t0.nifti,

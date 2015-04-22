@@ -2,7 +2,7 @@
 \title{Outline a region on a slice}
 \alias{outline}
 \usage{
-outline(n=50,sequential=FALSE,min_dist=1,
+outline(n=50,sequential=TRUE,min_dist=1,
          col=c("blue","red","grey"),pch=20,cex=c(0.75,1,0.75))
 }
 \description{

@@ -76,8 +76,7 @@ From our experience, using an objective function based on symmetry gives better 
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 \dontrun{
-res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
-                      i_test=2,j_test=2,angle_test=2,
+res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
                       trace=TRUE,update.object=TRUE,overwrite=TRUE)
 }
 \dontshow{
@@ -98,8 +97,8 @@ multiplot(selectContrast(MRIaggr.Pat1_red,param=c("i_hemisphere","j_hemisphere",
 
 ## compute the mid-saggital plan and mark lesion
 \dontrun{
-res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
-         mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"), i_test=2,j_test=2,angle_test=2,
+res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
+         mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
          trace=TRUE,update.object=TRUE,overwrite=TRUE)
 }
 }

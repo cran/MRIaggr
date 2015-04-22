@@ -7,7 +7,7 @@
 Extract the coordinates from a \code{\linkS4class{Carto3D}} or from a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
-\S4method{selectCoords}{Carto3D}(object,coords=c("i","j","k"),num=NULL,format="any")
+\S4method{selectCoords}{Carto3D}(object,coords=c("i","j","k"),num=NULL,format="data.frame")
 
 \S4method{selectCoords}{MRIaggr}(object,coords=c("i","j","k"),spatial_res=c(1,1,1),
          num=NULL,hemisphere="both",subset=NULL,slice_var="k",format="data.frame")
@@ -20,7 +20,7 @@ Extract the coordinates from a \code{\linkS4class{Carto3D}} or from a \code{\lin
   \item{hemisphere}{the hemisphere to extract. \emph{character}.}
   \item{subset}{the subset of observations to extract. \emph{positive integer vector} or \code{NULL} leading to use all observations}
   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}  
-  \item{format}{the format of the output. Can be \code{"matrix"}, \code{"data.frame"} or \code{"any"}.}
+  \item{format}{the format of the output. Can be \code{"vector"}, \code{"matrix"} or \code{"data.frame"}.}
 }
 \details{
 ARGUMENTS: \cr
@@ -33,8 +33,7 @@ Each of the \code{num}, \code{hemisphere} and \code{subset} argument define a su
 It is the intersection of all these three subsets that is extracted.
 }
 \value{
-  A \emph{data.frame} or a \emph{matrix} containing the coordinates in columns and the observations in rows. \cr
-  If only one coordinate is requested and the format is set to \code{"any"} then a \emph{vector} containing the coordinate values is returned.
+  A \code{"vector"}, \emph{matrix} or a \emph{data.frame}. In the latter two cases, each row corresponds to a voxel and each column to a coordinate.
 }
 \seealso{
  \code{\link{calcHemisphere}} to identify the hemispheres. \cr
@@ -43,8 +42,8 @@ It is the intersection of all these three subsets that is extracted.
 \examples{
 #### 1- Carto3D method ####
 ## load nifti files and convert them to Carto3D
-path.nifti_files <- system.file("nifti",package = "MRIaggr")
-nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
+path.Pat1 <- system.file("nifti",package = "MRIaggr")
+nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
 
 ## selection all coordinates

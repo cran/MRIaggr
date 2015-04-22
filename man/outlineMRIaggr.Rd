@@ -6,7 +6,7 @@
 \S4method{outlineMRIaggr}{MRIaggr}(object,param,index1=NULL,num=NULL,hemisphere="both",
          as.logical = FALSE,xlim=NULL,ylim=NULL,legend = FALSE,
          palette="terrain.colors",col=NULL,breaks=25,fill=TRUE,n=50,
-         sequential=FALSE,min_dist=1,operator_index1="none",
+         sequential=TRUE,min_dist=1,operator_index1="none",
          col.outline=c("blue","red","grey"),pch=20,cex=c(0.75,1,0.75),trace=TRUE,
          name_newparam="userMask",update.object=FALSE,overwrite=FALSE)
 }

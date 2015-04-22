@@ -10,24 +10,38 @@
   \item{identifier}{the patient identifier. \emph{character}.}  
   \item{parameter}{the name of the contrast parameter. \emph{character}.}   
   \item{contrast}{the contrast and the spatial coordinates of each voxel. \emph{data.frame} with four columns named \code{"i"} \code{"j"} \code{"k"} and the name of the contrast parameter.}  
-  \item{voxelDim}{the spatial dimensions of the lattice containing the observations. \emph{data.frame} with 1 row and 3 columns named \code{"i"} \code{"j"} \code{"k"}.}  
+  \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}  
+  \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
   \item{default_value}{the reference values of the contrast parameters (e.g. the background value). \emph{character}.}   
 }
 
 \section{S4 methods}{
+Getters : 
 \describe{
-\item{\code{selectIdentifier}}{return the slot identifier.}
-\item{\code{selectParameter}}{return the slot parameter.}
-\item{\code{selectContrast}}{return the slot carto3D.}
-\item{\code{selectVoxelDim}}{return the slot voxelDim.}
-\item{\code{selectDefault_value}}{return the slot default_value.}
+ \item{\code{\link{selectContrast}}}{return the contrast parameters.}
+ \item{\code{\link{selectCoords}}}{return the coordinates.}
+ \item{\code{\link{selectIdentifier}}}{return the identifier of the patient}
+ \item{\code{\link{selectN}}}{return the number of voxels}
+ \item{\code{\link{selectParameter}}}{return the names of the parameters stored in the object}
+ \item{\code{\link{selectVoxelDim}}}{return the dimension of the lattice containing the observations}
+ \item{\code{\link{selectVoxelSize}}}{return the dimension of a voxel}
+}
 
+Displayers : 
+\describe{
 \item{\code{multiplot}}{display the contrast data.}
+}
 
+Constructors : 
+\describe{
 \item{\code{constMRIaggr}}{aggregate several Carto3D objects into a single objet MRIaggr.}
+}
 
+Initializers : 
+\describe{
 \item{\code{initNum}}{check the validity of the num argument.}
 }
+
 }
 \seealso{
 \code{\linkS4class{MRIaggr}} class that aggregates several \code{carto3D} objects.

@@ -1,30 +1,37 @@
 #### 1- Construction functions for the objects Carto3D and MRIaggr ####
 
 constCarto3D <- function(array,identifier,param,default_value=NULL,
-                         pos_default_value=c(1,1,1),rm.array=FALSE){
+                         pos_default_value=c(1,1,1),voxelSize=NULL,rm.array=FALSE){
   
   nom.array <- as.character(substitute(array))
   
   
   #### conversion du format ####
-  if(class(array) == "anlz"){
-    size <- data.frame(i=NA,j=NA,k=NA,unit=array@vox_units, stringsAsFactors = FALSE)
-    size[,c("i","j","k")] <- array@pixdim[2:4]    
+  if(class(array) == "anlz"){ # analyse object
+    if(is.null(voxelSize)){
+      voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=array@vox_units, stringsAsFactors = FALSE)
+      voxelSize[,c("i","j","k")] <- array@pixdim[2:4] 
+    }
     array <- array@.Data
-  }else if(class(array) %in% c("nifti","niftiExtension","niftiAuditTrail")){
-    size <- data.frame(i=NA,j=NA,k=NA,unit=oro.nifti::convert.units(oro.nifti::xyzt2space(array@xyzt_units)), stringsAsFactors = FALSE)
-    size[,c("i","j","k")] <- array@pixdim[2:4]    
+  }else if(class(array) %in% c("nifti","niftiExtension","niftiAuditTrail")){ # nifti object
+    if(is.null(voxelSize)){
+      voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=oro.nifti::convert.units(oro.nifti::xyzt2space(array@xyzt_units)), stringsAsFactors = FALSE)
+      voxelSize[,c("i","j","k")] <- array@pixdim[2:4]    
+    }
     array <- array@.Data
-  }else{
+  }else if(is.list(array) && length(array)==2 && "img" %in% names(array)){ # dicom object
+    array <- array$img
+    voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
+  }else{ # array object
     if(class(array) %in% c("matrix","array") == FALSE){
       stop("constCarto3D : wrong specification of \'array\' \n",
            "\'array\' must be either an \"anlz\", \"nifti\" or an array object \n",
            "class(array) : ",class(array),"\n")
       
     }
-    size <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
+    voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
   }
-    
+  
   if(length(dim(array))==4 && dim(array)[4]==1){
     array <- array[,,,1,drop=TRUE]
   }
@@ -56,7 +63,7 @@ constCarto3D <- function(array,identifier,param,default_value=NULL,
   res <- new(Class="Carto3D",
              identifier = identifier,
              parameter = param,
-             voxelSize=size,
+             voxelSize=voxelSize,
              default_value = as.character(default_value),
              contrast = array)
   
@@ -72,12 +79,12 @@ constCarto3D <- function(array,identifier,param,default_value=NULL,
 
 constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
                          pos_default_value=c(1,1,1),
-                         tol=10^{-10},
+                         tol=10^{-10},voxelSize=NULL,
                          trace=TRUE,rm.ls.array=FALSE){
   
   nom.ls.array <- as.character(substitute(ls.array))
-
-  if(class(ls.array) %in% c("anlz","nifti","niftiExtension","niftiAuditTrail")){
+  
+  if(class(ls.array) %in% c("anlz","nifti","niftiExtension","niftiAuditTrail") || (is.list(ls.array) && length(ls.array)==2 && "img" %in% names(ls.array)) ){
     ls.array <- list(ls.array)
   }
   
@@ -91,10 +98,10 @@ constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
   }
   
   #### test ####
-  test.class <- unlist(lapply(ls.array,function(x){class(x) %in% c("anlz","nifti","niftiExtension","niftiAuditTrail","array","matrix")}))
+  test.class <- unlist(lapply(ls.array,function(x){class(x) %in% c("anlz","nifti","niftiExtension","niftiAuditTrail","list","array","matrix")}))
   if(any(test.class==FALSE)){
     stop("constMRIaggr : wrong specification of \'ls.array\' \n",
-         "\'ls.array\' must be a list of array \n",
+         "\'ls.array\' must be a list of \"anlz\" or \"nifti\" or \"list\" or \"array\" \n",
          "elements of \'ls.array\' that are not of type array : ",paste(which(test.class==FALSE),collapse=" ")," \n")
   }
   
@@ -123,19 +130,19 @@ constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
     if(is.null(default_value)){
       ls.Carto3D[[iter_m]] <- constCarto3D(ls.array[[iter_m]],
                                            identifier=identifier,param=param[iter_m],default_value=NULL,
-                                           pos_default_value=pos_default_value)
+                                           pos_default_value=pos_default_value,voxelSize=voxelSize)
       
     }else{
       ls.Carto3D[[iter_m]] <- constCarto3D(ls.array[[iter_m]],
                                            identifier=identifier,param=param[iter_m],default_value=default_value[iter_m],
-                                           pos_default_value=NULL)      
+                                           pos_default_value=NULL,voxelSize=voxelSize)      
     }
     
   }
- 
+  
   #### transformation en MRIaggr
   MRIaggr <- Carto3D2MRIaggr(ls.Carto3D=ls.Carto3D,rm.Carto3D=FALSE,tol=tol,
-                             trace=trace)
+                                      trace=trace)
   
   #### nettoyage 
   if(rm.ls.array){
@@ -146,222 +153,90 @@ constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
   return(MRIaggr)
 }  
 
-constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NULL,
-                        subsection=NULL,index_subsection=NULL,
-                        subsubsection=NULL,index_subsubsection=NULL,
-                        legend=NULL,trace=TRUE,
-                        width=list(0.9,0.9,0.9),trim=list(c(0,0,0,0),c(0,0,0,0),c(0,160,0,0)),
+constLatex <- function(dir,filename=NULL,identifier=NULL,param=NULL,table=NULL,extra_text=NULL,
+                        subsection=NULL,label=NULL,
+                        width=0.9,trim=c(0,0,0,0),plotPerPage=3,
                         width.legend=0.35,trim.legend=c(0,0,0,0),
-                        title="",date="",author=""){
+                        title="",date="",author="",trace=TRUE){
   
   ls.text <- list()
   
-  #### preparation des chemins
-  if(length(dir)==1){
-    dirs_plot <- list.dirs(dir)[-1]
-  }else{
-    if(!is.list(dir)){
-      stop("constSweave : wrong specification of \'dir\' \n",
-           "\'dir\' must be a character or a list of character with the path of the files to display \n",
-           " is(dir) : ",paste(dir,collapse=" "),"\n") 
-    }  
-    dirs_plot <- dir
-  }  
-  n.dirs_plot <- length(dirs_plot)
-  if(n.dirs_plot==0){
-    stop("constSweave : no directory inside the root directory \n",
-         "\'dir\' must contain one directory per parameter \n") 
-  }  
-  names_dirs <- unlist(lapply(strsplit(dirs_plot,split="/"),function(x){x[length(x)]}))
+  #### preparation ####
   
-  if(trace==TRUE){
-    cat("% ",n.dirs_plot," directories founded in the root directory \n",sep="")
-  }
+  ## dossiers ou sont present les graphiques a afficher
+  res_init <- initDirPat_constLatex(dir=dir,param=param,identifier=identifier,trace=trace)
   
-  if(!is.null(param)){
-    if(any(param %in% names_dirs == FALSE)){
-      stop("constSweave : wrong specification of \'param\' \n",
-           "available parameters : \"",paste(names_dirs,collapse="\" \""),"\" \n",
-           "requested parameters : \"",paste(param,collapse="\" \""),"\" \n")       
-    }
-    
-    dirs_plot <- dirs_plot[sapply(param,function(x){which(names_dirs ==x)})]
-    n.dirs_plot <- length(dirs_plot)
-    names_dirs <- unlist(lapply(strsplit(dirs_plot,split="/"),function(x){x[length(x)]}))    
-    if(trace==TRUE){
-      cat("% ",n.dirs_plot," directories should be considered according to \'param\' argument \n",sep="")
-    }
-    if(trace==TRUE){cat("\n")}
-  }
-  
-  # initialisation
-  if(is.null(param)){
-    param <- names_dirs
-  }
-  if(is.null(subsection)){
-    subsection <- gsub(pattern="_",replacement=" ",x=names_dirs)
-  }
-  if(is.null(index_subsection)){
-    index_subsection <- 1:length(subsection)
-  }
-  if(is.null(legend)){
-    legend <- gsub(pattern="_",replacement=" ",x=names_dirs)
-  }
-  
-  index_subsection <- as.numeric(as.factor(index_subsection))
-  if(!is.null(index_subsubsection)){ 
-    index_subsubsection <- lapply(index_subsubsection,function(x){x[is.na(x)] <- 0; return(x)})
-    NULL_subsubsection <- unlist(lapply(index_subsubsection,"[",1))==0
-    index_subsubsection <- lapply(index_subsubsection,function(x){as.numeric(as.factor(x))})
-  }else{
-    if(!is.null(subsubsection)){
-      warning("constSweave : \'subsubsection\' is specified but not \'index_subsubsection\' \n",
-              "both are ignored \n",
-              "set \'index_subsubsection\' and \'subsubsection\' to obtain subsections \n")
-    }
-  }
-  
-  # test
-  if(length(param) != length(names_dirs)){
-    stop("constSweave : \'param\' and \'names_dirs\' must have same length \n",
-         " length(param)  : ",length(param)," \n",
-         " length(names_dirs) : ",length(names_dirs)," \n",
-         " param : ",paste(param,collapse=" ")," \n",
-         " names_dirs : ",paste(names_dirs,collapse=" ")," \n")
-  }
-  if(length(param) != length(legend)){
-    stop("constSweave : \'param\' and \'legend\' must have same length \n",
-         " length(param)  : ",length(param)," \n",
-         " length(legend) : ",length(legend)," \n") 
-  }
-  if(length(index_subsection) != length(param)){
-    stop("constSweave : \'param\' and \'index_subsection\' must have same length \n",
-         " length(param)  : ",length(param)," \n",
-         " length(index_subsection) : ",length(index_subsection)," \n") 
-  }
-  if(length(subsection) != length(unique(index_subsection))){
-    stop("constSweave : \'subsection\' and\'index_subsection\' are inconsistent \n",
-         " length(unique(index_subsection))  : ",length(unique(index_subsection))," \n",
-         " length(subsection) : ",length(subsection)," \n") 
-  } 
-  
-  if(!is.null(index_subsubsection) && !is.list(index_subsubsection)){
-    stop("constSweave :\'index_subsubsection\' is incorrect \n",
-         " \'index_subsubsection\' must be a list containing the indexes of each subsubsection \n",
-         " is(index_subsubsection) : ",paste(is(index_subsubsection),collapse=" ")," \n") 
-  }
-  
-  if(!is.null(subsubsection) && !is.list(subsubsection)){
-    stop("constSweave :\'subsubsection\' is incorrect \n",
-         " \'subsubsection\' must be a list containing the names of each subsubsection \n",
-         " is(subsubsection) : ",paste(is(subsubsection),collapse=" ")," \n") 
-  }
-  
-  if(!is.null(index_subsubsection) && length(index_subsubsection) != length(subsection)){
-    stop("constSweave : \'subsection\' and\'index_subsubsection\' are inconsistent \n",
-         " length(subsection)  : ",length(subsection)," \n",
-         " length(index_subsubsection) : ",length(index_subsubsection)," \n") 
-  }
-  
-  if(!is.null(index_subsubsection) && any(unlist(lapply(index_subsubsection,length)) != lapply(subsubsection,length))){
-    stop("constSweave : \'subsubsection\' and \'index_subsubsection\' are inconsistent \n",
-         " unlist(lapply(index_subsubsection,length))  : ",paste(unlist(lapply(index_subsubsection,length)),collapse=" ")," \n",
-         " lapply(subsubsection,length) : ",paste(lapply(subsubsection,length),collapse =" ")," \n") 
-  }
-  
-  
-  #### preparation des subsections ####
-  param_sauve <- param
-  legend_sauve <- legend
-  param <- list()
-  legend <- list()
-  
-  for(iter_subsection in 1:length(subsection)){
-    param[[iter_subsection]] <- as.vector(unlist(param_sauve[index_subsection==iter_subsection]))
-    legend[[iter_subsection]] <- as.vector(unlist(legend_sauve[index_subsection==iter_subsection]))
-  }
-  
-  
-  if(trace==TRUE){
-    Tdirs_plot <- unlist(lapply(strsplit(dirs_plot,split="/",fixed=TRUE),function(x){tail(x,1)}))
-    
-    space.index_subsection <- initSpace(c("num",index_subsection))
-    space.subsection <- initSpace(c("subsection",subsection))
-  
-    cat("%%%% num",space.index_subsection[1]," : subsection",sep="")
-    if(!is.null(subsubsection)){
-      space.subsubsection <- initSpace(c("subsubsection",unlist(subsubsection)))
-      n.nchar.subsubsection <- nchar("subsubsection")+nchar(space.subsubsection[1])
-      cat("\n%% .) : subsubsection",space.subsubsection[1]," | directory \n",sep="")      
-    }else{         
-      cat(space.subsection[1]," | directory \n",sep="")
-    }
-    cat("% (legend) \n\n",sep="")
+  dirs_plot <- res_init$dirs_plot
+  n.dirs_plot <- res_init$n.dirs_plot
+  names_dirs <- res_init$names_dirs
+  param <- res_init$param
+  identifier <- res_init$identifier
+  n.identifier <- res_init$n.identifier
 
-    for(iter_subsection in 1:length(subsection)){
-      cat("%%%% ",iter_subsection,space.index_subsection[iter_subsection+1]," : ",subsection[iter_subsection],sep="")
-      
-      if(!is.null(subsubsection)){
-        if(any(!is.na(subsubsection[[iter_subsection]]))){
-           space.index_subsubsection <- initSpace(c(do.call(paste,c(as.list(rep(" ",n.nchar.subsubsection)),sep="")),
-                                                 subsubsection[[iter_subsection]]))
-        
-          cat(paste("\n%% ",letters[index_subsubsection[[iter_subsection]]],") : ",subsubsection[[iter_subsection]],space.index_subsubsection[-1],
-                     " | /",Tdirs_plot[index_subsection==iter_subsection][index_subsubsection[[iter_subsection]]],"\n",
-                     "%    (legend : \"",gsub("\n","",legend[[iter_subsection]],fixed=TRUE),"\")",
-                     sep=""),sep="")
-        }else{
-          cat("\n%%      ",rep(" ",n.nchar.subsubsection)," | /",Tdirs_plot[index_subsection==iter_subsection],"\n",
-                      "%    (legend : \"",gsub("\n","",legend[[iter_subsection]],fixed=TRUE),"\")",
-              sep="")
-        }
-      cat("\n \n")  
-      }else{
-        cat(paste(space.subsection[iter_subsection+1]," | /",Tdirs_plot[index_subsection==iter_subsection],"\n",
-                 "% legend : \"",gsub("\n","",legend[[iter_subsection]],fixed=TRUE),"\" \n\n",
-                  sep=""),sep="")
-      }           
-        
-    }
+  ## gestion des sections, subsections, subsubsection, label
+  res_init <- initSection_constLatex(dirs_plot=dirs_plot,names_dirs=names_dirs,param=param,
+                                     subsection=subsection,label=label)
+ 
+  subsection <- res_init$subsection
+  index_subsection <- res_init$index_subsection
+  label <- res_init$label
+  param <- res_init$param
+   
+  ## initialisation des parametres latex
+  if(!is.list(trim)){
+    trim <- lapply(1:100,function(x){trim})
+  }
+  if(length(width)==1){
+    width <- rep(width,100)
   }
   
-  #### gestion des donnees cliniques 
+  ## initialisation de donnes cliniques
   if(!is.null(table)){
     
-    if(class(table) != "list"){
-      table <- list(table)
-    }
+    if(class(table) != "list"){table <- list(table)}
     n.table <- length(table)
-    
-    table <- lapply(table,function(x){ #### mise au format matrix 
-      if(is.null(dim(x))){
+
+    ## conversion de vector en data.frame (si necessaire)
+    table <- lapply(table,function(x){  
+      if(is.null(dim(x))){ 
         res <- data.frame(matrix(NA,ncol=length(x),nrow=1),stringsAsFactors=FALSE)
         res[1,] <- x ; names(res) <- names(x) ; res
       }else{x}}
     )
     
-    table <- lapply(table,function(x){ #### conversion des factors en character
-      data.frame(rapply(x, as.character, classes="factor", how="replace"),stringsAsFactors=FALSE)
+    ## conversion des factors en character    
+    table <- lapply(table,function(x){ 
+      df.tempo <- data.frame(rapply(x, as.character, classes="factor", how="replace"),stringsAsFactors=FALSE)
+      names(df.tempo) <- names(x)
+      return(df.tempo)
     })
     
   }
   
-  #### gestion des identifiants
-  if(is.null(identifier)){
-    identifier <- lapply(dirs_plot,function(x){res <- strsplit(list.files(x),split="_",fixed=TRUE);
-                                               unique(unlist(lapply(res,"[",1)))})
-    identifier <- unique(unlist(identifier))
-  }
-  n.identifier <- length(identifier)
-  
-  if(trace==TRUE){
-    cat("% graph of ",n.identifier," patients will be displayed \n",sep="")   
-  }
-  
+  ## initialisation du texte a afficher  
   if(!is.null(extra_text) && length(extra_text) != length(identifier)){
-    stop("constSweave : \'extra_text\' and \'identifier\' must have same length \n",
+    stop("constLatex : \'extra_text\' and \'identifier\' must have same length \n",
          " length(identifier)  : ",length(identifier)," \n",
          " length(extra_text) : ",length(extra_text)," \n") 
+  }
+  
+  ## display 
+  if(trace==TRUE){
+    space.index_subsection <- initSpace(c("num",index_subsection))
+    space.subsection <- initSpace(c("subsection",subsection))
+    
+    cat("%%%% num",space.index_subsection[1]," : subsection",space.subsection[1]," | directory \n",sep="")
+    cat("% (label) \n\n",sep="")
+    
+    for(iter_subsection in 1:length(subsection)){
+      cat("%%%% ",iter_subsection,space.index_subsection[iter_subsection+1]," : ",subsection[iter_subsection],sep="")
+    
+      cat(paste(space.subsection[iter_subsection+1]," | /",names_dirs[index_subsection==iter_subsection],"\n",
+                "% label : \"",gsub("\n","",label[[iter_subsection]],fixed=TRUE),"\" \n\n",
+                sep=""),sep="")      
+    }
+    
+    cat("% graph of patient ")       
   }
   
   #### preambule ####
@@ -369,6 +244,7 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
                      "%%%%%%%%%%%%%%%%% Preamble %%%%%%%%%%%%%%%%% \n",
                      "\\usepackage[utf8]{inputenc} \n",
                      "\\usepackage{amssymb} \n",
+                     "\\usepackage{amsmath} \n",
                      "\\usepackage{titlesec} \n",
                      "\\usepackage{geometry} \n",
                      "\\usepackage{enumitem} \n",
@@ -381,13 +257,17 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
                      "\\geometry{\n",
                      "a4paper,\n",
                      "total={210mm,297mm},\n",
-                     "left=20mm,\n",
-                     "right=20mm,\n",
+                     "left=10mm,\n",
+                     "right=10mm,\n",
                      "top=5mm,\n",
-                     "bottom=5mm,\n",
+                     "bottom=12.5mm,\n",
                      "}\n",
-                     "\\titlespacing{\\section}{0pt}{*0}{*5}\n",
-                     "\\titlespacing{\\subsection}{1.5cm}{*7}{*4}\n \n \n",
+                     "\\setlength{\\textfloatsep}{5pt} % space between last top float or first bottom float and the text \n",
+                     "\\setlength{\\intextsep}{5pt} % space left on top and bottom of an in-text float \n",
+                     "\\setlength{\\abovecaptionskip}{10.0pt} % space above caption \n",
+                     "\\setlength{\\belowcaptionskip}{0pt} % space below caption \n",
+                     "\\titlespacing\\section{0pt}{0ex}{5ex} % {left space}{above space}{below space} \n",
+                     "\\titlespacing\\subsection{25pt}{3ex}{1ex} % {left space}{above space}{below space} \n \n \n",                     
                      "%%%% Margin %%%% \n",
                      paste("\\graphicspath{{./",tail(strsplit(dir,split="/",fixed=TRUE)[[1]],1),"/}} \n \n \n",sep=""),
                      "%%%% Title %%%% \n",
@@ -406,174 +286,94 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
                   "\\setcounter{tocdepth}{3} \n",
                   "\\clearpage \n"
   ) 
-  
-  if(trace==TRUE){cat("% ")}
-  
+ 
+  #### boucle sur les patients ####
   for(iter_pat in 1:n.identifier){
     
-    if(trace==TRUE){cat(iter_pat," ",sep="")}
+    if(trace==TRUE){cat(iter_pat,"(",identifier[iter_pat],") ",sep="")}
     
-    #### definition des plot du patients ####
-    ls.plot <- list()
-    ls.newplot <- list()
-    ls.legend <- list()
-    
-    
-    for(iter_dir in 1:n.dirs_plot){ # dossier
-      split_tempo <- strsplit(list.files(dirs_plot[iter_dir]),split="_",fixed=TRUE)
-      index_plot <- which(unlist(lapply(split_tempo,
-                                        function(x){x[1]==identifier[iter_pat]})))      
-      n.index_plot <- length(index_plot)
-      
-      ls.legend[[iter_dir]] <- rep(FALSE,n.index_plot)
-      plot_tempo <- list.files(dirs_plot[iter_dir])[index_plot]
-      type.plot <- 1
-      
-      if(length(index_plot)>1){ # si plus de un fichier par dossier
-        
-        test_slice <- unlist(lapply(split_tempo[index_plot],
-                                    function(x){max(0,grep("slice",x))}))
-        type.plot <- unlist(lapply(split_tempo[index_plot],
-                                   function(x){x <- paste(x[-1],collapse="") ; strsplit(x,split="slice",fixed=TRUE)[[1]][1]}))
-        type.plot <- as.numeric(as.factor(type.plot))
-        
-        legend_tempo <- unlist(lapply(split_tempo[index_plot],
-                                      function(x){length(grep(pattern="legend",x=x))>0}))
-        
-        if(any(test_slice>0)){ # si plusieurs fichiers multiplot
-          for(iter_type in unique(type.plot[test_slice>0])){
-            index_slice <- intersect(which(type.plot==iter_type),which(test_slice>0))
-            
-            slice_tempo <- lapply(index_slice,
-                                  function(x){strsplit(split_tempo[[index_plot[x]]][test_slice[x]],split="slice",fixed=TRUE)[[1]]})
-            
-            slice_tempo <- unlist(lapply(slice_tempo,
-                                         function(x){as.numeric(strsplit(x[length(x)],split="-",fixed=T)[[1]][1])}))
-            
-            if(any(legend_tempo[index_slice])){
-              slice_tempo[legend_tempo[index_slice]>0] <- 1 + abs(max(slice_tempo))            
-            } 
-            
-            index_plot[index_slice][rank(unlist(lapply(slice_tempo,"[",1)))] <- index_plot[index_slice]
-            legend_tempo[index_slice][rank(unlist(lapply(slice_tempo,"[",1)))] <- legend_tempo[index_slice]
-            
-          }
-          
-          # mettre en premier les figures avec slices
-          index_plot <- c(index_plot[test_slice>0],index_plot[test_slice==0])
-          type.plot <- c(type.plot[test_slice>0],type.plot[test_slice==0])
-          ls.legend[[iter_dir]] <- c(ls.legend[[iter_dir]][test_slice>0],ls.legend[[iter_dir]][test_slice==0])
-        }  
-        plot_tempo <- list.files(dirs_plot[iter_dir])[index_plot]
-        ls.legend[[iter_dir]][legend_tempo==TRUE] <- TRUE
-        
-      }
-      
-      if(length(index_plot)>0){
-        ls.plot[[iter_dir]] <- paste(tail(strsplit(dir,split="/",fixed=TRUE)[[1]],1),"/",
-                                     names_dirs[iter_dir],"/",
-                                     plot_tempo,
-                                     sep="")
-        ls.newplot[[iter_dir]] <- type.plot
-      }else{
-        ls.plot[[iter_dir]] <- NA
-        ls.newplot[[iter_dir]] <- NA 
-      }
-    }
-    
-    names(ls.legend) <- names_dirs
-    names(ls.newplot) <- names_dirs    
-    names(ls.plot) <- names_dirs
-    
-    # transposition des directories en subsection
-    ls.legend_sauve <- ls.legend
-    ls.newplot_sauve <- ls.newplot
-    ls.plot_sauve <- ls.plot
-    
-    ls.legend <- list()
-    ls.newplot <- list()
-    ls.plot <- list()
-    
-    for(iter_subsection in 1:length(subsection)){
-      ls.legend[[iter_subsection]] <- as.vector(unlist(ls.legend_sauve[index_subsection==iter_subsection]))
-      tempo <- ls.newplot_sauve[index_subsection==iter_subsection]
-      ls.newplot[[iter_subsection]] <- as.vector(unlist(lapply(1:length(tempo),function(x){tempo[[x]]+x-1})))
-      ls.plot[[iter_subsection]] <- as.vector(unlist(ls.plot_sauve[index_subsection==iter_subsection]))
-      ls.plot[[iter_subsection]] <- as.vector(na.omit(ls.plot[[iter_subsection]]))
-    }
-    
-    #### affichage clinique ####
+    #### definition des graphiques a afficher pour chaque patient 
+    res_init <- initPlot_constLatex(dir=dir,names_dirs=names_dirs,dirs_plot=dirs_plot,table=table,
+                                     identifier=identifier[iter_pat],plotPerPage=plotPerPage)
+     
+    ls.plot <- res_init$ls.plot
+    ls.newplot <- res_init$ls.newplot
+    ls.endplot <- res_init$ls.endplot
+    ls.legend <- res_init$ls.legend
+    ls.slices <- res_init$ls.slices
+    ls.table <- res_init$ls.table
+   
+     #### affichage clinique ####
     ls.text[[iter_pat]] <- paste("%","\n \n \\section",paste("{patient ",identifier[iter_pat],"} \n \n ",sep=""),sep="")
-    
-    if(!is.null(table)){
+   
+    if(length(ls.table)>0){ # donnees cliniques disponibles pour le patient
       
-      table_pat <- lapply(table,function(x){ #### Identification du patient
-        x[x[,1]==identifier[iter_pat],,drop=FALSE]}
-      )
-      table_pat <- lapply(table,function(x){ #### Identification du patient
-        x[x[,1]==identifier[iter_pat],-1,drop=FALSE]}
-      )
-      
-      for(iter_table in 1:n.table){
-        n.table_pat <- length(table_pat[[iter_table]])
-        if(length(n.table_pat)==0){next}
+      for(iter_table in 1:length(ls.table)){
         
-        nom_table <- gsub(pattern="_",replacement=" ",x=names(table_pat[[iter_table]]))
-        val_table <- as.character(table_pat[[iter_table]])
+        if(ncol(ls.table[[iter_table]])==0){next}
         
         ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
-                                 "\\begin{flushleft} \n",
-                                 paste("\\begin{tabular}{|",paste(rep("c",n.table_pat),collapse=""),"|} \n",sep=""),
-                                 paste(paste(nom_table,collapse=" & ")," \\\\ \\hline \n",sep=""),
-                                 paste(paste(val_table,collapse=" & ")," \\\\  \n",sep=""),
+                                 "\\begin{table}[!h] \n",
+                                 "\\centering \n",
+                                 paste("\\begin{tabular}{|",paste(rep("c",ncol(ls.table[[iter_table]])),collapse=""),"|} \n",sep=""),
+                                 paste(paste(names(ls.table[[iter_table]]),collapse=" & ")," \\\\ \\hline \n",sep=""))
+        
+        for(iter_rowtable in 1:nrow(ls.table[[iter_table]])){
+          ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
+                                   paste(paste(ls.table[[iter_table]][iter_rowtable,],collapse=" & ")," \\\\  \n",sep=""))
+        }
+        
+        ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
                                  "\\end{tabular} \n",
-                                 "\\end{flushleft} \n \n",
-                                 "\\smallskip  \n \n"
-        )
+                                 "\\end{table} \n \n",
+                                 "\\smallskip  \n \n")
+                                 
       }
     }
     
     #### extra text ####
     if(!is.null(extra_text)){
-      ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
-                               extra_text[[iter_pat]]
-      ) 
+      ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],extra_text[[iter_pat]]) 
     }
     
-    ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
-                             '\\clearpage \n \n'
-    )
+    if(length(ls.table)>0 || !is.null(extra_text)){ # si donnees cliniques 
+      ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],'\n \n \\clearpage \n \n')    
+    }else{ # sinon si la page est pleine
+      if(unlist(lapply(ls.plot,function(x){ if(all(is.na(x))){NULL}else{length(x)}} ))[1]>=plotPerPage){
+      ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],'\n \n \\vspace{-5ex} \n \n')
+      }
+    }
     
+    #### affichage des images ####
+    count.subsection <- 0
     
-    
-    #### affichage des parametres ####
     for(iter_subsection in 1:length(subsection)){
       
-      if(all(is.na(ls.plot[[iter_subsection]]))){next}
-      iter_subsubsection <- 0
+      ## pas de graphique on saute la subsection
+      if(all(is.na(ls.plot[[iter_subsection]]))){next}else{count.subsection <- count.subsection + 1} 
+      
+      ## debut de la subsection
       ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
                                paste("\\subsection",paste("{",subsection[iter_subsection],"} \n  ",sep=""),sep="")
       )
-      
+            
+      ## initialisation
+      iter_subsubsection <- 0
       n.plot_tempo <- length(ls.plot[[iter_subsection]])
-      iter_type <- 0
+      count_plot <- 1
+      count_figure <- 0
       
-      for(iter_plot in 1:n.plot_tempo){
+#       if(length(ls.table)==0 && is.null(extra_text) && count.subsection==1 && n.plot_tempo>=plotPerPage){ # si section sur la meme page que subsection et premiere subsection et la figure arrive en bas
+#         ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],'\n \n \\vspace{-3ex} \n \n')
+#       }
+      
+      for(iter_plot in 1:n.plot_tempo){ #### gestion des graphiques
         
-        if(iter_type!=ls.newplot[[iter_subsection]][iter_plot]){
-          iter_type <- ls.newplot[[iter_subsection]][iter_plot]
-          count_plot <- 1
-          
-          if(!is.null(index_subsubsection) && NULL_subsubsection[iter_subsection]==FALSE){
-            if(index_subsubsection[[iter_subsection]][iter_type]>iter_subsubsection){
-              
-              iter_subsubsection <- index_subsubsection[[iter_subsection]][iter_type]
-              ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
-                                       paste("\\subsubsection",paste("{",subsubsection[[iter_subsection]][iter_subsubsection],"} \n  ",sep=""),sep="")
-              )
-            }}
-          
-          # figure
+        ## debut d une nouvelle page
+        if(ls.newplot[[iter_subsection]][iter_plot]==1){
+                   
+          ## debut d une nouvelle figure
+          count_figure <- count_figure + 1 
           ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
                                    "\\begin{figure}[!h] \n",
                                    "\\centering \n"
@@ -581,7 +381,7 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
           
         } 
         
-        # legend
+        ## parametres latex entre legend et image
         if(ls.legend[[iter_subsection]][iter_plot]==TRUE){
           trim_tempo <- trim.legend
           width_tempo <- width.legend
@@ -590,23 +390,25 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
           width_tempo <- width[[count_plot]]
         }
         
-        # plot
+        ## affichage de l image 
         ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
                                  paste("\\includegraphics[trim= ",trim_tempo[1],"mm ",trim_tempo[2],"mm ",trim_tempo[1],"mm ",trim_tempo[1],"mm,clip,width=",width_tempo,"\\textwidth]",sep=""),
                                  paste("{",ls.plot[[iter_subsection]][iter_plot],"} \n",sep="")
         )
+        
+        ## affichage de la legende
+        if(ls.endplot[[iter_subsection]][iter_plot]==1){
+         
+          ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
+                                   paste("\\caption[foo bar]{Patient ",identifier[iter_pat]," ",ls.slices[[iter_subsection]][count_figure]," - ",label[[iter_subsection]],"} \n",sep=""),
+                                   #paste("\\label{fig:Sweave_",identifier[iter_pat],"_",param[iter_subsection],"} \n",sep=""),
+                                   "\\vspace{-1cm} \n \n",
+                                   "\\end{figure} \n \n",                                   
+                                   '\\clearpage \n \n'
+          )          
+        }
         count_plot <- count_plot + 1         
         
-        if(iter_plot==n.plot_tempo || iter_type!=ls.newplot[[iter_subsection]][iter_plot+1]){
-          
-          ls.text[[iter_pat]] <- c(ls.text[[iter_pat]],
-                                   paste("\\caption[foo bar]{Patient ",identifier[iter_pat]," - ",legend[[iter_subsection]][iter_type],"} \n",sep=""),
-                                   paste("\\label{fig:Sweave_",identifier[iter_pat],"_",param[[iter_subsection]][iter_type],"} \n",sep=""),
-                                   "\\end{figure} \n \n",
-                                   '\\clearpage \n \n'
-          )
-          
-        }
         
       } # iteration plot
     } # iteration subsection
@@ -614,61 +416,34 @@ constSweave <- function(dir,identifier=NULL,param=NULL,table=NULL,extra_text=NUL
   if(trace==TRUE){cat("\n")}
   
   #### end doc ####
-  text.end <- c("%",
-                "\n \n \\end{document}  ")    
+  text.end <- c("%","\n \n \\end{document}  ")    
+  
+  #### create Latex file ####
+  if(!is.null(filename)){
+     
+    file.create(paste(filename,"tex",sep="."))
+    
+    sink(paste(filename,"tex",sep="."))
+    cat(text.preamble,sep="")
+    cat(text.begin,sep="") 
+    for(iter_list in 1:length(ls.text)){
+       cat(ls.text[[iter_list]],sep="")
+    }
+    cat(text.end,sep="")
+    sink()
+    
+  }
   
   #### export ####
   
   return(list(text.preamble=text.preamble,
               text.begin=text.begin,
               ls.text=ls.text,
-              text.end=text.end,
-              ls.plot=ls.plot,
-              ls.legend=ls.legend,
-              ls.newplot=ls.newplot)
+              text.end=text.end)
   )
 }
 
 #### 2- Conversion functions ####
-readMRI <- function (file, format, what = "integer", na.value=0, dim = NULL,  SPM=FALSE, reorient = FALSE, flipud=FALSE){
-  
-  if(format %in% c("rawb.gz","analyze","nifti","dicom") == FALSE){
-    stop("readMRI : incorrect \'format\' : \n",
-         "available format : \"rawb.gz\" \"analyze\" \"nifti\" \"dicom\" \n",
-         "proposed format : ",format,"\n")
-  }
-  
-  if (format == "rawb.gz") {
-    if (!is.null(dim)) {
-      if (!is.vector(dim) || length(dim) != 3) 
-        stop("The dimensions of the file are wrong.")
-    }
-    f <- gzfile(file, open = "rb")
-    on.exit(close(f))
-    data <- readBin(f, what, prod(dim), size = 1, signed = FALSE)
-    res <- array(data, dim)
-  }
-  else if (format == "analyze") {
-    res <- oro.nifti::readANALYZE(file,SPM=SPM)
-  }
-  else if (format == "nifti") {
-    res <- oro.nifti::readNIfTI(file,reorient=reorient)
-  }
-  else if (format == "dicom")  {
-    res <- oro.dicom::readDICOMFile(file,flipud=flipud)[["img"]]
-  }
-  
-  if(!is.na(na.value)){
-  test.na <- is.na(res)
-  if(any(test.na)){
-    res[test.na] <- na.value
-  }
-  }
-  
-  return(res)
-  
-}
-
 array2df <- function(array,coords=NULL,
                      name_newparam="res",names_coords=letters[9:(8+ncol(coords))],na.rm=TRUE){
   
@@ -722,17 +497,20 @@ Carto3D2MRIaggr <- function(ls.Carto3D,rm.Carto3D=FALSE,tol=10^{-10},
   
   #### preparation ####
   
-  if(!is.null(num)){
-    voxelDim <- data.frame(i=selectVoxelDim(ls.Carto3D[[1]])$i,j=selectVoxelDim(ls.Carto3D[[1]])$j,k=length(num), stringsAsFactors = FALSE)
-  }else{
+  if(is.null(num)){
     num <- seq(1,selectVoxelDim(ls.Carto3D[[1]])$k,by=1)
-    voxelDim <- data.frame(i=selectVoxelDim(ls.Carto3D[[1]])$i,j=selectVoxelDim(ls.Carto3D[[1]])$j,k=length(num), stringsAsFactors = FALSE)
   }
+  voxelDim <- data.frame(i=selectVoxelDim(ls.Carto3D[[1]])$i,
+                         j=selectVoxelDim(ls.Carto3D[[1]])$j,
+                         k=length(num), stringsAsFactors = FALSE)
+  
   default_value <- data.frame(matrix("NA",ncol=length(ls.Carto3D),nrow=1),stringsAsFactors=FALSE)
   identifiant <- selectIdentifier(ls.Carto3D[[1]])
   size <- ls.Carto3D[[1]]@voxelSize
   
-  data_global <- data.frame(matrix(NA,nrow=length(selectContrast(ls.Carto3D[[1]],num=num,coords=FALSE)),ncol=length(ls.Carto3D)))
+  data_global <- data.frame(matrix(NA,
+                                   nrow=selectN(ls.Carto3D[[1]],num=num),
+                                   ncol=length(ls.Carto3D)))
   data_global[,1:3] <- selectCoords(ls.Carto3D[[1]],num=num,format="data.frame")
   names(data_global)[1:3] <- c("i","j","k")
   
@@ -742,7 +520,7 @@ Carto3D2MRIaggr <- function(ls.Carto3D,rm.Carto3D=FALSE,tol=10^{-10},
     
     if(trace){cat("(",iter,")",sep="")}
     
-    data_tempo <- selectContrast(ls.Carto3D[[iter]],num=num,format="data.frame",coords=TRUE)
+    data_tempo <- selectContrast(ls.Carto3D[[iter]],num=num,coords=TRUE)
     nom_param <- selectParameter(ls.Carto3D[[iter]])
     if(trace){cat(" ",nom_param," ",sep="")}
     
@@ -823,7 +601,7 @@ df2array <- function(contrast,coords,format="any",default_value=NA,
   
   #### definition des coordonnees des points dans le repere de la matrice
   scale <- rep(0,p)
-  if(is.null(range.coords)){
+  if(is.null(range.coords)){ 
     Mcoords <- apply(coords,2,
                      function(x){scale_tempo = min(x)-1;
                                  return(c(scale_tempo,x-scale_tempo))}
@@ -848,11 +626,11 @@ df2array <- function(contrast,coords,format="any",default_value=NA,
          "\'range.coords\' must be at least ",paste(apply(Mcoords,2,max),collapse=" ")," \n",
          "requested \'range.coords\' : ",paste(range.coords,collapse=" "),"\n")    
   }
-  
+ 
   #### index correspondant aux points dans la matrice
   
-    Mindex <- eval(parse(text=paste("1+",paste( c(1,if(ncol(Mcoords)>1){range.coords[1]},if(ncol(Mcoords)>2){range.coords[1]*range.coords[2]}),
-                          "*(Mcoords[,",1:ncol(Mcoords),"]-1)",sep="",collapse="+"),sep="")))
+  Mindex <- eval(parse(text=paste("1+",paste( c(1,if(ncol(Mcoords)>1){range.coords[1]},if(ncol(Mcoords)>2){range.coords[1]*range.coords[2]}),
+                                              "*(Mcoords[,",1:ncol(Mcoords),"]-1)",sep="",collapse="+"),sep="")))
   
   ### integration des donnees
   dataM <- list()
@@ -887,10 +665,124 @@ df2array <- function(contrast,coords,format="any",default_value=NA,
   
 }
 
+readMRI <- function (file, format, na.value=0,
+                     what = "numeric", size = "NA_integer_", dim = NULL,
+                     SPM=FALSE, reorient = FALSE, flipud=FALSE){
+  
+  if(format %in% c("rawb.gz","analyze","nifti","dicom") == FALSE){
+    stop("readMRI : incorrect \'format\' : \n",
+         "available format : \"rawb.gz\" \"analyze\" \"nifti\" \"dicom\" \n",
+         "proposed format : ",format,"\n")
+  }
+  
+  if (format == "rawb.gz") {
+    if (is.null(dim) || !is.vector(dim) || length(dim) != 3){
+        stop("readMRI : incorrect \'dim\' \n",
+             "dim must be a vector of length 3 \n",
+             "proposed dim : ",paste(dim,collapse=" "),"\n")
+    }
+    f <- gzfile(file, open = "rb")
+    on.exit(close(f))
+    data <- readBin(con=f, what=what, n=prod(dim), size = size)
+    res <- array(data, dim)
+  }
+  else if (format == "analyze") {
+    test.package <- requireNamespace("oro.nifti",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("readMRI : this function with argument format=\"oro.nifti\" requires to have installed the oro.nifti package to work \n")
+    }
+    
+    res <- oro.nifti::readANALYZE(file,SPM=SPM)
+  }
+  else if (format == "nifti") {
+    test.package <- requireNamespace("oro.nifti",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("readMRI : this function with argument format=\"oro.nifti\" requires to have installed the oro.nifti package to work \n")
+    }
+    
+    res <- oro.nifti::readNIfTI(file,reorient=reorient)
+  }
+  else if (format == "dicom")  {
+    test.package <- requireNamespace("oro.dicom",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("readMRI : this function with argument format=\"oro.dicom\" requires to have installed the oro.dicom package to work \n")
+    }
+    
+    res <- oro.dicom::readDICOMFile(file,flipud=flipud)
+  }
+  
+  if(!is.na(na.value)){
+    
+    if(format=="dicom"){
+      test.na <- is.na(res$img)
+      if(any(test.na)){res$img[test.na] <- na.value}        
+    }else{
+      test.na <- is.na(res)
+      if(any(test.na)){res[test.na] <- na.value}
+    }
+    
+  }
+  
+  return(res)
+  
+}
+
+writeMRI <- function (data, file, format, gzipped=TRUE, verbose=FALSE, size = "NA_integer_"){
+  
+  if(format %in% c("rawb.gz","analyze","nifti","dicom") == FALSE){
+    stop("writeMRI : incorrect \'format\' : \n",
+         "available format : \"rawb.gz\" \"analyze\" \"nifti\" \"dicom\" \n",
+         "proposed format : ",format,"\n")
+  }
+  
+  objClass <- class(data)
+  if (objClass != "array" || length(dim(data)) != 3){
+    stop("writeMRI : incorrect \'data\' : \n",
+         "data has to be a 3 dimensional array  \n",
+         "proposed data (dimension) : ",paste(is(data),collapse=" ")," (",paste(dim(data),collapse=" "),") \n")
+  }
+    
+  if (format == "rawb.gz") {
+    f <- gzfile(file, open = "wb")
+    writeBin(con=f, object=as.vector(data), size = size)
+    on.exit(close(f))
+  }
+  else if (format == "analyze") {
+    test.package <- requireNamespace("oro.nifti",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("writeMRI : this function with argument format=\"oro.nifti\" requires to have installed the oro.nifti package to work \n")
+    }
+    
+    oro.nifti::writeANALYZE(as(data, "anlz"),filename=file,gzipped=gzipped,verbose=verbose)
+  }
+  else if (format == "nifti") {
+    test.package <- requireNamespace("oro.nifti",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("writeMRI : this function with argument format=\"oro.nifti\" requires to have installed the oro.nifti package to work \n")
+    }
+    
+    oro.nifti::writeNIfTI(as(data, "nifti"),filename=file,gzipped=gzipped,verbose=verbose)
+  }
+  else if (format == "dicom")  {
+    test.package <- requireNamespace("oro.dicom",quietly=TRUE)
+    if(test.package==FALSE){
+      stop("writeMRI : this function with argument format=\"oro.dicom\" requires to have installed the oro.dicom package to work \n")
+    }
+    
+    cat("writeMRI for dicom files is not implemented \n")
+    invisible(return(FALSE))    
+  }
+
+}
 
 #### 3- Calculation functions ####
 
 calcAUPRC <- function(x,y,subdivisions=10000,performance=NULL){
+ 
+  test.package <- requireNamespace("ROCR",quietly=TRUE)
+  if(test.package==FALSE){
+    stop("calcAUPRC : this function requires to have installed the ROCR package to work \n")
+  }
   
   if(is.null(performance)){    
     performance <- ROCR::performance(ROCR::prediction(x,y),x.measure="rec",measure="prec")
@@ -983,11 +875,11 @@ calcGroupsCoords <- function(coords,array=NULL,Neighborhood,max_groups=10000,tra
   
   #### Rcpp
   res_cpp <-  calcGroupsCoords_cpp(coords_NNA=coords_NNA,
-                                   index_NNA=index_NNA,
-                                   Neighborhood=Neighborhood,
-                                   coords_max=dim_coordsNNA,
-                                   max_groups=max_groups,
-                                   trace=trace)
+                                            index_NNA=index_NNA,
+                                            Neighborhood=Neighborhood,
+                                            coords_max=dim_coordsNNA,
+                                            max_groups=max_groups,
+                                            trace=trace)
   
   if(length(res_cpp$group_size)==max_groups && sum(res_cpp$group_size)<nrow(res_cpp$group)){
     warning("calcGroupsCoords : maximum number of groups reached \n",
@@ -1120,13 +1012,17 @@ calcThreshold <- function(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=
   index.perf <- 1:n
   
   if(!is.null(hemisphere)){
-    if(trace==TRUE){cat("keep only hemiphere ",hemisphere)}
+    if(trace==TRUE){cat("keep only the \"",hemisphere,"\" hemisphere",sep="")}
     index.perf <- intersect(index.perf,which(contrast$hemisphere %in% hemisphere))    
+  } else{
+    if(trace==TRUE){cat("keep both hemipheres")}
   }
   
   if(rm.CSF==TRUE){
-    if(trace==TRUE){cat(" rm CSF ")}
+    if(trace==TRUE){cat(", remove CSF ")}
     index.perf <- intersect(index.perf,which(contrast[,param.CSF]<0.5))
+  } else{
+    if(trace==TRUE){cat(", keep CSF ")}
   }
   
   contrast <- contrast[,param,drop=FALSE]
@@ -1291,7 +1187,7 @@ calcGroupsW <- function(W,subset=NULL,max_groups=10000){
 
 setMethod(f ="calcW",
           signature ="data.frame",
-          definition = function(object,distband,method="euclidean",upper=NULL,format="dgCMatrix",row.norm=FALSE,
+          definition = function(object,range,method="euclidean",upper=NULL,format="dgCMatrix",row.norm=FALSE,
                                 spatial_res=rep(1,ncol(object)))
           {
             
@@ -1301,10 +1197,10 @@ setMethod(f ="calcW",
                    "requested format : ",format," \n")
             }
             
-            if(is.null(distband) || is.na(distband) || distband<=0 ){
-              stop("calcW[data.frame] : wrong specification of \'distband\' \n",
-                   "distband must be positive \n",
-                   "requested distband : ",distband," \n")
+            if(is.null(range) || is.na(range) || range<=0 ){
+              stop("calcW[data.frame] : wrong specification of \'range\' \n",
+                   "range must be positive \n",
+                   "requested range : ",range," \n")
             }
             
             p <- ncol(object)
@@ -1320,7 +1216,7 @@ setMethod(f ="calcW",
             }
             
             
-            W <- spam::nearest.dist(object,method="euclidean",delta=distband,upper=upper)
+            W <- spam::nearest.dist(object,method="euclidean",delta=range,upper=upper)
             
             if(format=="dgCMatrix"){
               W <- spam::as.dgCMatrix.spam(W)
@@ -1340,8 +1236,8 @@ setMethod(f ="calcW",
 )
 
 
-EDK <-function(x, distband,power=2){ 
-  1/(2*pi*distband^2)^(1/power)*exp(-(x/distband)^power) 
+EDK <-function(x, bandwidth,power=2){ 
+  1/(2*pi*bandwidth^2)^(1/power)*exp(-(x/bandwidth)^power) 
 }
 
 
@@ -1384,7 +1280,7 @@ setMethod(f ="multiplot",
                                 window=FALSE,legend=TRUE,mfrow=NULL,mar=rep(1.5,4),mgp=c(2,0.5,0),pty=NULL,asp=1,bg="lightblue",
                                 xlab="",ylab="", main="slice ",num.main=TRUE,cex.main=1.5,
                                 quantiles.legend=TRUE, digit.legend=3,cex.legend=1.5,mar.legend=c(2,7,2,2),main.legend=names(contrast),    
-                                filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA){
+                                filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA){
             
             #### test ####
             if(is.data.frame(contrast)){
@@ -1436,8 +1332,8 @@ setMethod(f ="multiplot",
             mar.init <- par()$mar
             
             res.init <- initWindow(window=window,filename=filename,path=path,width=width,height=height,unit=unit,res=res,
-                                   n.plot=n.plot,mfrow=mfrow,xlim=xlim,ylim=ylim,
-                                   method="multiplot[data.frame]")
+                                            n.plot=n.plot,mfrow=mfrow,xlim=xlim,ylim=ylim,
+                                            method="multiplot[data.frame]")
             scale <- res.init$scale
             mfrow <- res.init$mfrow
             n.graph_par_window <- res.init$n.graph_par_window
@@ -1446,7 +1342,7 @@ setMethod(f ="multiplot",
             
             ## color and breaks   
             res.init <- initCol(contrast=contrast,coords=object,param=param,pch=pch,col=col,palette=palette,breaks=breaks,legend=legend,type.breaks=type.breaks,
-                                method="multiplot[data.frame]")
+                                         method="multiplot[data.frame]")
             
             contrast <- res.init$contrast 
             palette <- res.init$palette 
@@ -1463,8 +1359,8 @@ setMethod(f ="multiplot",
             ## index            
             if(!is.null(index1)){
               res.init <- initIndex(object=NULL,index=index1,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[data.frame]",indexNum=1,
-                                    cex.default=1,pch.default=20,col.default="red",filter_default="2D_N4")
+                                             method="multiplot[data.frame]",indexNum=1,
+                                             cex.default=1,pch.default=20,col.default="red",filter_default="2D_N4")
               index1 <- res.init$coords
               indexindex1 <- res.init$index
               pch_index1 <- res.init$pch
@@ -1474,8 +1370,8 @@ setMethod(f ="multiplot",
             
             if(!is.null(index2)){
               res.init <- initIndex(object=NULL,index=index2,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[data.frame]",indexNum=2,
-                                    cex.default=1,pch.default=21,col.default="purple",filter_default="2D_N4")
+                                             method="multiplot[data.frame]",indexNum=2,
+                                             cex.default=1,pch.default=21,col.default="purple",filter_default="2D_N4")
               index2 <- res.init$coords
               indexindex2 <- res.init$index
               pch_index2 <- res.init$pch
@@ -1508,8 +1404,8 @@ setMethod(f ="multiplot",
               }
               
               res.init <- initIndex(object=NULL,index=index3,num=num,hemisphere=hemisphere,as.logical=as.logical,
-                                    method="multiplot[data.frame]",indexNum=3,
-                                    cex.default=1,pch.default=22,col.default="green",filter_default="2D_N4")
+                                             method="multiplot[data.frame]",indexNum=3,
+                                             cex.default=1,pch.default=22,col.default="green",filter_default="2D_N4")
               index3 <- res.init$coords   
               pch_index3 <- res.init$pch
               cex_index3 <- res.init$cex
@@ -1530,7 +1426,7 @@ setMethod(f ="multiplot",
                 filename_all <- paste(filename,"_",param,"(slice",num[iter_num],"-",min(max(num),num[iter_num+n.graph_par_window-1],na.rm=TRUE),")",sep="")                  
                 
                 initDisplayWindow(window=window,filename=filename_all,path=path,width=width,height=height,scale=scale,res=res,
-                                  mfrow=mfrow,bg=bg,pty=pty,mar=mar,mgp=mgp)
+                                           mfrow=mfrow,bg=bg,pty=pty,mar=mar,mgp=mgp)
                 
               }
               
@@ -1586,20 +1482,20 @@ setMethod(f ="multiplot",
             
             #### legend ####
             if(is.null(legend)){
-              compteur <- n.graph_par_window+1
+              compteur <- 1
               mfrow <- c(1,1)
               legend <- TRUE
             }
-            
+     
             if(legend==TRUE){
               
-              if(!is.null(window) && compteur > n.graph_par_window){
+              if(!is.null(window) && compteur == 1){
                 
                 if(window %in% c("png","eps","svg","pdf") && iter_num>1){dev.off()}
                 filename_all <- paste(filename,"_",param,"(slice",min(num),"-",max(num),")-legend",sep="")
                 
                 initDisplayWindow(window=window,filename=filename_all,width=width,height=height,scale=scale,res=res,
-                                  mfrow=mfrow,bg=bg,pty=pty,mar=NULL,mgp=mgp)
+                                           mfrow=mfrow,bg=bg,pty=pty,mar=NULL,mgp=mgp)
                 
               }
               
@@ -1635,8 +1531,13 @@ setMethod(f ="multiplot",
           }
 ) 
 
-outline <- function(n=50,sequential=FALSE,min_dist=1,
+outline <- function(n=50,sequential=TRUE,min_dist=1,
                     col=c("blue","red","grey"),pch=20,cex=c(0.75,1,0.75)){
+  
+  test.package <- requireNamespace("RANN",quietly=TRUE)
+  if(test.package==FALSE){
+    stop("outline : this function requires to have installed the RANN package to work \n")
+  }
   
   #### one shot outline 
   if(sequential==FALSE){
@@ -1726,6 +1627,8 @@ outline <- function(n=50,sequential=FALSE,min_dist=1,
       
       points(i_tempo,j_tempo,
              col=col[points+1],pch=pch,cex=cex[points+1])
+      
+      
       
       iter <- iter + 1
     }
@@ -1924,12 +1827,12 @@ pointsOutline <- function(coords,array=NULL,filter="2D_N4"){
     }      
     
     array <- df2array(contrast=rep(1,nrow(coords)),
-                      coords=coords)$contrast[[1]]    
+                               coords=coords)$contrast[[1]]    
   }else{
     coords <- array2df(array)[,1:length(dim(array))]
   }
   
-  res <- calcFilter(array,filter=filter)
+  res <- calcFilter(array,filter=filter,norm=FALSE)
   index_array <- which(!is.na(array))
   index_outline <- which(res$res<max(res$res,na.rm=T))
   
@@ -2004,6 +1907,15 @@ setMethod(f ="calcFilter",
               filter_split <- c(length(dim(filter)),"D","_","P",dim(filter)[1])
             }
             
+            if(filter_split[[4]]=="S" && na.rm==FALSE){
+              warning("calcFilter[array] : gradient values may be incorrect at the edges \n",
+                      "set \'na.rm\' to TRUE to remove these values \n")
+            }
+            if(filter_split[[4]]=="M" && w_contrast==TRUE){
+              warning("calcFilter[array] : there is no edge preserving median filtering \n",
+                      "\'w_contrast\' will be ignored \n")
+            }
+            
             ### preparation
             p <- dim(filter)
             p.dim <- length(p)
@@ -2030,7 +1942,7 @@ setMethod(f ="calcFilter",
                                        na_rm=na.rm)
               
               if(norm==TRUE){
-                Mres <- resCpp$Mres*resCpp$Wres
+                Mres <- resCpp$Mres/resCpp$Wres
               }else{
                 Mres <- resCpp$Mres
               }
@@ -2050,13 +1962,12 @@ setMethod(f ="calcFilter",
                                            na_rm=na.rm)
                   
                   if(norm==TRUE){
-                    Mres[,,iter_k] <- resCpp$Mres*resCpp$Wres
+                    Mres[,,iter_k] <- resCpp$Mres/resCpp$Wres
                   }else{
                     Mres[,,iter_k] <- resCpp$Mres
-                  }
-                  
+                  }      
                 }
-              }else{        
+              }else{     
                 resCpp <- filtrage3D_cpp(Vec_data=as.vector(object),p_data=dim(object),
                                          Vec_operateur=as.vector(filter),p_operateur=dim(filter),
                                          index_data=which(!is.na(object),arr.ind=TRUE)-1,
@@ -2064,13 +1975,13 @@ setMethod(f ="calcFilter",
                                          na_rm=na.rm)
                 
                 if(norm==TRUE){
-                  Mres <- resCpp$Mres*resCpp$Wres
+                  Mres <- resCpp$Mres/resCpp$Wres
                 }else{
                   Mres <- resCpp$Mres
                 }
               }
               
-            }  
+            }           
             
             # filtrage median 2D
             if(filter_split[[4]] == "M" && length(M.dim)==2){
@@ -2178,11 +2089,11 @@ initCol <- function(contrast,coords,param=NULL,pch,col,palette,breaks,legend,typ
     }
     
     if(ncol(contrast)==2){      
-        col <- eval(parse(text=paste("grDevices::",palette,"(contrast[,1],contrast[,2],1)",sep="")))      
-        contrast <- contrast[,1,drop=FALSE]
+      col <- eval(parse(text=paste("grDevices::",palette,"(contrast[,1],contrast[,2],1)",sep="")))      
+      contrast <- contrast[,1,drop=FALSE]
     }else{
       
-        col <- eval(parse(text=paste("grDevices::",palette,"(contrast[,1],contrast[,2],contrast[,3])",sep="")))
+      col <- eval(parse(text=paste("grDevices::",palette,"(contrast[,1],contrast[,2],contrast[,3])",sep="")))
       
       # ordering dataset by Tier
       order1 <- order(contrast[,1],decreasing=TRUE)[seq(1,n.px,length.out=round(n.px/3))]            
@@ -2259,7 +2170,7 @@ initCol <- function(contrast,coords,param=NULL,pch,col,palette,breaks,legend,typ
     ## palette
     if(length(palette)==1 && palette %in% available_palette){
       
-        palette <- eval(parse(text=paste(palette,"(length(breaks)-1)",sep="")))
+      palette <- eval(parse(text=paste(palette,"(length(breaks)-1)",sep="")))
     }
     palette_sauve <- palette
     
@@ -2508,7 +2419,7 @@ initIndex <- function(object,index,num,hemisphere="both",as.logical,indexNum=NUL
            "to force the conversion to logical set \'as.logical\'= TRUE \n")
     }
     
-    index$index <- selectContrast(object,param="index",num=num,hemisphere=hemisphere,coords=FALSE)[index$coords[,param_index]==TRUE]
+    index$index <- selectContrast(object,param="index",num=num,hemisphere=hemisphere,format="vector")[index$coords[,param_index]==TRUE]
     index$coords <- index$coords[index$coords[,param_index]==TRUE,c("i","j","k")]             
   }
   
@@ -2569,48 +2480,48 @@ initNeighborhood <- function(Neighborhood,method){
   Neighborhood <- matrix(0,nrow=n.Neighborhood,ncol=p.Neighborhood)
   
   Neighborhood[1:4,1:2] <- rbind(c(-1,0),
-                                  c(0,-1),
-                                  c(1,0),
-                                  c(0,1))
+                                 c(0,-1),
+                                 c(1,0),
+                                 c(0,1))
   
   if(n.Neighborhood %in% c(8,10,18,26)){
     Neighborhood[5:8,1:2] <- rbind(c(-1,-1),
-                                    c(1,1),
-                                    c(-1,1),
-                                    c(1,-1)
+                                   c(1,1),
+                                   c(-1,1),
+                                   c(1,-1)
     )
   }
   
   if(n.Neighborhood %in% c(6,10,18,26)){
     row_tempo <-  min(which(rowSums(abs(Neighborhood))==0))
     Neighborhood[seq(row_tempo,row_tempo+1),] <- rbind(c(0,0,1),
-                                                        c(0,0,-1)
+                                                       c(0,0,-1)
     )
   }
   
   if(n.Neighborhood %in% c(18,26)){
     row_tempo <-  min(which(rowSums(abs(Neighborhood))==0))
     Neighborhood[seq(row_tempo,row_tempo+7),] <- rbind(c(1,0,1),
-                                                        c(0,1,1),
-                                                        c(-1,0,1),
-                                                        c(0,-1,1),
-                                                        c(1,0,-1),
-                                                        c(0,1,-1),
-                                                        c(-1,0,-1),
-                                                        c(0,-1,-1)
+                                                       c(0,1,1),
+                                                       c(-1,0,1),
+                                                       c(0,-1,1),
+                                                       c(1,0,-1),
+                                                       c(0,1,-1),
+                                                       c(-1,0,-1),
+                                                       c(0,-1,-1)
     )
   }
   
   if(n.Neighborhood == 26){
     row_tempo <-  min(which(rowSums(abs(Neighborhood))==0))
     Neighborhood[seq(row_tempo,row_tempo+7),] <- rbind(c(1,1,1),
-                                                        c(-1,1,1),
-                                                        c(-1,-1,1),
-                                                        c(1,-1,1),
-                                                        c(1,1,-1),
-                                                        c(-1,1,-1),
-                                                        c(-1,-1,-1),
-                                                        c(1,-1,-1)
+                                                       c(-1,1,1),
+                                                       c(-1,-1,1),
+                                                       c(1,-1,1),
+                                                       c(1,1,-1),
+                                                       c(-1,1,-1),
+                                                       c(-1,-1,-1),
+                                                       c(1,-1,-1)
     )
   }
   
@@ -2648,8 +2559,14 @@ initWindow <- function(window,filename,path,width,height,unit,res,
          "is(path) : ",paste(is(path),collapse=" "),"\n")
   }
   
+  if(!is.null(path) && substr(path,start=nchar(path),stop=nchar(path))!="/"){
+    warning(method," : possible bad specification of \'path\' \n",
+            "\'path\' should end with a fsep (e.g. \"/\") \n",
+            "proposed path : ",path,"\n")
+  }
+  
   if(unit %in% c("px","in","cm","mm") ==FALSE){
-    stop("multiplot[MRIaggr] : wrong specification of \'unit\' \n",
+    stop("multiplot : wrong specification of \'unit\' \n",
          "valid values : \"px\" \"in\" \"cm\" \"mm\" \n",
          "requested value : ",unit,"\n")
   }
@@ -2697,7 +2614,7 @@ initWindow <- function(window,filename,path,width,height,unit,res,
 
 
 initSpace <- function(character){
-
+  
   nchar.character <- lapply(character,function(x){nchar(x)})
   nchar_max.character <- max(unlist(nchar.character))
   
@@ -2706,3 +2623,263 @@ initSpace <- function(character){
   return(space.character)
 }
 
+initDirPat_constLatex <- function(dir,param,identifier,trace){ 
+
+  ## definition de dir
+  if(length(dir)==1 && is.character(dir)){
+    dirs_plot <- list.dirs(dir)[-1]
+  }else{
+    stop("constLatex : wrong specification of \'dir\' \n",
+         "\'dir\' must be a single character \n",
+         "is(dir) : ",paste(is(dir),collapse=" "),"\n",
+         "length(dir) : ",length(dir),"\n") 
+  }  
+  n.dirs_plot <- length(dirs_plot)
+  if(n.dirs_plot==0){
+    stop("constLatex : no directory inside the root directory \n",
+         "\'dir\' must contain one directory per parameter \n",
+         "proposed directory : ",dir,"\n") 
+  }  
+  
+  names_dirs <- unlist(lapply(strsplit(dirs_plot,split="/"),function(x){x[length(x)]}))
+  
+  if(trace==TRUE){
+    cat("%% ",n.dirs_plot," directories founded in the root directory \n",sep="")
+  }
+  
+  ## dir restrected to param
+  if(!is.null(param)){
+    if(any(param %in% names_dirs == FALSE)){
+      stop("constLatex : wrong specification of \'param\' \n",
+           "available parameters : \"",paste(names_dirs[names_dirs %in% param == FALSE],collapse="\" \""),"\" \n",
+           "not available parameters : \"",paste(param[param %in% names_dirs == FALSE],collapse="\" \""),"\" \n")       
+    }
+    
+    dirs_plot <- dirs_plot[sapply(param,function(x){which(names_dirs ==x)})]
+    n.dirs_plot <- length(dirs_plot)
+    names_dirs <- unlist(lapply(strsplit(dirs_plot,split="/"),function(x){x[length(x)]}))    
+    if(trace==TRUE){
+      cat("% ",n.dirs_plot," directories will be considered according to \'param\' argument \n",sep="")
+    }
+  }
+  
+  ## param
+  if(is.null(param)){
+    param <- names_dirs
+  }
+  
+  if(length(param) != length(names_dirs)){
+    stop("constLatex : \'param\' and \'names_dirs\' must have same length \n",
+         " length(param)  : ",length(param)," \n",
+         " length(names_dirs) : ",length(names_dirs)," \n",
+         " param : ",paste(param,collapse=" ")," \n",
+         " names_dirs : ",paste(names_dirs,collapse=" ")," \n")
+  }
+  
+
+  ## identifiants
+  Allidentifier <- unique(unlist(lapply(dirs_plot,function(x){res <- strsplit(list.files(x),split="_",fixed=TRUE);
+                                             unique(unlist(lapply(res,"[",1)))})))
+    
+  if(is.null(identifier)){
+    identifier <- Allidentifier  
+  }
+  n.identifier <- length(identifier)
+  
+  if(trace==TRUE){
+    cat("%% ",length(Allidentifier)," identifiers founded in the subdirectories \n",sep="")
+    cat("% ",n.identifier," identifiers will be considered according to \'param\' argument \n \n",sep="")
+  }
+  
+  if(n.identifier==0){
+    stop("constLatex : no graphics inside the root directory \n",
+         "proposed dir : ",dir,"\n",
+         "proposed dirs_plot : ",paste(dirs_plot,collapse="\n                     "),"\n")
+  }  
+  
+  #### export ####
+  return(list(dirs_plot=dirs_plot,
+              n.dirs_plot=n.dirs_plot,
+              names_dirs=names_dirs,
+              param=param,
+              identifier=identifier,
+              n.identifier=n.identifier))
+  
+}
+
+initSection_constLatex <- function(dirs_plot,names_dirs,param,subsection,label){
+  
+  #### initialisation de subsection avec les noms des dossiers figures
+  if(is.null(subsection)){
+    subsection <- gsub(pattern="_",replacement=" ",x=names_dirs)
+  }
+  n.subsection <- length(subsection)
+  
+  index_subsection <- 1:n.subsection
+     
+  #### initialisation des legendes des graphiques avec les noms des dossiers figures
+ 
+  if(is.null(label)){
+    label <- gsub(pattern="_",replacement=" ",x=names_dirs)
+  }
+  
+  if(is.list(label) == TRUE){
+    stop("constLatex : wrong specification of \'label\'\n",
+         "\'label\' must be a vector and not a list \n",
+         "is(label) : ",paste(is(label),collapse=" ")," \n") 
+  }
+  
+  if(length(param) != length(label)){
+    stop("constLatex : \'param\' and \'label\' must have same length \n",
+         " length(param)  : ",length(param)," \n",
+         " length(label) : ",length(label)," \n") 
+  }
+  
+  #### export ####
+  return(list(subsection=subsection,
+              index_subsection=index_subsection,
+              label=label,
+              param=param))
+}
+
+
+initPlot_constLatex <- function(dir,names_dirs,dirs_plot,identifier,table,
+                                 plotPerPage){
+  
+  n.dirs_plot <- length(dirs_plot)
+  
+  ls.plot <- list() # list of the plot to display for each patient
+  ls.newplot <- list() # list of the indicator for the creation of a new figure in latex
+  ls.endplot <- list() # list of the indicator for the end of a figure in latex
+  ls.legend <- list() # list of the legend files
+  ls.slices <- list() # list of the first-last slices for each figure
+ 
+  #### iteration sur les sous dossiers
+  for(iter_dir in 1:n.dirs_plot){ 
+
+    split_tempo <- strsplit(list.files(dirs_plot[iter_dir]),split="_",fixed=TRUE)
+    
+    if(length(split_tempo)==0){ # pas de fichier dans le repertoire 
+      ls.legend[[iter_dir]] <- NA
+      ls.plot[[iter_dir]] <- NA
+      ls.newplot[[iter_dir]] <- NA 
+      ls.endplot[[iter_dir]] <- NA 
+      ls.slices[[iter_dir]] <- NA 
+      next      
+    } 
+  
+    index_plot <- which(unlist(lapply(split_tempo, 
+                                      function(x){x[1]==identifier})))      
+    n.index_plot <- length(index_plot) # nb de fichiers images du patient
+    
+    if(n.index_plot==0){ # pas de fichier dans le repertoire correspondants au patient      
+      ls.legend[[iter_dir]] <- NA
+      ls.plot[[iter_dir]] <- NA
+      ls.newplot[[iter_dir]] <- NA 
+      ls.endplot[[iter_dir]] <- NA 
+      ls.slices[[iter_dir]] <- NA 
+      next      
+    } 
+      
+      legend_tempo <- unlist(lapply(split_tempo[index_plot],
+                                    function(x){length(grep(pattern="legend",x=x))>0}))
+      ls.legend[[iter_dir]] <- legend_tempo
+      
+      if(length(index_plot)==0){
+        stop("constLatex : an legend file was founded but with no corresponding image \n",
+             "directory : ",dirs_plot[iter_dir]," \n",
+             "legend file : \"",list.files(dirs_plot[iter_dir])[legend_tempo>0],"\" \n") 
+      }
+    
+       # test fichier multiplot
+      position_slices <- unlist(lapply(split_tempo[index_plot],
+                                       function(x){grep(x,pattern="slice",fixed=TRUE)}))
+      
+      if(length(position_slices)==0){ # si ce n est pas un fichier multiplot
+        ls.legend[[iter_dir]] <- rep(FALSE,n.index_plot)
+        ls.plot[[iter_dir]] <- paste(tail(strsplit(dir,split="/",fixed=TRUE)[[1]],1),"/",
+                                     names_dirs[iter_dir],"/",
+                                     list.files(dirs_plot[iter_dir])[index_plot],
+                                     sep="")
+        ls.newplot[[iter_dir]] <- seq(0,n.index_plot-1) %% plotPerPage == 0
+        ls.endplot[[iter_dir]] <- rep(FALSE,n.index_plot)
+        ls.endplot[[iter_dir]][intersect(which(ls.newplot[[iter_dir]])-1,1:n.index_plot)] <- TRUE
+        ls.endplot[[iter_dir]][n.index_plot] <- TRUE
+        ls.slices[[iter_dir]] <- rep("",n.index_plot)        
+        next
+      }
+      
+        # extraction des coupes
+      slice_tempo <- lapply(1:n.index_plot,
+                            function(x){strsplit(split_tempo[[index_plot[x]]][position_slices[x]],
+                                                 split="slice",fixed=TRUE)[[1]][[2]]})
+      
+      # verifie qu il s agit du meme plot
+      if(length(index_plot)>1){
+        test.plot <- sapply(1:n.index_plot,function(x){
+          x_tempo <- gsub(pattern="-legend",replacement="",fixed=TRUE,list.files(dirs_plot[iter_dir])[index_plot[x]])
+          gsub(pattern=slice_tempo[[x]],replacement="",fixed=TRUE,x_tempo)
+        })
+        
+        if(any(test.plot!=test.plot[1])){
+          stop("constLatex : different types of plot in the same directory \n",
+               "directory : ",dirs_plot[iter_dir]," \n",
+               "files : \"",list.files(dirs_plot[iter_dir])[index_plot[1]],"\" \n",
+               "        \"",paste(list.files(dirs_plot[iter_dir])[index_plot[which(test.plot!=test.plot[1])]],collapse="\"\n        \""),"\"\n")
+        }
+      }      
+      
+      # mettre en ordre les figures suivant les coupes (avec les figures en premier et la legend en dernier)
+      order_tempo <- order(as.numeric(unlist(lapply(slice_tempo,
+                                                    function(x){strsplit(x,split="-",fixed=TRUE)[[1]][1]})))+10^6*legend_tempo)
+      index_plot <- index_plot[order_tempo]
+      
+            
+      # store results
+      ls.legend[[iter_dir]] <- c(ls.legend[[iter_dir]][legend_tempo==0],ls.legend[[iter_dir]][legend_tempo>0])          
+      ls.plot[[iter_dir]] <- paste(tail(strsplit(dir,split="/",fixed=TRUE)[[1]],1),"/",
+                                   names_dirs[iter_dir],"/",
+                                   list.files(dirs_plot[iter_dir])[index_plot],
+                                   sep="")
+      ls.newplot[[iter_dir]] <- seq(0,n.index_plot-1) %% plotPerPage == 0
+      ls.endplot[[iter_dir]] <- rep(FALSE,n.index_plot)
+      ls.endplot[[iter_dir]][intersect(which(ls.newplot[[iter_dir]])-1,1:n.index_plot)] <- TRUE
+      ls.endplot[[iter_dir]][n.index_plot] <- TRUE
+      
+      slice_tempo.first <- unlist(lapply(slice_tempo[order_tempo],function(x){strsplit(x,split="-",fixed=TRUE)[[1]][[1]]}))
+      slice_tempo.last <- unlist(lapply(slice_tempo[order_tempo],function(x){strsplit(x,split="-",fixed=TRUE)[[1]][[2]]}))
+      
+      ls.slices[[iter_dir]] <- c(paste("( slices ",slice_tempo.first[ls.newplot[[iter_dir]]==TRUE],"-",
+                                       slice_tempo.last[ls.endplot[[iter_dir]]==TRUE]," ",
+                                 if(any(legend_tempo)){"with legend "},")",sep="")
+      )
+  }
+
+  names(ls.legend) <- names_dirs
+  names(ls.newplot) <- names_dirs    
+  names(ls.endplot) <- names_dirs    
+  names(ls.plot) <- names_dirs
+  names(ls.slices) <- names_dirs
+
+  #### data clinique
+  if(!is.null(table)){
+    ## identification du patient
+    ls.table <- lapply(table,function(x){
+      table_tempo <- x[x[,1]==identifier,-1,drop=FALSE];
+      names(table_tempo) <- gsub(pattern="_",replacement="\\_",x=names(table_tempo))
+      names(table_tempo) <- gsub(pattern="%",replacement="\\%",x=names(table_tempo))
+      return(table_tempo)
+      }
+    )
+  
+  }else{
+    ls.table <- NULL
+  }
+
+  return(list(ls.legend=ls.legend,
+              ls.newplot=ls.newplot,
+              ls.endplot=ls.endplot,
+              ls.plot=ls.plot,
+              ls.slices=ls.slices,
+              ls.table=ls.table))
+}

@@ -20,8 +20,8 @@ Extract the spatial dimensions of the contrast data from a \code{\linkS4class{Ca
 \examples{
 #### 1- Carto3D method ####
 ## load nifti files and convert them to Carto3D
-path.nifti_files <- system.file("nifti",package = "MRIaggr")
-nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
+path.Pat1 <- system.file("nifti",package = "MRIaggr")
+nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
 
 ## selection

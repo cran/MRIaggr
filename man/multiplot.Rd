@@ -15,7 +15,7 @@ Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or
          mar=rep(1.5,4),mgp=c(2,0.5,0),pty=NULL,asp=1,bg="lightblue",xlab="",ylab="",
          main="slice ",num.main=TRUE,cex.main=1.5,quantiles.legend=TRUE,digit.legend=3,
          cex.legend=1.5,mar.legend=c(2,7,2,2),main.legend=names(contrast),
-         filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA)
+         filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA)
 		 
 \S4method{multiplot}{Carto3D}(object,num=NULL,
          breaks=50,type.breaks="range",palette="terrain.colors",col=NULL,pch=NULL,cex=1,
@@ -23,7 +23,7 @@ Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or
          legend=TRUE,mfrow=NULL,mar=rep(1.5,4),mgp=c(2,0.5,0),pty=NULL,asp=1,
          bg="lightblue",xlab="", ylab="",main=NULL,num.main=TRUE,cex.main=1.5,
          quantiles.legend=TRUE,digit.legend=3,cex.legend=1.5,mar.legend=c(2,7,2,2),
-         filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA)
+         filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA)
 
 \S4method{multiplot}{MRIaggr}(object,param,num=NULL,
          index1=NULL,index2=NULL,index3=NULL,midplane=FALSE,slice_var="k",
@@ -34,7 +34,7 @@ Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or
          asp=1,bg="lightblue",xlab="", ylab="",main=NULL,num.main=TRUE,cex.main=1.5,
          quantiles.legend=TRUE,digit.legend=3,cex.legend=1.5,
          mar.legend=c(2,7,2,2),main.legend = param,
-         filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA)
+         filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA)
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}} or \code{\linkS4class{Carto3D}} or a 3 column \code{data.frame} containing the coordinates of the observations in columns. REQUIRED.}
@@ -145,8 +145,8 @@ multiplot(object=data[,c("i","j","k")],num=3,
 			  
 #### 2- carto3D ####
 ## load nifti files and convert them to carto3D
-path.nifti_files <- system.file("nifti",package = "MRIaggr")
-nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
+path.Pat1 <- system.file("nifti",package = "MRIaggr")
+nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
 
 ## display

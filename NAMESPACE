@@ -4,20 +4,14 @@ useDynLib(MRIaggr)
 import(Rcpp)
 import(methods)
 import(Matrix)
-import(ROCR)
 importFrom("spam","t","rowSums","as.dgRMatrix.spam","nearest.dist")
-importFrom("fields","image.plot")
-importFrom("mritc","mritc","mritc.bayes")
-importFrom("oro.dicom","readDICOMFile")
-importFrom("oro.nifti","readANALYZE","readNIfTI")
 importFrom("stats4","summary")
-importFrom("RANN","nn2")
 
 # export fonctions
 export(
 	"constCarto3D",
 	"constMRIaggr",
-	"constSweave",
+	"constLatex",
 	"array2df",
 	"Carto3D2MRIaggr",
 	"df2array",
@@ -30,7 +24,8 @@ export(
 	"initNeighborhood",
 	"outline",
 	"pointsOutline",
-	"readMRI"
+	"readMRI",
+	"writeMRI"
 	)
 
 # export classes
@@ -91,5 +86,6 @@ exportMethods(
 	"selectVoxelSize",
 	"summary",
 	"supprContrast<-",
-	"supprDescStats<-"	
+	"supprDescStats<-",
+	"writeMRIaggr"
 )

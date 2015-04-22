@@ -29,56 +29,100 @@ double medianVecDouble_cpp(std::vector<double> data);
 
 //  1 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
-List calcHemi_cpp(const arma::mat& px_hemiL, const arma::mat& px_hemiR, double sd_data,
-                   int p, bool symetrie){
-
-    double valeur_vois, dist_vois, asymetrie_valeur, poids_vois;
-    int asymetrie_nb;
-    int n_hemiG = px_hemiL.n_rows ;
-    int n_hemiD = px_hemiR.n_rows ;
-    double testx, testy ;
-    double sdp_data = pow(sd_data,p);
+List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, List ls_indexK, int n_num, const NumericVector& value, int n,
+                    double i_pos, double j_pos, double angle_pos,
+                    double sd_data, double p, bool symetrie){ 
+  
+  // critere de symetrie
+  double valeur_vois, dist_vois, asymetrie_valeur=0, poids_vois;
+  int asymetrie_nb=0;
+  double distI, distJ ;
+  double sdp_data = pow(sd_data,p);
+  
+  // parametrage du nouveau de repere
+  int n_indexK, n_hemiL, n_hemiR, iter_vxAll ;
+  double cos_alpha = cos(angle_pos);
+  double sin_alpha = sin(angle_pos);
+  
+  vector<int> indexK;
+  vector<double> i_nouveauL, i_nouveauR, j_nouveauL, j_nouveauR, valueL, valueR;
+  double i_tempo;
+  
+  for(int iter_k=0 ; iter_k<n_num ; iter_k++){
     
-    asymetrie_nb = 0;
-    asymetrie_valeur = 0; 
-       
-    // hemisphere gauche
-    for(int iter_pxG=0 ; iter_pxG<n_hemiG ; iter_pxG ++){
-    poids_vois = 0;
-    valeur_vois=0;        
-
-     // iteration sur les voisins : moyenne ponderee par les distance des valeurs voisines
-        for(int iter_pxD=0 ; iter_pxD<n_hemiD ; iter_pxD ++){
+    indexK = ls_indexK[iter_k];
+    n_indexK = indexK.size();
+    n_hemiL = 0;
+    n_hemiR = 0;
+    
+    i_nouveauL.resize(0);
+    i_nouveauR.resize(0);
+    j_nouveauL.resize(0);
+    j_nouveauR.resize(0);
+    valueL.resize(0);
+    valueR.resize(0);
+    
+    for(int iter_vx=0 ; iter_vx<n_indexK ; iter_vx++){
+      iter_vxAll = indexK[iter_vx];  
+      
+      // nouvelles coordonnees
+      i_tempo = cos_alpha*(coordsI[iter_vxAll]-i_pos) - sin_alpha*(coordsJ[iter_vxAll]-j_pos);
+      
+      if(i_tempo>0){ // left hemisphere (radiological convention)
+      
+      i_nouveauL.push_back(i_tempo);
+      j_nouveauL.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
+      valueL.push_back(value[iter_vxAll]);
+      n_hemiL++;
+      
+      }else{ // right hemisphere
+      
+      i_nouveauR.push_back(i_tempo);
+      j_nouveauR.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
+      valueR.push_back(value[iter_vxAll]);
+      n_hemiR++;
+      }
+      
+    }
+    
+    // evalutation du critere de symetrie vis a vis de l hemisphere gauche
+    for(int iter_pxL=0 ; iter_pxL<n_hemiL ; iter_pxL++){
+      poids_vois = 0;
+      valeur_vois = 0;        
+      
+      // iteration sur les voisins : moyenne ponderee par les distance des valeurs voisines
+      for(int iter_pxR=0 ; iter_pxR<n_hemiR ; iter_pxR++){
         
-        testx = abs(px_hemiL(iter_pxG,0)+px_hemiR(iter_pxD,0)) ;
-        testy = abs(px_hemiL(iter_pxG,1)-px_hemiR(iter_pxD,1)) ;
+        distI = abs(i_nouveauL[iter_pxL]+i_nouveauR[iter_pxR]) ;
+        distJ = abs(j_nouveauL[iter_pxL]-j_nouveauR[iter_pxR]) ;
         
-        if(testy < 1 && testx < 1)
-        { 
-          dist_vois = sqrt(pow(px_hemiL(iter_pxG,0)+px_hemiR(iter_pxD,0),2) + pow(px_hemiL(iter_pxG,1)-px_hemiR(iter_pxD,1),2));
-          valeur_vois = valeur_vois + px_hemiR(iter_pxD,2) * (2-dist_vois)         ;           
+        if(distI < 1 && distJ < 1){
+          dist_vois = sqrt(pow(distI,2) + pow(distJ,2));
+          valeur_vois = valeur_vois + valueR[iter_pxR] * (2-dist_vois)         ;           
           poids_vois = poids_vois + (2-dist_vois) ;
         }
         
       }
-       
-       if(poids_vois>0){
-         valeur_vois = valeur_vois/poids_vois;
+      
+      if(poids_vois>0){
+        
+        valeur_vois = valeur_vois/poids_vois;
         if(symetrie){
-        asymetrie_valeur =  asymetrie_valeur + 1/(1+pow(abs(px_hemiL(iter_pxG,2)-valeur_vois),p)/sdp_data);
+          asymetrie_valeur =  asymetrie_valeur + 1/(1+pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data);
         }else{        
-        asymetrie_valeur = asymetrie_valeur + pow(abs(px_hemiL(iter_pxG,2)-valeur_vois),p)/sdp_data   ;
+          asymetrie_valeur = asymetrie_valeur + pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data   ;
         }
-      
+         
         asymetrie_nb = asymetrie_nb + 1;
-       }
-    }  
-      
-      return(List::create(Named("asymetrie_valeur")  = asymetrie_valeur,
-                          Named("asymetrie_moy")  = asymetrie_valeur/asymetrie_nb,
-                          Named("asymetrie_nb")  = asymetrie_nb)
-      );
-    
+      }
+    }
+  }
+  
+  // export
+  return(List::create(Named("asymetrie_valeur")  = asymetrie_valeur,
+                      Named("asymetrie_moy")  = asymetrie_valeur/asymetrie_nb,
+                      Named("asymetrie_nb")  = asymetrie_nb));
+  
 }
 
 
@@ -213,7 +257,7 @@ List calcContro_cpp(const arma::mat& contrast, const arma::mat& coords_px, const
 //  3 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
 List filtrage2D_cpp(const arma::mat& M_data, const arma::mat& M_operateur, const arma::mat& index_data,
-                         bool w_contrast, bool na_rm){
+                    bool w_contrast, bool na_rm){
 
   int const n_data = index_data.n_rows;
   vector<int>  p_data(2);
@@ -263,30 +307,29 @@ List filtrage2D_cpp(const arma::mat& M_data, const arma::mat& M_operateur, const
          test2b = index_data(iter_px,1)+iter_c-p_ref[1] < p_data[1];
     
     if(test1a*test1b*test2a*test2b == 1 && R_IsNA(M_data(index_data(iter_px,0)+iter_l-p_ref[0],index_data(iter_px,1)+iter_c-p_ref[1]))==0){      
-        // elements voisins
-       if(R_IsNA(M_operateur(iter_l,iter_c))==0){
-         Mvoisin = M_data(index_data(iter_px,0)+iter_l-p_ref[0],
-                   index_data(iter_px,1)+iter_c-p_ref[1]);
-       
-      // intensite des pixels
-    if(w_contrast==1 && M_operateur(iter_l,iter_c)!=0){
-        tempo = Mvoisin-M_data(index_data(iter_px,0),index_data(iter_px,1));
-        Mintensite = R::dnorm(tempo,0.0,sigma,false)/dnorm_sigma;
+      // elements voisins
+      if(R_IsNA(M_operateur(iter_l,iter_c))==0){
+        Mvoisin = M_data(index_data(iter_px,0)+iter_l-p_ref[0],
+        index_data(iter_px,1)+iter_c-p_ref[1]);
+        
+        // intensite des pixels
+        if(w_contrast==1 && M_operateur(iter_l,iter_c)!=0){
+          tempo = Mvoisin-M_data(index_data(iter_px,0),index_data(iter_px,1));
+          Mintensite = R::dnorm(tempo,0.0,sigma,false)/dnorm_sigma;
+        }
+        
+      }
     }
-    
-       }
-    }
-
+     
     // ajustement des NA et maj
     if(R_IsNA(Mvoisin)==0){
       sumNNA = sumNNA + abs(M_operateur(iter_l,iter_c)*Mintensite);
-
-        Mres(index_data(iter_px,0),index_data(iter_px,1)) = Mres(index_data(iter_px,0),index_data(iter_px,1)) + 
-                                                            M_operateur(iter_l,iter_c)*Mintensite*Mvoisin;
+ 
+      Mres(index_data(iter_px,0),index_data(iter_px,1)) = Mres(index_data(iter_px,0),index_data(iter_px,1)) + M_operateur(iter_l,iter_c)*Mintensite*Mvoisin;
     }else{
       
-      if(na_rm)
-      { Mres(index_data(iter_px,0),index_data(iter_px,1)) = NA_REAL;
+      if(na_rm){
+        Mres(index_data(iter_px,0),index_data(iter_px,1)) = NA_REAL;
         break_loop = true;
         break;
       }
@@ -298,8 +341,8 @@ List filtrage2D_cpp(const arma::mat& M_data, const arma::mat& M_operateur, const
 
     // correction des NA
     Wres(index_data(iter_px,0),index_data(iter_px,1)) = sumNNA;
-    if(break_loop==false && sumNNA>0)
-    {Mres(index_data(iter_px,0),index_data(iter_px,1)) = Mres(index_data(iter_px,0),index_data(iter_px,1))/sumNNA;}
+//    if(break_loop==false && sumNNA>0)
+//    {Mres(index_data(iter_px,0),index_data(iter_px,1)) = Mres(index_data(iter_px,0),index_data(iter_px,1))/sumNNA;}
  }  
 
     return(List::create(Named("Mres")  = Mres,
@@ -350,7 +393,7 @@ List filtrage3D_cpp(const NumericVector& Vec_data, const IntegerVector& p_data,
     Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = 0;
     sumNNA = 0;
     break_loop = false;
-      
+       
     // mise en place des matrices
     for(int iter_l=0 ; iter_l<p_operateur[0] ; iter_l++){
       
@@ -390,7 +433,7 @@ List filtrage3D_cpp(const NumericVector& Vec_data, const IntegerVector& p_data,
         sumNNA = sumNNA + abs(A_operateur(iter_l,iter_c,iter_d)*Mintensite);
 
         Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) + A_operateur(iter_l,iter_c,iter_d)*Mintensite*Mvoisin;
-                                                                                  
+                     
     }else{
       
       if(na_rm)
@@ -408,8 +451,9 @@ List filtrage3D_cpp(const NumericVector& Vec_data, const IntegerVector& p_data,
 
     // correction des NA
     Wres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = sumNNA;
-    if(break_loop==false && sumNNA>0)
-    {Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2))/sumNNA;}
+//    if(break_loop==false && sumNNA>0)
+//    {Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2))/sumNNA;}
+
  }  
 
     return(List::create(Named("Mres")  = Mres,

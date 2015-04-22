@@ -86,9 +86,9 @@ If \code{type} is \code{"kmeans"}, a \emph{list} containing :
 }
 \examples{
 ## load nifti files and convert them to MRIaggr
-path <- system.file(file.path("nifti"),package = "MRIaggr")
-ls.array <- list(readMRI(file=file.path(path,"T1_t0"),format="nifti"),
-                 readMRI(file=file.path(path,"T2_GRE_t0"),format="nifti"))
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
+ls.array <- list(readMRI(file=file.path(path.Pat1,"T1_t0"),format="nifti"),
+                 readMRI(file=file.path(path.Pat1,"T2_GRE_t0"),format="nifti"))
 MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param=c("T1_t0","T2_GRE_t0"))
 
 #### 1- thresholding approach ####

@@ -1,5 +1,5 @@
 \name{selectHistory}
-\title{Extract the history of the object}
+\title{Extract the call of the methods applied on the object}
 \alias{selectHistory}
 \alias{selectHistory,MRIaggr-method}
 \description{

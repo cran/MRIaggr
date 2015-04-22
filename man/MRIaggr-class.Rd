@@ -10,7 +10,8 @@
   \item{identifier}{the patient identifier. \emph{character}.}  
   \item{contrast}{the value of the contrast parameters for each observation. \emph{data.frame}.}  
   \item{clinic}{the clinical data of the patient. \emph{data.frame}.}  
-  \item{voxelDim}{the spatial dimensions of the lattice containing the observations. \emph{data.frame}.}  
+  \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}  
+  \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
   \item{default_value}{the reference values of the contrast parameters. \emph{data.frame}.}  
 
   \item{history}{the list of the \code{calc} or \code{const} methods that have been already applied on the \code{MRIaggr} object. \emph{data.frame}.}  
@@ -27,33 +28,33 @@
 \section{S4 methods}{
 Getters : 
 \describe{
- \item{\code{\link{selectContrast}}}{}
- \item{\code{\link{selectCoords}}}{}
- \item{\code{\link{selectClinic}}}{}
- \item{\code{\link{selectDefault_value}}}{}
- \item{\code{\link{selectDescStats}}}{}
- \item{\code{\link{selectHemispheres}}}{}
- \item{\code{\link{selectHistory}}}{}
- \item{\code{\link{selectIdentifier}}}{}
- \item{\code{\link{selectMidplane}}}{}
- \item{\code{\link{selectN}}}{}
- \item{\code{\link{selectNormalization}}}{}
- \item{\code{\link{selectParameter}}}{}
- \item{\code{\link{selectTable}}}{}
- \item{\code{\link{selectVoxelDim}}}{}
- \item{\code{\link{selectVoxelSize}}}{}
+ \item{\code{\link{selectContrast}}}{return the contrast parameters.}
+ \item{\code{\link{selectCoords}}}{return the coordinates.}
+ \item{\code{\link{selectClinic}}}{return the clinical data.}
+ \item{\code{\link{selectDefault_value}}}{return the default values of the contrast parameters.}
+ \item{\code{\link{selectDescStats}}}{return extra information.}
+ \item{\code{\link{selectHemispheres}}}{return the position of the lesion in each hemisphere.}
+ \item{\code{\link{selectHistory}}}{return the call of the methods applied on the object.}
+ \item{\code{\link{selectIdentifier}}}{return the identifier of the patient}
+ \item{\code{\link{selectMidplane}}}{return the position of the mid-saggital plan}
+ \item{\code{\link{selectN}}}{return the number of voxels}
+ \item{\code{\link{selectNormalization}}}{return the normalization values of the contrast parameters}
+ \item{\code{\link{selectParameter}}}{return the names of the parameters stored in the object}
+ \item{\code{\link{selectTable}}}{return volumic information about the lesion or about the perfusion}
+ \item{\code{\link{selectVoxelDim}}}{return the dimension of the lattice containing the observations}
+ \item{\code{\link{selectVoxelSize}}}{return the dimension of a voxel}
 }
 
 Setters : 
 \describe{
-\item{\code{\link{affectContrast<-}}}{}
-\item{\code{\link{affectClinic<-}}}{}
-\item{\code{\link{affectDescStats<-}}}{}
-\item{\code{\link{affectHemisphere<-}}}{}
-\item{\code{\link{affectNormalization<-}}}{}
-\item{\code{\link{affectTable<-}}}{}
-\item{\code{\link{supprContrast<-}}}{}
-\item{\code{\link{supprDescStats<-}}}{}
+\item{\code{\link{affectContrast<-}}}{affect a contrast parameter}
+\item{\code{\link{affectClinic<-}}}{affect clinical data}
+\item{\code{\link{affectDescStats<-}}}{affect extra information}
+\item{\code{\link{affectHemisphere<-}}}{affect the position of the lesion in the hemisphere or the position of the mid-saggital brain}
+\item{\code{\link{affectNormalization<-}}}{affect normalization values}
+\item{\code{\link{affectTable<-}}}{affect volumic information}
+\item{\code{\link{supprContrast<-}}}{remove a contrast parameter}
+\item{\code{\link{supprDescStats<-}}}{remove extra information}
 }
 
 Calculators : 
@@ -91,18 +92,20 @@ Displayers :
 
 Constructors : 
 \describe{
-\item{\code{\link{constCompressMRIaggr}}}{}
-\item{\code{\link{constReduceMRIaggr}}}{}
+\item{\code{\link{constCompressMRIaggr}}}{generate from an existing MRIaggr object a new one with lower spatial resolution}
+\item{\code{\link{constReduceMRIaggr}}}{copy an existing MRIaggr object restricted to a subset of voxels}
+\item{\code{\link{writeMRIaggr}}}{create an image file containing the values of a contrast parameter stored in the MRIaggr object.}
 }
 
 Initializers : 
 \describe{
-\item{\code{\link{initNum}}}{} 
-\item{\code{\link{initParameter}}}{}  
+\item{\code{\link{initNum}}}{initialization of the num argument} 
+\item{\code{\link{initParameter}}}{intialization of the param argument}  
+\item{\code{\link{initMask}}}{initialization of the mask argument}  
 }
 }
 \seealso{
 \code{\link{constMRIaggr}} to build a \code{\linkS4class{MRIaggr}} object from a list of array.  \cr
-\code{\link{readMRI}} to read imaging files. 
+\code{\link{readMRI}} to read image files. 
 }
 \keyword{classes}

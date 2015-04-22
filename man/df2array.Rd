@@ -54,21 +54,24 @@ fields::image.plot(res4$contrast[[2]])
 #### 2- with MRIaggr data ####
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red",package="MRIaggr")
-carto <- selectContrast(MRIaggr.Pat1_red,param="DWI_t0")
+carto <- selectContrast(MRIaggr.Pat1_red,param="DWI_t0",format="vector")
 coords <- selectCoords(MRIaggr.Pat1_red)
+coords[,1] <- coords[,1] + 30
+coords[,2] <- coords[,2] + 15
 
 ## converion 1
 array.DWI_t0 <- df2array(carto,coords=coords,default_value=1000)$contrast[[1]]
 
 # display
-fields::image.plot(array.DWI_t0[,,1])
+fields::image.plot(min(coords[,1]):max(coords[,1]),min(coords[,2]):max(coords[,2]),
+                   array.DWI_t0[,,1],xlab="i",ylab="j")
 
 ## conversion 2
-array.DWI_t0 <- df2array(carto,coords=coords,default_value=1000, 
-                         range.coords = c(256,256,6))$contrast[[1]]
-						 
+array.DWI_t0 <- df2array(contrast=carto,coords=coords,default_value=1000, 
+                         range.coords = c(128,128,3))$contrast[[1]]
+
 # display
-fields::image.plot(array.DWI_t0[,,1])
+fields::image.plot(1:128,1:128,array.DWI_t0[,,1],xlab="i",ylab="k")
 
 }
 \concept{convert.}

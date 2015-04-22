@@ -177,7 +177,7 @@ selectParameter(MRIaggr.Pat1_red,type="ls_descStats")
 res <- selectDescStats(MRIaggr.Pat1_red,name="GroupsLesion")
 
 ## compute and affect a neighborhood matrix
-calcW(MRIaggr.Pat1_red,distband=3,update.object=TRUE,overwrite=TRUE,
+calcW(MRIaggr.Pat1_red,range=3,update.object=TRUE,overwrite=TRUE,
       spatial_res=c(1.875,1.875,6))
 
 ## select the neighborhood matrix for a subset of observations
@@ -402,7 +402,7 @@ selectDescStats(MRIaggr.Pat1_red,"spatial_res")
 ## some calc methods automatically save results in the ls_descStats slot
 # find spatial groups 
 calcGroupsMask(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
-               distband=6,
+               bandwidth=6,
                spatial_res=selectDescStats(MRIaggr.Pat1_red,"spatial_res"),
                update.object=TRUE,overwrite=TRUE)
 
@@ -651,7 +651,7 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 ## compute neighborhood matrix 
 MASK_DWI_t0 <- selectContrast(MRIaggr.Pat1_red,param="MASK_DWI_t0")
 coords <- selectCoords(MRIaggr.Pat1_red)
-W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),range=sqrt(2),row.norm=TRUE)
 
 ## compute spatial groups
 res.Groups <- calcGroupsW(W)
@@ -778,7 +778,7 @@ multiplot(resN.F$res[,c("i","j","k")],contrast=resN.F$res[,4],
 #### >f calcGroupsMask ####
 # ?calcGroupsMask
 # findMethods("calcGroupsMask",classes="MRIaggr")$MRIaggr
-# .local <- function (object, mask, distband, spatial_res = c(1, 1, 1), 
+# .local <- function (object, mask, bandwidth, spatial_res = c(1, 1, 1), 
 #                     as.logical = FALSE, W = "ifany", trace = TRUE, 
 #                     update.object = FALSE, overwrite = TRUE) 
 
@@ -790,8 +790,7 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 
 # compute spatial groups
 calcGroupsMask(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
-               distband=6,
-               spatial_res=c(1.875,1.875,6),
+               W.range=6,W.spatial_res=c(1.875,1.875,6),
                update.object=TRUE,overwrite=TRUE)
 
 # extract spatial groups
@@ -876,10 +875,7 @@ selectNormalization(MRIaggr.Pat1_red,type="global",mu=TRUE,sigma=FALSE)
 #### >i calcRegionalContrast ####
 # ?calcRegionalContrast
 # findMethods("calcRegionalContrast",classes="MRIaggr")$MRIaggr
-# .local <- function (object, param, num = NULL, hemisphere = "both", 
-#                     W = "ifany", spatial_res = rep(1, 3), distband, power_EDK = 1, 
-#                     distband_EDK = 2, diagonal = FALSE, trace = TRUE, name_newparam = paste(param,"regional",sep="_"), 
-#                     update.object = FALSE, overwrite = FALSE) 
+
 
 #### test
 
@@ -889,7 +885,7 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute regional values
 res  <- calcRegionalContrast(MRIaggr.Pat1_red,param=c("T2_FLAIR_t2","T1_t0"),
-                        spatial_res=c(1.875,1.875,1.875),distband=6,distband_EDK=1.875,
+                        W.spatial_res=c(1.875,1.875,1.875),W.range=6,bandwidth=1.875,
                         update.object=TRUE,overwrite=TRUE)
 
 ## display
@@ -1100,7 +1096,7 @@ selectTable(MRIaggr.Pat1_red,"reperfusion")["4","PCshift_reperf.TTP"]
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0","TTP_t1","MTT_t1"),
                  threshold=1:10,name_newparam=c("TTP.GR_t0","MTT.GR_t0","TTP.GR_t1","MTT.GR_t1"),
                  rm.CSF=TRUE,hemisphere="lesion",
-                 GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W=NULL,distband=sqrt(2),
+                 GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W=NULL,bandwidth=sqrt(2),
                  update.object=TRUE,overwrite=TRUE)
 
 res <- calcTableHypoReperf(MRIaggr.Pat1_red,param=c("TTP.GR","MTT.GR"),time=c("t0","t1"),
@@ -1147,7 +1143,7 @@ res <- selectTable(MRIaggr.Pat1_red,"lesion")
 #### test
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
-calcW(MRIaggr.Pat1_red,spatial_res=c(1.875,1.875,6),distband=6,
+calcW(MRIaggr.Pat1_red,spatial_res=c(1.875,1.875,6),range=6,
       update.object=TRUE,overwrite=TRUE)
 
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0"),threshold=1:10,
@@ -1184,7 +1180,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP.red_t0",main="TTP.red_t0 - slice",
 ## 2nd correction
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0"),threshold=1:10,
                  rm.CSF=TRUE,hemisphere="lesion",name_newparam=c("TTP.GR_t0","MTT.GR_t0"),
-                 GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W=NULL,W.distband=sqrt(2),
+                 GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W.range=sqrt(2),
                  update.object=TRUE,overwrite=TRUE)
 
 multiplot(MRIaggr.Pat1_red,param="TTP.GR_t0",main="TTP.GR_t0 - slice",
@@ -1215,7 +1211,7 @@ multiplot(MRIaggr.Pat1_red,num=1,
 #### >p calcW ####
 # ?calcW
 # findMethods("calcW",classes="MRIaggr")$MRIaggr
-# .local <- function (object, distband, spatial_res = c(1, 1, 1), 
+# .local <- function (object, range, spatial_res = c(1, 1, 1), 
 #                     num = NULL, hemisphere = "both", subset = NULL, 
 #                     upper = TRUE, format = "dgCMatrix", row.norm = FALSE, 
 #                     trace = TRUE, update.object = FALSE, overwrite = FALSE) 
@@ -1227,11 +1223,11 @@ multiplot(MRIaggr.Pat1_red,num=1,
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute W (regular lattice)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2),upper=NULL,num=1:3,hemisphere="lesion")
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2),upper=NULL,num=1:3,hemisphere="lesion")
 table(rowSums(W>0))
 
 ## compute W (irregular lattice)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2*1.875^2),upper=NULL,num=1:3,hemisphere="lesion",
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2*1.875^2),upper=NULL,num=1:3,hemisphere="lesion",
            spatial_res=c(1.875,1.875,6))
 table(rowSums(W>0))
 

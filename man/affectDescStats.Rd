@@ -42,8 +42,7 @@ selectDescStats(MRIaggr.Pat1_red,"spatial_res")
 ## some calc methods automatically save results in the ls_descStats slot
 # find spatial groups 
 calcGroupsMask(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
-               distband=6,
-               spatial_res=selectDescStats(MRIaggr.Pat1_red,"spatial_res"),
+               W.range=6,W.spatial_res=selectDescStats(MRIaggr.Pat1_red,"spatial_res"),
                update.object=TRUE,overwrite=TRUE)
 
 # extract spatial groups

@@ -7,10 +7,10 @@
 Extract the contrast parameters from a \code{\linkS4class{Carto3D}} or a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
-\S4method{selectContrast}{Carto3D}(object,num=NULL,na.rm=FALSE,coords=TRUE,
-         format="any")
+\S4method{selectContrast}{Carto3D}(object,num=NULL,na.rm=FALSE,coords=FALSE,
+         format="data.frame")
 			
-\S4method{selectContrast}{MRIaggr}(object,param=NULL,num=NULL,format="any",
+\S4method{selectContrast}{MRIaggr}(object,param=NULL,num=NULL,format="data.frame",
          slice_var="k",coords=FALSE,hemisphere="both",norm_mu=FALSE,norm_sigma=FALSE,
          na.rm=FALSE,subset=NULL)
 }
@@ -18,7 +18,7 @@ Extract the contrast parameters from a \code{\linkS4class{Carto3D}} or a \code{\
   \item{object}{an \code{object} of class \code{\linkS4class{Carto3D}} or \code{\linkS4class{MRIaggr}}. REQUIRED.}
   \item{param}{the contrast parameters to extract. \emph{character vector} or \code{NULL}.}
   \item{num}{the slices to extract. \emph{numeric vector} or \code{NULL}.}
-  \item{format}{the format of the output. Can be \code{"matrix"}, \code{"data.frame"} or \code{"any"}.}
+  \item{format}{the format of the output. Can be \code{"matrix"}, \code{"data.frame"} or \code{"vector"}.}
   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}  
   \item{coords}{the coordinates that sould be extracted. \emph{logical} or any of \code{"i"} \code{"j"} \code{"k"}.}
   \item{hemisphere}{the hemisphere to extract. \emph{character}. See the details section.}
@@ -70,8 +70,7 @@ Then they are scaled by division with the value returned by \code{norm_sigma}.
 
 }
 \value{
-  A \emph{data.frame} or a \emph{matrix} containing the parameter in columns and the observations in rows. 
-  If only one parameter is requested and the format is set to \code{"any"} then a \emph{vector} containing the parameter values is returned.
+   A \code{"vector"}, \emph{matrix} or a \emph{data.frame}. In the latter two cases, each row corresponds to a voxel and each column to a coordinate.
 }
 \seealso{ 
  \code{\link{calcControlateral}}, \code{\link{calcRegionalContrast}}, \code{\link{calcFilter}} and \code{\link{calcTissueType}} to retreat and affect the modified contrast parameters. \cr
@@ -84,8 +83,8 @@ Then they are scaled by division with the value returned by \code{norm_sigma}.
 \examples{
 #### 1- Carto3D method ####
 ## load nifti files and convert them to Carto3D
-path.nifti_files <- system.file("nifti",package = "MRIaggr")
-nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
+path.Pat1 <- system.file("nifti",package = "MRIaggr")
+nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
 
 ## select all observations

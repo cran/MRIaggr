@@ -36,10 +36,10 @@ Nevertheless if \code{value} contains parameters \code{"i"}, \code{"j"} and \cod
 }
 \examples{
 ## load nifti files and convert them to MRIaggr
-path <- system.file(file.path("nifti"),package = "MRIaggr")
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list()
-ls.array[[1]] <- readMRI(file=file.path(path,"DWI_t0"),format="nifti")
-ls.array[[2]] <- readMRI(file=file.path(path,"MASK_DWI_t0"),format="nifti")
+ls.array[[1]] <- readMRI(file=file.path(path.Pat1,"DWI_t0"),format="nifti")
+ls.array[[2]] <- readMRI(file=file.path(path.Pat1,"MASK_DWI_t0"),format="nifti")
 MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param=c("DWI_t0","MASK_DWI_t0"))
 
 ## affect a new contrast parameters
@@ -51,7 +51,7 @@ myCarto <- myCarto*2+1
 affectContrast(MRIaggr.Pat1,param="myCarto",overwrite=TRUE) <- myCarto
 
 ## import a contrast parameters in an already existing MRIaggr object
-nifti.MTT_t0 <- readMRI(file=file.path(path,"MTT_t0"),format="nifti")
+nifti.MTT_t0 <- readMRI(file=file.path(path.Pat1,"MTT_t0"),format="nifti")
 df.MTT_t0 <- array2df(nifti.MTT_t0,name_newparam="MTT_t0")$MTT_t0
 affectContrast(MRIaggr.Pat1,param="MTT_t0",overwrite=TRUE) <- df.MTT_t0
 

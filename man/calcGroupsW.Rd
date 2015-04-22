@@ -31,7 +31,7 @@ MASK_DWI_t0 <- selectContrast(MRIaggr.Pat1_red,param="MASK_DWI_t0")
 coords <- selectCoords(MRIaggr.Pat1_red)
 
 ## select compute W
-W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),range=sqrt(2),row.norm=TRUE)
 
 ## find spatial groups
 res.Groups <- calcGroupsW(W)
@@ -40,7 +40,7 @@ res.Groups$group_size
 ## display
 multiplot(coords[MASK_DWI_t0==1,],contrast=res.Groups$group,
           legend=FALSE,cex=0.5,
-		  palette=rainbow(10)[-1],index1=list(coords=coords,outline=TRUE))
+          palette=rainbow(10)[-1],index1=list(coords=coords,outline=TRUE))
 
 }
 \concept{calc.}

@@ -25,8 +25,8 @@ If \code{na.rm} is set to \code{TRUE}, the \code{coord} argument will only conta
 }
 \examples{ 
 ## load a nifti file (array format)
-path <- system.file(file.path("nifti"),package = "MRIaggr")
-nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
+nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 dim(nifti.Pat1_TTP_t0)
 
 ## conversion to data frame format

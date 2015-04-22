@@ -19,7 +19,7 @@ Check and initialize the \code{param} argument in MRIaggr methods. For internal 
   \item{accept.mask}{should mask be accepted as a parameter ? \emph{logical}.}
   \item{accept.index}{should index be accepted as a parameter ? \emph{logical}.}
   \item{arg_name}{a short name for the error message ? \emph{character}.}
-  \item{long_name}{the complete name for the error message ? \emph{character}..}
+  \item{long_name}{the complete name for the error message ? \emph{character}.}
   \item{method}{the name of the function that called the initializer. \emph{character}.}
 }
 \details{

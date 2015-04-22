@@ -85,7 +85,7 @@ setMethod(
       }
     }
     .Object@parameter <- parameter
-       
+    
     if(missing(contrast))
     {stop("initialize[Carto3D] : \'contrast\' is missing \n")}
     
@@ -108,7 +108,7 @@ setMethod(
       {voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE) }
       
       contrast <- data.frame(cbind(which(array(TRUE,dim=dim(contrast)),arr.ind=TRUE),
-                                  as.vector(contrast)))
+                                   as.vector(contrast)))
       names(contrast) <- c("i","j","k",parameter)
     }
     
@@ -135,26 +135,35 @@ setMethod(
 # selectContrast
 setMethod(f ="selectContrast", 
           signature = "Carto3D",
-          definition = function(object,num=NULL,na.rm=FALSE,coords=TRUE,
-                                format="any")
+          definition = function(object,num=NULL,na.rm=FALSE,coords=FALSE,
+                                format="data.frame")
           {     
+            #### initialisation ####
+            if(identical(coords,TRUE)){coords <- c("i","j","k")}
+            if(identical(coords,FALSE)){coords <- NULL}
             
             num <- initNum(object=object,num=num)
-            if( format %in% c("any","matrix","data.frame") == FALSE )
+            
+            #### tests ####
+            if( format %in% c("vector","matrix","data.frame") == FALSE )
             {  stop("selectContrast[Carto3D] : wrong specification of \'format\' \n",
-                    "valid formats : \"any\" \"matrix\" \"data.frame\" \n",
+                    "valid formats : \"vector\" \"matrix\" \"data.frame\" \n",
                     "requested format : ",format,"\n")
             }           
             
+            if( (format == "vector") && coords==TRUE ){
+              stop("selectContrast[MRIaggr] : wrong specification of \'format\' \n",
+                   "vector format is not available when coords are requested \n")
+            }
+            
+            #### selection ####
             res <- object@contrast[object@contrast$k %in% num,]
             
             if(na.rm==TRUE){
               res <- res[is.na(res[,selectParameter(object)])==FALSE,]
             }
             
-            if(coords==FALSE){
-              res <- res[,selectParameter(object)]
-            }
+            res <- res[,c(coords,selectParameter(object))]
             
             if(format=="matrix")
             { res <- as.matrix(res)  }
@@ -170,7 +179,7 @@ setMethod(f ="selectContrast",
 # selectCoords
 setMethod(f ="selectCoords",
           signature ="Carto3D",
-          definition = function(object,coords=c("i","j","k"),num=NULL,format="any")
+          definition = function(object,coords=c("i","j","k"),num=NULL,format="data.frame")
           { 
             if(any(coords %in% c("i","j","k")==FALSE)){
               stop("selectCoords[Carto3D] : wrong specification of \'coords\' \n",
@@ -178,14 +187,8 @@ setMethod(f ="selectCoords",
                    "proposed \'coords\' : ",paste(coords,sep=" "),"\n")
             }
             
-            if( format %in% c("any","matrix","data.frame") == FALSE )
-            {  stop("selectCoords[Carto3D] : wrong specification of \'format\' \n",
-                    "valid formats : \"any\" \"matrix\" \"data.frame\" \n",
-                    "requested format : ",format,"\n")
-            } 
-            
-            res <- selectContrast(object,coords=TRUE,num=num,
-                                format=format)[,coords]
+            res <- selectContrast(object,coords=coords,num=num,
+                                           format=format)[,coords]
             
             
             if(format=="matrix")
@@ -212,6 +215,13 @@ setMethod(f ="selectIdentifier",
           definition = function(object)
           { return(object@identifier )   }
 )
+
+# selectN
+setMethod(f ="selectN",
+          signature ="Carto3D",
+          definition = function(object,num=NULL)
+          { return( nrow(selectCoords(object,num=num)) ) }
+) 
 
 # selectParameter
 setMethod(f ="selectParameter",
@@ -245,7 +255,7 @@ setMethod(f ="multiplot",
                                 window=FALSE,legend=TRUE,mfrow=NULL,mar=rep(1.5,4),mgp=c(2,0.5,0),pty=NULL,asp=1,bg="lightblue",
                                 xlab="",ylab="",main=NULL,num.main=TRUE,cex.main=1.5,
                                 quantiles.legend=TRUE,digit.legend=3,cex.legend=1.5,mar.legend=c(2,7,2,2),
-                                filename="multiplot",width=1000,height=700,path=NULL,unit="px",res=NA)
+                                filename="multiplot",width=1000,height=500,path=NULL,unit="px",res=NA)
           { 
             if(is.null(main)){
               main <- paste(selectParameter(object)," : ",selectIdentifier(object)," - slice",sep="")
@@ -255,13 +265,14 @@ setMethod(f ="multiplot",
             }
             
             multiplot(object=selectCoords(object=object,num=num,format="data.frame"),
-                         contrast=selectContrast(object=object,num=num,coords=FALSE),
-                         breaks=breaks,type.breaks=type.breaks,palette=palette,col=col,pch=pch,cex=cex,
-                         col.NA=col.NA,pch.NA=pch.NA,xlim=xlim,ylim=ylim,axes=axes,
-                         window=window,legend=legend,mfrow=mfrow,mar=mar,mgp=mgp,pty=pty,asp=asp,bg=bg,
-                         xlab=xlab,ylab=ylab,main=main,num.main=num.main,cex.main=cex.main,
-                         quantiles.legend=quantiles.legend,digit.legend=digit.legend,cex.legend=cex.legend,mar.legend=mar.legend,main.legend=selectParameter(object),    
-                         filename=filename,width=width,height=height,path=path,unit=unit,res=res)
+                      contrast=selectContrast(object=object,num=num,coords=FALSE),
+                      breaks=breaks,type.breaks=type.breaks,palette=palette,col=col,pch=pch,cex=cex,
+                      col.NA=col.NA,pch.NA=pch.NA,xlim=xlim,ylim=ylim,axes=axes,
+                      window=window,legend=legend,mfrow=mfrow,mar=mar,mgp=mgp,pty=pty,asp=asp,bg=bg,
+                      xlab=xlab,ylab=ylab,main=main,num.main=num.main,cex.main=cex.main,
+                      quantiles.legend=quantiles.legend,digit.legend=digit.legend,cex.legend=cex.legend,mar.legend=mar.legend,
+                      main.legend=selectParameter(object),    
+                      filename=filename,width=width,height=height,path=path,unit=unit,res=res)
           }
 )
 

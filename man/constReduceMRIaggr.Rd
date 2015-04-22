@@ -22,8 +22,8 @@ Construct a \code{\linkS4class{MRIaggr}} object restricted to a subset of observ
 }
 \examples{
 ## load nifti files and convert them to MRIaggr
-path <- system.file(file.path("nifti"),package = "MRIaggr")
-ls.array <- list(readMRI(file=file.path(path,"T2_GRE_t0"),format="nifti"))
+path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
+ls.array <- list(readMRI(file=file.path(path.Pat1,"T2_GRE_t0"),format="nifti"))
 MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param="T2_GRE_t0")
 
 ## create the cerebral mask

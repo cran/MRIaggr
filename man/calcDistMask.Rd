@@ -23,6 +23,9 @@ Compute the euclidean distance to a spatial group.
   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.}
 }  
 \details{
+
+This function requires to have installed the \emph{RANN} package to work.
+
 ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 
@@ -30,7 +33,7 @@ The \code{Neighborhood} argument can be a \emph{matrix} or an \emph{array} defin
 or a name indicating which type of neighborhood should be used (see the details section of \code{\link{initNeighborhood}}).
 
 FUNCTION: \cr
-This function relies on the \code{\link{nn2}} function of the \emph{RANN} package.
+This function relies on the \code{nn2} function of the \emph{RANN} package.
 }
 \value{
   An \emph{data.frame} containing in row the observations and in columns the distance parameters.

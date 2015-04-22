@@ -302,7 +302,7 @@ setGeneric(name="calcHemisphere",
              res <- standardGeneric("calcHemisphere")
              
              if(res$update.object==TRUE){
-            
+           
                # affect
                nom_object <- as.character(substitute(object))
                affectHemisphere(object,overwrite=res$overwrite,trace=res$trace) <- list(midplane=res$res$midplane,                                                                                            
@@ -535,7 +535,7 @@ setGeneric(name ="calcThresholdMRIaggr",
                nom_object <- as.character(substitute(object))
                default_value <- data.frame(matrix(TRUE,ncol=length(res$name_newparam)))
                names(default_value) <- res$name_newparam
-             
+               
                affectContrast(object,param=res$name_newparam,default_value=default_value,overwrite=res$overwrite,trace=res$trace) <- res$res[,res$name_newparam]
                
                # update history
@@ -578,7 +578,7 @@ setGeneric(name="calcTissueType",
                  envir=.GlobalEnv)",
                  sep="")))
              }
-                          
+             
              return(invisible(res$res))
              
            }
@@ -619,7 +619,7 @@ setGeneric(name ="outlineMRIaggr",
              res <- standardGeneric("outlineMRIaggr")
              
              if(res$update.object==TRUE){
-            
+               
                # affect
                nom_object <- as.character(substitute(object))
                default_value <- data.frame(TRUE)
@@ -711,6 +711,14 @@ setGeneric(name="constReduceMRIaggr",
            }
 )
 
+# MRIaggr
+setGeneric(name="writeMRIaggr",
+           def=function(object,...){
+             standardGeneric("writeMRIaggr")
+           }
+)
+
+
 #### init.  ####
 # Carto3D MRIaggr
 setGeneric(name="initNum",
@@ -723,5 +731,12 @@ setGeneric(name="initNum",
 setGeneric(name="initParameter",
            def=function(object,...){
              standardGeneric("initParameter")
+           }
+)
+
+# MRIaggr
+setGeneric(name="initMask",
+           def=function(object,...){
+             standardGeneric("initMask")
            }
 )

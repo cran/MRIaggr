@@ -39,8 +39,7 @@ It is the intersection of all these three subsets is extracted.
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 calcGroupsMask(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
-               distband=6,
-               spatial_res=c(1.875,1.875,6),
+               W.range=6,W.spatial_res=c(1.875,1.875,6),
                update.object=TRUE,overwrite=TRUE)
 
 ## select all elements in the slot @ls_descStats
@@ -54,7 +53,7 @@ selectParameter(MRIaggr.Pat1_red,type="ls_descStats")
 res <- selectDescStats(MRIaggr.Pat1_red,name="GroupsLesion")
 
 ## compute and affect a neighborhood matrix
-calcW(MRIaggr.Pat1_red,distband=3,update.object=TRUE,overwrite=TRUE,
+calcW(MRIaggr.Pat1_red,range=3,update.object=TRUE,overwrite=TRUE,
       spatial_res=c(1.875,1.875,6))
 
 ## select the neighborhood matrix for a subset of observations

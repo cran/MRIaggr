@@ -374,6 +374,7 @@ M[8,8] <- -7
 A <- array(c(rep(1,length(M)),M,rep(10,length(M))),dim=c(10,10,3))
 
 #### test 2
+M <- matrix(rnorm(n),nrow=sqrt(n),ncol=sqrt(n))
 M[] <- 1
 M[8,8] <- -7
 A <- array(c(1,M,1),dim=c(10,10,3))
@@ -451,7 +452,7 @@ coords <- rbind(which(matrix(0,nrow=n,ncol=n)==0,arr.ind = TRUE),
 res.Groups <- calcGroupsCoords(coords=coords,
                                Neighborhood="2D_N4")
 
-W <- calcW(object=as.data.frame(coords),distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=as.data.frame(coords),range=sqrt(2),row.norm=TRUE)
 if(try(require(fields))){
   fields::image.plot(as.matrix(W))
 }
@@ -516,7 +517,7 @@ if(require(spam) && require(Matrix)){
                   which(matrix(0,nrow=n,ncol=n)==0,arr.ind = TRUE)+100
   )
   
-  W <- calcW(object=as.data.frame(coords),distband=sqrt(2),row.norm=TRUE)
+  W <- calcW(object=as.data.frame(coords),range=sqrt(2),row.norm=TRUE)
   if(try(require(fields))){
     fields::image.plot(as.matrix(W))
   }
@@ -537,7 +538,7 @@ MASK_DWI_t0 <- selectContrast(MRIaggr.Pat1_red,param="MASK_DWI_t0")
 coords <- selectCoords(MRIaggr.Pat1_red)
 
 ## select compute W
-W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=as.data.frame(coords[MASK_DWI_t0==1,]),range=sqrt(2),row.norm=TRUE)
 
 ## find spatial groups
 res.Groups <- calcGroupsW(W)
@@ -588,7 +589,7 @@ multiplot(selectCoords(MRIaggr.Pat1_red),main="TTP_t0_thC - slice",
 ## 2nd correction
 maskN <- c("MASK_T2_FLAIR_t2","MASK_DWI_t0")
 data[,maskN] <- selectContrast(MRIaggr.Pat1_red,param=maskN)
-W <- calcW(MRIaggr.Pat1_red,distband=sqrt(2*1.875^2+0.001),row.norm=TRUE,upper=NULL,
+W <- calcW(MRIaggr.Pat1_red,range=sqrt(2*1.875^2+0.001),row.norm=TRUE,upper=NULL,
                     spatial_res=c(1.875,1.875,6))
 max(rowSums(W>0))
 
@@ -603,7 +604,7 @@ multiplot(selectCoords(MRIaggr.Pat1_red),main="TTP_t0_thCC  - slice",
 #### >f calcW ####
 # ?calcW
 # findMethods(MRIaggr:::calcW,classes="data.frame")$data.frame
-# .local <- function (object, distband, method = "euclidean", 
+# .local <- function (object, range, method = "euclidean", 
 #                     upper = NULL, format = "dgCMatrix", row.norm = FALSE, 
 #                     spatial_res = rep(1, ncol(object))) 
   
@@ -611,27 +612,27 @@ multiplot(selectCoords(MRIaggr.Pat1_red),main="TTP_t0_thCC  - slice",
 #### test
 data("MRIaggr.Pat1_red", package="MRIaggr")
 coords <- selectCoords(MRIaggr.Pat1_red,num=1:3,hemisphere="lesion")
-W <- calcW(object=coords,distband=sqrt(2))
+W <- calcW(object=coords,range=sqrt(2))
 W[1:10,1:10]
 
-W <- calcW(object=coords,distband=sqrt(2),upper=TRUE)
+W <- calcW(object=coords,range=sqrt(2),upper=TRUE)
 W[1:10,1:10]
 
 
-W <- calcW(object=coords,distband=sqrt(2),upper=FALSE,row.norm=TRUE)
-W[1:10,1:10]
-table(rowSums(W))
-
-W <- calcW(object=coords,distband=sqrt(2),upper=TRUE,row.norm=TRUE)
+W <- calcW(object=coords,range=sqrt(2),upper=FALSE,row.norm=TRUE)
 W[1:10,1:10]
 table(rowSums(W))
 
-W <- calcW(object=coords,distband=sqrt(2),spatial_res=c(1.875,1.875,6))
+W <- calcW(object=coords,range=sqrt(2),upper=TRUE,row.norm=TRUE)
 W[1:10,1:10]
-W <- calcW(object=coords,distband=6,spatial_res=c(1.875,1.875,6))
+table(rowSums(W))
+
+W <- calcW(object=coords,range=sqrt(2),spatial_res=c(1.875,1.875,6))
+W[1:10,1:10]
+W <- calcW(object=coords,range=6,spatial_res=c(1.875,1.875,6))
 W[1:10,1:10]
 
-W <- calcW(object=coords,distband=sqrt(2),format="spam")
+W <- calcW(object=coords,range=sqrt(2),format="spam")
 W[1:10,1:10]
 
 
@@ -643,32 +644,32 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 coords <- selectCoords(MRIaggr.Pat1_red,num=1:3,hemisphere="lesion")
 
 ## full W 
-W <- calcW(object=coords,distband=sqrt(2))
+W <- calcW(object=coords,range=sqrt(2))
 W[1:10,1:10]
 table(rowSums(W)    )
 
 ## full W normalized by row
-W <- calcW(object=coords,distband=sqrt(2),row.norm=TRUE)
+W <- calcW(object=coords,range=sqrt(2),row.norm=TRUE)
 W[1:10,1:10]
 table(rowSums(W)    )
 
 ## upper W 
-W <- calcW(object=coords,distband=sqrt(2),upper=TRUE)
+W <- calcW(object=coords,range=sqrt(2),upper=TRUE)
 W[1:10,1:10]
 
 #### >g EDK #### 
 # pas exporte
 # ?EDK
 # MRIaggr:::EDK
-# function (x, distband, power = 2) 
+# function (x, bandwidth, power = 2) 
 
 #### test
-distband <- 2
+bandwidth <- 2
 power <- 2
 x <- 10
 
-MRIaggr:::EDK(x,distband,power)
-1/(sqrt(2*pi*2^distband))*exp(-(x/distband)^power)
+MRIaggr:::EDK(x,bandwidth,power)
+1/(sqrt(2*pi*2^bandwidth))*exp(-(x/bandwidth)^power)
 
 #### example
 

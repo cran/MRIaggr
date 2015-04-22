@@ -14,6 +14,9 @@ calcAUPRC(x,y,subdivisions=10000,performance=NULL)
   \item{performance}{an object of class \code{performance} can be supplied instead of arguments \code{x} and \code{y}.}  
 }
 \details{
+
+This function requires to have installed the \emph{ROCR} package to work.
+
 ARGUMENTS: \cr
 \code{y} must have exactly two levels.
 

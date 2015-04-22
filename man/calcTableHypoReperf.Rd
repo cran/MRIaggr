@@ -121,7 +121,7 @@ calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0","TTP_t1","MTT_t1"),
          threshold=1:10,name_newparam=c("TTP.GR_t0","MTT.GR_t0","TTP.GR_t1","MTT.GR_t1"),
          rm.CSF=TRUE,hemisphere="lesion",
-         GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W=NULL,W.distband=sqrt(2),
+         GRalgo=TRUE,seed=c("MASK_T2_FLAIR_t2","MASK_DWI_t0"),W.range=sqrt(2),
          update.object=TRUE,overwrite=TRUE)
 
 res <- calcTableHypoReperf(MRIaggr.Pat1_red,param=c("TTP.GR","MTT.GR"),time=c("t0","t1"),
