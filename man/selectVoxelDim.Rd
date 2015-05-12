@@ -1,15 +1,15 @@
-\name{selectVoxelDim}
+\name{selectFieldDim}
 \title{Extract the data dimension}
-\alias{selectVoxelDim}
-\alias{selectVoxelDim,Carto3D-method}
-\alias{selectVoxelDim,MRIaggr-method}
+\alias{selectFieldDim}
+\alias{selectFieldDim,Carto3D-method}
+\alias{selectFieldDim,MRIaggr-method}
 \description{
-Extract the spatial dimensions of the contrast data from a \code{\linkS4class{Carto3D}} or from a \code{\linkS4class{MRIaggr}} object.
+Extract the dimensions of the spatial field from a \code{\linkS4class{Carto3D}} or from a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
-\S4method{selectVoxelDim}{Carto3D}(object)
+\S4method{selectFieldDim}{Carto3D}(object)
 
-\S4method{selectVoxelDim}{MRIaggr}(object)
+\S4method{selectFieldDim}{MRIaggr}(object)
 }
 \arguments{
   \item{object}{an \code{object} of class \code{\linkS4class{Carto3D}} or \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -19,20 +19,20 @@ Extract the spatial dimensions of the contrast data from a \code{\linkS4class{Ca
 }
 \examples{
 #### 1- Carto3D method ####
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.Pat1 <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
 
 ## selection
-selectVoxelDim(Carto3D.Pat1_TTP_t0)
+selectFieldDim(Carto3D.Pat1_TTP_t0)
 
 #### 2- MRIaggr method ####
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
-selectVoxelDim(MRIaggr.Pat1_red)
+selectFieldDim(MRIaggr.Pat1_red)
 }
 \concept{select.}
 \keyword{methods}

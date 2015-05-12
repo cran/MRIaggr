@@ -31,10 +31,7 @@ Information about the \code{hemisphere} argument can be found in the details sec
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-\dontrun{
-## perform segmentation  (call mritc)
-calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
-			   
+\dontrun{		   
 ## compute the distribution of DWI and T2 FLAIR for the CSF, WM, GM and lesion observations
 res <- calcDistTissues(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),
                         class=c("CSF","WM","GM","MASK_DWI_t0")

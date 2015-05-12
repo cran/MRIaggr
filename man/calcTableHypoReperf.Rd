@@ -116,8 +116,6 @@ selectTable(MRIaggr.Pat1_red,"reperfusion")["4","PCshift_reperf.TTP"]
 #### 2- via calcThresholdMRIaggr ####
 ## perform segmentation  (call mritc)
 \dontrun{
-calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
-
 calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0","TTP_t1","MTT_t1"),
          threshold=1:10,name_newparam=c("TTP.GR_t0","MTT.GR_t0","TTP.GR_t1","MTT.GR_t1"),
          rm.CSF=TRUE,hemisphere="lesion",

@@ -34,7 +34,7 @@ Information about the \code{niter} and \code{beta} arguments can be found in \co
   
 FUNCTION: \cr
 This function uses the \code{mritc.bayes} function of the \emph{mritc} package to compute the probabilistic segmentation.
-T1 sequence is the recommanded sequence to identify the various tissue types but T2 gradiant echo may also be used.
+T1 sequence is the recommanded sequence to identify the various tissue types but T2 gradient echo may also be used.
 
 The initialization function \code{initOtsu} was found much more slower when the contrast parameter values have a large number of digit. The \code{digit} argument enable to round the contrast values ONLY for the computation of the initialization values.
 }

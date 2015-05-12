@@ -1,3 +1,19 @@
+	CHANGES IN VERSION 1.1 and 1.1.2
+
+SIGNIFICANT USER-VISIBLE CHANGES
+o  affect methods have been renamed in alloc methods.
+o  calcContralateral has been renamed calcContralateral.
+o  calcHemisphere method has a new optimization step using Nelder-Mead method.
+o  voxelDim attribute has been renamed fieldDim.
+o  voxelSize attribute has been renamed voxelDim.
+
+NEW FEATURES
+
+BUG FIXES
+
+INTERNAL CHANGES
+o    Optimization of the calcHemisphere method.
+
 	CHANGES IN VERSION 1.0 and 1.1
 
 SIGNIFICANT USER-VISIBLE CHANGES
@@ -16,6 +32,6 @@ o    Fix an issue with calcFilter.
 
 INTERNAL CHANGES
 o    Minor modification of the R code of functions calcGroupMask, calcRegionalContrast, calcThresholdMRIaggr.
-o    Optimisation of the calcHemisphere method.
+o    Optimization of the calcHemisphere method.
 o    Slots names of the MRIaggr object have been modified
 

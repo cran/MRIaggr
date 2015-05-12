@@ -48,7 +48,7 @@ par(mfrow=c(2,4),mar=rep(1.5,4),mgp=c(2,0.5,0))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
              legend=TRUE,window=NULL,main="raw - slice ")
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
-			 norm_mu="controlateral",norm_sigma="controlateral",
+			 norm_mu="contralateral",norm_sigma="contralateral",
              legend=TRUE,window=NULL,main="normalized - slice ")
 
 ## extract normalization

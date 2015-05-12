@@ -30,9 +30,9 @@ Information about the \code{hemisphere} argument can be found in the details sec
 Possible values for \code{index} are:
 \itemize{
 \item \code{NULL} : the argument is skiped, no additional points are displayed.
-\item \emph{character} : the name of a logical parameter contained in the object (if called by a \code{MRIaggr} method)
+\item \emph{character} : the name of a logical parameter contained in the object (if called by an \code{MRIaggr} method)
 \item \emph{data.frame} with 3 columns named \code{"i"},\code{"j"},\code{"k"} containing the coordinates of the points to display.
-\item \emph{list} with an element named \code{"data"} containing the coordinates of the points to display (see previous point) or the name of a logical parameter (if called by a \code{MRIaggr} method). \cr
+\item \emph{list} with an element named \code{"data"} containing the coordinates of the points to display (see previous point) or the name of a logical parameter (if called by an \code{MRIaggr} method). \cr
 It can also contain  \code{"cex"}, \code{"pch"} and \code{"col"} component to specify the how the points should be displayed. \cr
 To only display the outline of the spatial group instead of the spatial group itself, the list must contains an element named \code{"outline"} that have for value \code{TRUE}.  \cr
 The type of neighborhood used to determine the outline can be specified with a \code{"filter"} element in the list. The default neighborhood is \code{"2D_N4"}.

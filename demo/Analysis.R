@@ -13,9 +13,7 @@ str(MRIaggr.Pat1_red,max.level=2)
 summary(MRIaggr.Pat1_red,history=TRUE,param=TRUE)
 
 #### 0- pre-processing ####
-res <- calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
-						 
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="1NN_penalised",param.ref="T1_t0",
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="1NN_penalised",param.ref="T1_t0",
                          distband=1,lambda=1,
                          trace=TRUE,overwrite=TRUE,update.object=TRUE)
 
@@ -56,7 +54,7 @@ plotDistClass(MRIaggr.Pat1_red,param="DWI_t0",bw.adjust=2,
               col=c("red","green","blue","black"),
               class=c("CSF","WM","GM","MASK_T2_FLAIR_t2"))
 
-# boxplot for necrosis vs healthy for several parameters
+# boxplot for lesioned vs intact voxels for several parameters
 boxplotMask(MRIaggr.Pat1_red,param=c("DWI_t0","TTP_t0","MTT_t0"),mask="MASK_T2_FLAIR_t2",
             as.logical=TRUE)
 
@@ -98,7 +96,7 @@ df.contrastMASK
 param <- c( "DWI_t0","DWI_t0_regional","MTT_t0","TTP_t0","MTT_t0_regional","TTP_t0_regional")
 data <- selectContrast(MRIaggr.Pat1_red,param=param,coords=TRUE,
                     hemisphere="lesion",
-                    norm_mu="controlateral",norm_sigma="controlateral")
+                    norm_mu="contralateral",norm_sigma="contralateral")
 data$MASK_T2_FLAIR_t2 <- as.logical(selectContrast(MRIaggr.Pat1_red,
                            param="MASK_T2_FLAIR_t2",hemisphere="lesion",format="vector"))
 

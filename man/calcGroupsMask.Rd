@@ -24,6 +24,8 @@ Compute the spatial groups defined by a binary parameter.
   \item{overwrite}{if spatial groups are already stored in \code{object@ls_descStats}, can they be overwritten ? \emph{logical}.}  
 }
 \details{
+This function requires to have installed the \emph{Matrix} and the \emph{spam} package to work.
+
 FUNCTION: \cr
 Call the \code{\link{calcGroupsW}} function.
 }

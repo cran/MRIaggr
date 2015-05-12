@@ -21,7 +21,7 @@ options(max.print=10000)
 
 #### example 
 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## directories for storage

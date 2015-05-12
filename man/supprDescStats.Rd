@@ -3,7 +3,7 @@
 \alias{supprDescStats<-}
 \alias{supprDescStats<-,MRIaggr-method}
 \description{
-Remove an element from the \code{ls_descStat} attribute of a MRIaggr object.
+Remove an element from the \code{ls_descStat} attribute of a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
 \S4method{supprDescStats}{MRIaggr}(object,trace=TRUE) <- value
@@ -17,7 +17,7 @@ Remove an element from the \code{ls_descStat} attribute of a MRIaggr object.
   None.
 }
 \seealso{ 
- \code{\link{affectDescStats<-}} to affect an element to the ls_descStat attribute. \cr
+ \code{\link{allocDescStats<-}} to allocate an element to the ls_descStat attribute. \cr
  \code{\link{selectParameter}} to display the elements of the ls_descStat attribute.
 }
 \examples{
@@ -33,6 +33,6 @@ supprDescStats(MRIaggr.Pat1_red) <- "index_sauve"
 ## remaining elements in @ls_descStats
 selectParameter(MRIaggr.Pat1_red,"ls_descStats")
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

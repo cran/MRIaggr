@@ -1,12 +1,12 @@
-\name{affectHemisphere}
-\title{Affect the position of the mid-saggital plan}
-\alias{affectHemisphere<-}
-\alias{affectHemisphere<-,MRIaggr-method}
+\name{allocHemisphere}
+\title{Allocate the position of the mid-saggital plan}
+\alias{allocHemisphere<-}
+\alias{allocHemisphere<-,MRIaggr-method}
 \usage{
-\S4method{affectHemisphere}{MRIaggr}(object,overwrite=FALSE,trace=TRUE) <- value
+\S4method{allocHemisphere}{MRIaggr}(object,overwrite=FALSE,trace=TRUE) <- value
 }
 \description{
-Affect information about the position of the mid-saggital plan to a \code{\linkS4class{MRIaggr}} object.
+Allocate information about the position of the mid-saggital plan to a \code{\linkS4class{MRIaggr}} object.
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -19,9 +19,9 @@ ARGUMENTS: \cr
 The \code{"midplane"} element indicates the position of the observations of the mid-saggital plan. 
 It has to be a two columns \emph{data.frame} with the coordinates \code{("i","j")} in columns and the observations in rows. 
 
-The \code{"data"} element must contains the position of each voxel relatively to the mid-saggital plan (column \code{"i_hemisphere"} and \code{"j_hemisphere"}) the hemisphere (\code{"left"}, \code{"right"} or \code{"undefined"}) to which the voxel belongs (column \code{"hemisphere"}). 
+The \code{"data"} element must contains the position of each voxel with respect to the mid-sagittal plan (column \code{"i_hemisphere"} and \code{"j_hemisphere"}) the hemisphere (\code{"left"}, \code{"right"} or \code{"undefined"}) to which the voxel belongs (column \code{"hemisphere"}). 
 
-The \code{"hemispheres"} element indicates in which hemisphere is the lesion (denoted by \code{"lesion"}). The others hemispheries are denoted by \code{"controlateral"}.
+The \code{"hemispheres"} element indicates in which hemisphere is the lesion (denoted by \code{"lesion"}). The others hemispheries are denoted by \code{"contralateral"}.
 It has to be a one line two columns \emph{data.frame} with names \code{"left"} \code{"right"}.
 }
 \seealso{
@@ -35,21 +35,12 @@ It has to be a one line two columns \emph{data.frame} with names \code{"left"} \
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-## automatic affectation
-\dontrun{
-calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
-               update.object=TRUE,overwrite=TRUE)
-}
-\dontshow{
-resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,i_test=1,j_test=1,angle_test=1,
+## automatic allocation
+resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",gridSearch=FALSE,
                           update.object=TRUE,overwrite=TRUE)
-}		
 
-## manual affectation
-\dontrun{
-resHemi <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0")
-}
-affectHemisphere(MRIaggr.Pat1_red,overwrite=TRUE) <- list(midplane=resHemi$midplane,
+## manual allocation
+allocHemisphere(MRIaggr.Pat1_red,overwrite=TRUE) <- list(midplane=resHemi$midplane,
                                                           data=resHemi$data)
 
 ## display
@@ -63,6 +54,6 @@ multiplot(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,midplane=TRUE,window=FALSE,
 selectMidplane(MRIaggr.Pat1_red)
 selectHemispheres(MRIaggr.Pat1_red)
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

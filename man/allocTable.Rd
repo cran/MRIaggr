@@ -1,12 +1,12 @@
-\name{affectTable}
-\title{Affect volumic information}
-\alias{affectTable<-}
-\alias{affectTable<-,MRIaggr-method}
+\name{allocTable}
+\title{Allocate volumic information}
+\alias{allocTable<-}
+\alias{allocTable<-,MRIaggr-method}
 \description{
-Affect volumic information to a \code{\linkS4class{MRIaggr}} object.
+Allocate volumic information to a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
-\S4method{affectTable}{MRIaggr}(object,type,overwrite=FALSE,trace=TRUE) <- value
+\S4method{allocTable}{MRIaggr}(object,type,overwrite=FALSE,trace=TRUE) <- value
 }
 
 \arguments{
@@ -35,12 +35,12 @@ A valid format should match the result of the \code{calcTableHypoReperf} and \co
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 #### 1- lesion ####
-## manual affectation
+## manual allocation
 maskN <- c("MASK_DWI_t0","MASK_T2_FLAIR_t2")
 resTable <- calcTableLesion(MRIaggr.Pat1_red,maskN=maskN,as.logical=TRUE)
-affectTable(MRIaggr.Pat1_red,type="lesion",overwrite=TRUE) <- resTable
+allocTable(MRIaggr.Pat1_red,type="lesion",overwrite=TRUE) <- resTable
 
-## automatic affectation
+## automatic allocation
 resTable <- calcTableLesion(MRIaggr.Pat1_red,maskN=maskN,
                             as.logical=TRUE,update.object=TRUE,overwrite=TRUE)
 
@@ -48,18 +48,18 @@ resTable <- calcTableLesion(MRIaggr.Pat1_red,maskN=maskN,
 selectTable(MRIaggr.Pat1_red,type="lesion")
 
 #### 2- hypoperfusion and reperfusion ####
-## manual affectation
+## manual allocation
 resTable <- calcTableHypoReperf(MRIaggr.Pat1_red,param=c("TTP","MTT"),time=c("t0","t1"))
-affectTable(MRIaggr.Pat1_red,type="hypoperfusion",overwrite=TRUE) <- resTable$volume_hypo
-affectTable(MRIaggr.Pat1_red,type="reperfusion",overwrite=TRUE) <- resTable$volume_reperf
+allocTable(MRIaggr.Pat1_red,type="hypoperfusion",overwrite=TRUE) <- resTable$volume_hypo
+allocTable(MRIaggr.Pat1_red,type="reperfusion",overwrite=TRUE) <- resTable$volume_reperf
 
-## automatic affectation
+## automatic allocation
 resTable <- calcTableHypoReperf(MRIaggr.Pat1_red,param=c("TTP","MTT"),time=c("t0","t1"),
                                 update.object=TRUE,overwrite=TRUE)
 
 ## display
 selectTable(MRIaggr.Pat1_red,type="reperfusion")
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

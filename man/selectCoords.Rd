@@ -37,7 +37,7 @@ It is the intersection of all these three subsets that is extracted.
 }
 \seealso{
  \code{\link{calcHemisphere}} to identify the hemispheres. \cr
- \code{\link{affectHemisphere<-}} and \code{\link{affectContrast<-}} to affect hemispheres obtained from an external source.
+ \code{\link{allocHemisphere<-}} and \code{\link{allocContrast<-}} to allocate hemispheres obtained from an external source.
 }
 \examples{
 #### 1- Carto3D method ####

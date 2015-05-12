@@ -46,7 +46,7 @@ res <- selectContrast(Carto3D.Pat1_TTP_t0,format="matrix",coords=FALSE)
 res <- selectContrast(Carto3D.Pat1_TTP_t0,format="matrix",coords=FALSE,na.rm=TRUE)
 
 #### example 
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -80,7 +80,7 @@ res <- selectCoords(Carto3D.Pat1_TTP_t0,num=1,coords="i",format="data.frame")
 res <- selectCoords(Carto3D.Pat1_TTP_t0,num=1)
 
 #### example
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -104,7 +104,7 @@ dim(coords2)
 #### test
 
 #### example
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -140,7 +140,7 @@ selectVoxelDim(Carto3D.Pat1_TTP_t0)
 #### test
 
 #### example
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -158,7 +158,7 @@ selectIdentifier(Carto3D.Pat1_TTP_t0)
 #### test
 
 #### example
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -200,7 +200,7 @@ multiplot(Carto3D.Pat1_TTP_t0,num=1:2,axes=F,main="",num.main=FALSE,
              palette=c("red","blue","green"))
 
 #### example
-## load nifti files and convert them to carto3D
+## load NIFTI files and convert them to carto3D
 path.nifti_files <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.nifti_files,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")

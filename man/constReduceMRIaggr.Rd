@@ -15,13 +15,13 @@ Construct a \code{\linkS4class{MRIaggr}} object restricted to a subset of observ
   \item{keep.index}{should the previous \code{index} parameter be saved in the \code{ls_descStats} slot ? \emph{logical}.}
 }
 \value{
-  A \code{\linkS4class{MRIaggr}} object.
+  a \code{\linkS4class{MRIaggr}} object.
 }
 \seealso{
 \code{\link{calcBrainMask}} to compute an indicator of the brain observations.
 }
 \examples{
-## load nifti files and convert them to MRIaggr
+## load NIFTI files and convert them to MRIaggr
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list(readMRI(file=file.path(path.Pat1,"T2_GRE_t0"),format="nifti"))
 MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param="T2_GRE_t0")

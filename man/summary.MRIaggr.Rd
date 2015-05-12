@@ -25,7 +25,25 @@
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 show(MRIaggr.Pat1_red)
+
+# display all elements
 summary(MRIaggr.Pat1_red)
+
+# display non-empty elements
+summary(MRIaggr.Pat1_red,trace=0)
+
+# display a summary of the contrast parameters
+summary(MRIaggr.Pat1_red,param=TRUE)
+
+# display a summary of the clinical data
+summary(MRIaggr.Pat1_red,clinic=TRUE)
+
+# display a summary of the elements in descStats
+summary(MRIaggr.Pat1_red,descStats=TRUE)
+
+# display processing methods previously applied on the object
+summary(MRIaggr.Pat1_red,history=TRUE)
+
 }
 \concept{plot.}
 \keyword{methods,summary}

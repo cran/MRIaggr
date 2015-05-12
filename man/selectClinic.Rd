@@ -16,7 +16,7 @@ Extract the clinical data from a \code{\linkS4class{MRIaggr}} object.
   A one line \emph{data.frame} containing the clinical data in columns.
 }
 \seealso{
-  \code{\link{affectClinic<-}} to affect values in the clinic slot. 
+  \code{\link{allocClinic<-}} to allocate values in the clinic slot. 
 }
 \examples{
 ## load a MRIaggr object
@@ -26,8 +26,7 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 res <- selectClinic(MRIaggr.Pat1_red)
 
 ## select only the gender
-res <- selectClinic(MRIaggr.Pat1_red,param="Gender")
-
+res <- selectClinic(MRIaggr.Pat1_red,param="Sex")
 }
 \concept{select.}
 \keyword{methods}

@@ -21,11 +21,12 @@ Possible values for the \code{hemisphere} argument are:
 \item \code{"both"} : indicates the presence of the lesion in both hemispheres.
 \item \code{"left"} : indicates the presence of the lesion in the left hemisphere.
 \item \code{"right"} : indicates the presence of the lesion in the right hemisphere.
-\item \code{"lesion"} : indicates which hemispheres contains the lesion. 
-\item \code{"controlateral"} : indicates which hemispheres are healthy.
+\item \code{"lesion"} : indicates which hemispheres are lesioned. 
+\item \code{"contralateral"} : indicates which hemispheres are intact.
 }
 }
 \examples{
+## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
@@ -33,7 +34,7 @@ selectHemispheres(MRIaggr.Pat1_red)
 selectHemispheres(MRIaggr.Pat1_red,"right")
 selectHemispheres(MRIaggr.Pat1_red,"left")
 selectHemispheres(MRIaggr.Pat1_red,"lesion")
-selectHemispheres(MRIaggr.Pat1_red,"controlateral")
+selectHemispheres(MRIaggr.Pat1_red,"contralateral")
 }        
 \concept{select.}                                    
 \keyword{methods}

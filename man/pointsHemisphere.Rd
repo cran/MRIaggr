@@ -1,18 +1,18 @@
 \name{pointsHemisphere}
-\title{Add the position of the mid-saggital plan}
+\title{Add the position of the mid-sagittal plan}
 \alias{pointsHemisphere}
 \alias{pointsHemisphere,MRIaggr-method}
 \description{
-Add to an existing plot the mid-saggital plan. For internal use.
+Add to an existing plot the mid-sagittal plan. For internal use.
 }
 \usage{
 \S4method{pointsHemisphere}{MRIaggr}(object,col="red",lwd=2,lty=1)
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}.}
-  \item{col}{the color with which the mid-saggital plan will be plotted. \emph{character}.}
+  \item{col}{the color with which the mid-sagittal plan will be plotted. \emph{character}.}
   \item{lwd}{the line width. \emph{postive numeric}.}
-  \item{lty}{the type of line used to represent the mid-saggital plan. \emph{numeric vector}.}
+  \item{lty}{the type of line used to represent the mid-sagittal plan. \emph{numeric vector}.}
 }
 \details{
 ARGUMENTS: \cr

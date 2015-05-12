@@ -1,12 +1,12 @@
-\name{affectClinic}
-\title{Affect clinical data}
-\alias{affectClinic<-}
-\alias{affectClinic<-,MRIaggr-method}
+\name{allocClinic}
+\title{Allocate clinical data}
+\alias{allocClinic<-}
+\alias{allocClinic<-,MRIaggr-method}
 \description{
-Affect clinical data to a \code{\linkS4class{MRIaggr}} object.
+Allocate clinical data to a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
-\S4method{affectClinic}{MRIaggr}(object,add=FALSE,overwrite=FALSE,trace=TRUE) <- value
+\S4method{allocClinic}{MRIaggr}(object,add=FALSE,overwrite=FALSE,trace=TRUE) <- value
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -25,14 +25,14 @@ Affect clinical data to a \code{\linkS4class{MRIaggr}} object.
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-## affect clinical data
-affectClinic(MRIaggr.Pat1_red) <- data.frame(Age=32,Gender="Male",NIHSS_H0="5")
+## allocate clinical data
+allocClinic(MRIaggr.Pat1_red) <- data.frame(Age=32,Sex="Male",NIHSS_H0="5")
 selectClinic(MRIaggr.Pat1_red,param="Age")
 
 ## add a new parameter
-affectClinic(MRIaggr.Pat1_red,add=TRUE,overwrite=TRUE) <- data.frame(City="Lyon")
+allocClinic(MRIaggr.Pat1_red,add=TRUE,overwrite=TRUE) <- data.frame(City="Lyon")
 selectClinic(MRIaggr.Pat1_red)
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

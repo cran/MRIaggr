@@ -3,8 +3,6 @@ useDynLib(MRIaggr)
 # import
 import(Rcpp)
 import(methods)
-import(Matrix)
-importFrom("spam","t","rowSums","as.dgRMatrix.spam","nearest.dist")
 importFrom("stats4","summary")
 
 # export fonctions
@@ -36,14 +34,14 @@ exportClasses(
 	
 # export Methodes
 exportMethods(
-	"affectContrast<-",
-	"affectClinic<-",
-	"affectDescStats<-",
-	"affectHemisphere<-",
-	"affectNormalization<-",
-	"affectTable<-",
+	"allocContrast<-",
+	"allocClinic<-",
+	"allocDescStats<-",
+	"allocHemisphere<-",
+	"allocNormalization<-",
+	"allocTable<-",
 	"calcBrainMask",
-	"calcControlateral",
+	"calcContralateral",
 	"calcDistTissues",
 	"calcDistMask",
 	"calcFilter",
@@ -82,8 +80,8 @@ exportMethods(
 	"selectParameter",
 	"selectTable",
 	"selectParameter",
+	"selectFieldDim",
 	"selectVoxelDim",
-	"selectVoxelSize",
 	"summary",
 	"supprContrast<-",
 	"supprDescStats<-",

@@ -48,7 +48,7 @@ This lead to weight the neighboring value in order to offset the incomplete neig
 }
 \examples{
 #### 1- array method ####
-## load a nifti file
+## load a NIFTI file
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 nifti.Pat1_DWI_t0 <- readMRI(file=file.path(path.Pat1,"DWI_t0"),format="nifti")
 
@@ -63,7 +63,7 @@ graphics::image(niftiF.Pat1_DWI_t0[,,1])
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-## compute and affect filtered parameter to the MRIaggr object
+## compute and allocate filtered parameter to the MRIaggr object
 # gaussian filter
 calcFilter(MRIaggr.Pat1_red,param=c("T2_FLAIR_t2","DWI_t0","TTP_t0"),
            filter="2D_G3",w_contrast=FALSE,na.rm=FALSE,update.object=TRUE,overwrite=TRUE)

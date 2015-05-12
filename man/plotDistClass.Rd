@@ -80,9 +80,7 @@ plotDistClass(MRIaggr.Pat1_red,param="DWI_t0",bw.adjust=1,
               from=200,to=300,class=c("MASK_T2_FLAIR_t2"))
 
 # use several classes
-\dontrun{
-calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
-			   
+\dontrun{	   
 plotDistClass(MRIaggr.Pat1_red,param="TTP_t0",bw.adjust=2,
               class=c("CSF","WM","GM","MASK_T2_FLAIR_t2"))
 

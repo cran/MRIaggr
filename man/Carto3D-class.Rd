@@ -10,8 +10,8 @@
   \item{identifier}{the patient identifier. \emph{character}.}  
   \item{parameter}{the name of the contrast parameter. \emph{character}.}   
   \item{contrast}{the contrast and the spatial coordinates of each voxel. \emph{data.frame} with four columns named \code{"i"} \code{"j"} \code{"k"} and the name of the contrast parameter.}  
-  \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}  
-  \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
+  \item{fieldDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}  
+  \item{voxelDim}{the voxel size with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
   \item{default_value}{the reference values of the contrast parameters (e.g. the background value). \emph{character}.}   
 }
 
@@ -23,8 +23,8 @@ Getters :
  \item{\code{\link{selectIdentifier}}}{return the identifier of the patient}
  \item{\code{\link{selectN}}}{return the number of voxels}
  \item{\code{\link{selectParameter}}}{return the names of the parameters stored in the object}
- \item{\code{\link{selectVoxelDim}}}{return the dimension of the lattice containing the observations}
- \item{\code{\link{selectVoxelSize}}}{return the dimension of a voxel}
+ \item{\code{\link{selectFieldDim}}}{return the dimension of the lattice containing the observations}
+ \item{\code{\link{selectVoxelDim}}}{return the dimension of a voxel}
 }
 
 Displayers : 

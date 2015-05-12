@@ -17,7 +17,7 @@ writeMRI(data, file, format, gzipped=TRUE, verbose=FALSE, size="NA_integer_")
   }
 \details{
 
-This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to analyze or nifti.
+This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to \code{"analyze"} or \code{"nifti"}.
 
 ARGUMENTS :
 \code{file} argument corresponds to:
@@ -30,7 +30,7 @@ ARGUMENTS :
 FUNCTION : \cr
 This function is inspired from the \code{writeMRI} function of the mritc package. It calls
 \code{writeANALYZE} of the oro.nifti package to write analyze files, 
-\code{writeNIfTI} of the oro.nifti package to write nifti files, 
+\code{writeNIfTI} of the oro.nifti package to write NIFTI files, 
 and \code{writeBin} of the base package to write rawb.gz.
 }
 \value{

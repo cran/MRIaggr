@@ -26,8 +26,8 @@ Perform a spatial regularization of a binary mask.
   \item{rm.3Dhole}{should the 3D wholes inside the mask be removed ? \emph{logical}.}
   \item{erosion_th}{the threshold below which the observations will be removed by the erosion. \emph{numeric between 0 and 1}.}
  
-  \item{Vmask_min}{mask observations with a proportion of neighbors belonging to the mask lower than \code{Vmask_min} are affected to the background. \emph{numeric between 0 and 1}.}
-  \item{Vbackground_max}{background observations with a proportion of neighbors belonging to the mask higher than \code{Vbackground_max} are affected to the mask. \emph{numeric between 0 and 1}.}
+  \item{Vmask_min}{mask observations with a proportion of neighbors belonging to the mask lower than \code{Vmask_min} are attributed to the background. \emph{numeric between 0 and 1}.}
+  \item{Vbackground_max}{background observations with a proportion of neighbors belonging to the mask higher than \code{Vbackground_max} are attributed to the mask. \emph{numeric between 0 and 1}.}
   \item{Neighborhood_V}{the type of neighborhood to use for the spatial regularization. \emph{character}.}
   
   \item{trace}{should the execution of the function be traced ? \emph{logical}.}

@@ -1,12 +1,12 @@
-\name{affectDescStats}
-\title{Affect non standard elements}
-\alias{affectDescStats<-}
-\alias{affectDescStats<-,MRIaggr-method}
+\name{allocDescStats}
+\title{Allocate non standard elements}
+\alias{allocDescStats<-}
+\alias{allocDescStats<-,MRIaggr-method}
 \usage{
-\S4method{affectDescStats}{MRIaggr}(object,name,overwrite=FALSE,trace=TRUE) <- value
+\S4method{allocDescStats}{MRIaggr}(object,name,overwrite=FALSE,trace=TRUE) <- value
 }
 \description{
-Affect non standard elements to a \code{\linkS4class{MRIaggr}} object.
+Allocate non standard elements to a \code{\linkS4class{MRIaggr}} object.
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -17,7 +17,7 @@ Affect non standard elements to a \code{\linkS4class{MRIaggr}} object.
 }
 \details{
 FUNCTION: \cr
-Contrary to all other \code{affect.} methods that impose restrictions on the objects that can be affected, this function enable to affect freely a R element.
+Contrary to all other \code{alloc.} methods that impose restrictions on the objects that can be allocated, this function enable to allocate freely a R element.
 However these elements will have no interaction with the methods of this package. 
 
 There is an exception for the element \code{"W_euclidean"} that is a reserved space for a neighboring matrix. It must be a \code{dgCMatrix} with row size and column size corresponding to the number of observations.
@@ -33,8 +33,8 @@ There is an exception for the element \code{"W_euclidean"} that is a reserved sp
 ## load a MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-## affect a vector
-affectDescStats(MRIaggr.Pat1_red,name="spatial_res") <- c(1.875,1.875,6)
+## allocate a vector
+allocDescStats(MRIaggr.Pat1_red,name="spatial_res") <- c(1.875,1.875,6)
 
 ## select the corresponding element
 selectDescStats(MRIaggr.Pat1_red,"spatial_res")
@@ -49,5 +49,5 @@ calcGroupsMask(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
 selectDescStats(MRIaggr.Pat1_red,"GroupsLesion")
 
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}

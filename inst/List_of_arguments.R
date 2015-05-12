@@ -8,13 +8,13 @@ Line 20 :   \item{accept.index}{should index be accepted as a parameter ? \emph{
 Line 19 :   \item{accept.mask}{should mask be accepted as a parameter ? \emph{logical}.} # initParameter.Rd
 
 #### 4- add #### 
-Line 14 :   \item{add}{should \code{value} be added to the existing clinical slot ? \emph{logical}.} # affectClinic.Rd
+Line 14 :   \item{add}{should \code{value} be added to the existing clinical slot ? \emph{logical}.} # allocClinic.Rd
 
 #### 5- angle_pos #### 
-Line 21 :   \item{angle_pos}{the angle between the axis of the second coordinate and the mid-saggital plane. \emph{numeric}.} # calcHemi_cpp.Rd
+Line 21 :   \item{angle_pos}{the angle between the axis of the second coordinate and the mid-sagittal plane. \emph{numeric}.} # calcHemi_cpp.Rd
 
 #### 6- angle_test #### 
-Line 28 :   \item{angle_test}{the angle or the number of angle to test. \emph{numeric vector} or \emph{postive integer}.} # calcHemisphere.Rd
+Line 30 :   \item{angle_test}{the angle or the number of angle to test. \emph{numeric vector} or \emph{postive integer}.} # calcHemisphere.Rd
 
 #### 7- arg_name #### 
 Line 18 :   \item{arg_name}{a short name for the error message ? \emph{character}.} # initMask.Rd
@@ -30,7 +30,7 @@ Line 12 :   \item{array}{alternative specification of the spatial coordinates us
 Line 27 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # boxplotMask.Rd
 Line 18 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcDistMask.Rd
 Line 16 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcGroupsMask.Rd
-Line 24 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcHemisphere.Rd
+Line 26 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcHemisphere.Rd
 Line 19 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcROCthreshold.Rd
 Line 18 :   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.} # calcSmoothMask.Rd
 Line 21 :   \item{as.logical}{should \code{mask} be converted to logical ? \code{logical}.} # calcTableHypoReperf.Rd
@@ -129,7 +129,7 @@ Line 31 :   \item{col}{the colors with which the distributions will be displayed
 Line 28 :   \item{col}{the color of the core of the lesion. \emph{character}.} # plotLesion3D.Rd
 Line 16 :   \item{col}{the colors with which the observations will be displayed. \emph{character vector}.} # plotMRI.Rd
 Line 23 :   \item{col}{the colors with which the volumes will be displayed. \emph{character vector} or \emph{numeric vector}.} # plotTableLesion.Rd
-Line 13 :   \item{col}{the color with which the mid-saggital plan will be plotted. \emph{character}.} # pointsHemisphere.Rd
+Line 13 :   \item{col}{the color with which the mid-sagittal plan will be plotted. \emph{character}.} # pointsHemisphere.Rd
 
 #### 28- col.default #### 
 Line 20 :   \item{col.default}{the default color used to plot the observations. \emph{character vector}.} # initIndex.Rd
@@ -138,7 +138,7 @@ Line 20 :   \item{col.default}{the default color used to plot the observations. 
 Line 29 :   \item{col.edge}{the color of the edge of the lesion. \emph{character}.} # plotLesion3D.Rd
 
 #### 30- col.midplane #### 
-Line 62 :   \item{col.midplane}{the color in which the mid-saggital plan should appear. \emph{character}.} # multiplot.Rd
+Line 62 :   \item{col.midplane}{the color in which the mid-sagittal plan should appear. \emph{character}.} # multiplot.Rd
 
 #### 31- col.NA #### 
 Line 60 :   \item{col.NA}{the color to use to plot the NAs. \emph{character}.} # multiplot.Rd
@@ -187,7 +187,7 @@ Line 13 :   \item{coordsI}{the coordinates of each voxel along the first coordin
 Line 14 :   \item{coordsJ}{the coordinates of each voxel along the second coordinate. \emph{integer vector}.} # calcHemi_cpp.Rd
 
 #### 40- d_lim #### 
-Line 16 :   \item{d_lim}{the distance within which the controlateral values are considered. \emph{numeric}.} # calcContro_cpp.Rd
+Line 16 :   \item{d_lim}{the distance within which the contralateral values are considered. \emph{numeric}.} # calcContro_cpp.Rd
 
 #### 41- data #### 
 Line 11 :   \item{data}{the data to export. \emph{three dimensional array}. REQUIRED.} # writeMRI.Rd
@@ -199,12 +199,12 @@ Line 35 :   \item{date}{the date on the latex document. \emph{character}.} # con
 Line 27 :   \item{decreasing}{should the increasing thresholding (\code{FALSE}) or decreasing thresholding (\code{TRUE}) be used. \code{logical}.} # calcThresholdMRIaggr.Rd
 
 #### 44- default_value #### 
-Line 15 :   \item{default_value}{the reference values of the contrast parameters (e.g background values). A one row \emph{data.frame} where the column length must match the length of the \code{param} argument.} # affectContrast.Rd
+Line 15 :   \item{default_value}{the reference values of the contrast parameters (e.g background values). A one row \emph{data.frame} where the column length must match the length of the \code{param} argument.} # allocContrast.Rd
 Line 15 :   \item{default_value}{the reference values of the contrast parameters (e.g. the background value). \emph{character}.}    # Carto3D-class.Rd
 Line 15 :   \item{default_value}{the reference values of the contrast parameters (e.g. the background value). \emph{character} or \code{NULL} leading to search the reference value in \code{array[pos_default_value]}.} # constCarto3D.Rd
 Line 16 :   \item{default_value}{the reference values of the contrast parameters (e.g. the background value). \emph{character} or \code{NULL} leading to search the reference value in \code{array[pos_default_value]}.} # constMRIaggr.Rd
 Line 14 :   \item{default_value}{the element used to fill the missing observations. \emph{numeric}.} # df2array.Rd
-Line 15 :   \item{default_value}{the reference values of the contrast parameters. \emph{data.frame}.}   # MRIaggr-class.Rd
+Line 15 :   \item{default_value}{a reference value for each contrast parameter. \emph{data.frame}.}   # MRIaggr-class.Rd
 Line 19 : 	\item{default_value}{the element used to fill the missing observations. \emph{numeric}.} # writeMRIaggr.Rd
 
 #### 45- descStats #### 
@@ -236,7 +236,7 @@ Line 18 :   \item{dir}{the path to the root directory. This directory should con
 Line 19 :   \item{dirs_plot}{the paths to the subdirectory(ies) containing the image files. \emph{character} or \emph{character vector}.} # initConstLatex.Rd
 
 #### 53- distband #### 
-Line 18 :   \item{distband}{the distance within which the controlateral values are considered. \emph{postive numeric}.} # calcControlateral.Rd
+Line 18 :   \item{distband}{the distance within which the contralateral values are considered. \emph{postive numeric}.} # calcControlateral.Rd
 
 #### 54- edge #### 
 Line 17 :   \item{edge}{should the edges of the lesion be ploted instead of the core ? \emph{logical}.} # plotLesion3D.Rd
@@ -250,15 +250,19 @@ Line 21 :   \item{extra_text}{additionnal text to display. \emph{list of charact
 #### 57- factor #### 
 Line 13 :   \item{factor}{the compression factor. \emph{postive integer}. REQUIRED.} # constCompressMRIaggr.Rd
 
-#### 58- file #### 
+#### 58- fieldDim #### 
+Line 13 :   \item{fieldDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}   # Carto3D-class.Rd
+Line 13 :   \item{fieldDim}{the dimensions of the spatial field (expressed in number of voxels) containing the voxels. \emph{data.frame}.}   # MRIaggr-class.Rd
+
+#### 59- file #### 
 Line 13 :   \item{file}{the file name of the image file. \emph{character}. REQUIRED.} # readMRI.Rd
 Line 12 :   \item{file}{the name of the image file. \emph{character}. REQUIRED.} # writeMRI.Rd
 Line 21 : 	\item{file}{the name of the image file. \emph{character}. REQUIRED.} # writeMRIaggr.Rd
 
-#### 59- filename #### 
+#### 60- filename #### 
 Line 38 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # boxplotMask.Rd
 Line 33 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # calcBrainMask.Rd
-Line 34 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # calcHemisphere.Rd
+Line 40 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # calcHemisphere.Rd
 Line 25 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # calcROCthreshold.Rd
 Line 16 :   \item{filename}{the name of the latex file that should be generated. \emph{character} or \emph{NULL}.} # constLatex.Rd
 Line 37 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # heatmapMRIaggr.Rd
@@ -268,21 +272,21 @@ Line 88 :   \item{filename}{the name of the file used to export the plot. \emph{
 Line 41 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # plotDistClass.Rd
 Line 34 :   \item{filename}{the name of the file used to export the plot. \emph{character}.} # plotTableLesion.Rd
 
-#### 60- fill #### 
+#### 61- fill #### 
 Line 31 :   \item{fill}{should the spatial region be filled ? Otherwise only the edge is used. \emph{logical}.} # outlineMRIaggr.Rd
 
-#### 61- filter #### 
+#### 62- filter #### 
 Line 18 :   \item{filter}{the filter to use. Can be a \emph{matrix} or an \emph{array}, or a name indicating which filter should be used. REQUIRED.} # calcFilter.Rd
 Line 11 :   \item{filter}{the filter to be initialized. \emph{character}.} # initFilter.Rd
 Line 13 :   \item{filter}{the type of filter, see \code{\link{calcFilter}} for more details. \emph{character}.} # plotOutline.Rd
 
-#### 62- filter_default #### 
+#### 63- filter_default #### 
 Line 21 :   \item{filter_default}{the default filter used to define the neighborhood. \emph{character}.}  # initIndex.Rd
 
-#### 63- flipud #### 
+#### 64- flipud #### 
 Line 21 :   \item{flipud}{is a logical variable for vertical flipping of the image (default is TRUE). Only active if \code{format} equals \code{dicom}.} # readMRI.Rd
 
-#### 64- format #### 
+#### 65- format #### 
 Line 26 :   \item{format}{the format of the output. Could be \code{"spam"} or \code{"dgCMatrix"}.} # calcW.Rd
 Line 13 :   \item{format}{the format of the output. Can be \code{"any"},\code{"matrix"},\code{"data.frame"} or \code{"list"}.} # df2array.Rd
 Line 17 :   \item{format}{the export format. Any of \code{"vector"}, \code{"matrix"} and \code{"data.frame"}.}   # initMask.Rd
@@ -292,20 +296,23 @@ Line 23 :   \item{format}{the format of the output. Can be \code{"vector"}, \cod
 Line 13 :   \item{format}{the format of the image file. Can be \code{"raw.gz"}, \code{"analyze"},  \code{"nifti"} or \code{"dicom"}. REQUIRED.}  # writeMRI.Rd
 Line 22 : 	\item{format}{the format of the image file. Can be \code{"raw.gz"}, \code{"analyze"},  \code{"nifti"} or \code{"dicom"}. REQUIRED.}  # writeMRIaggr.Rd
 
-#### 65- from,to #### 
+#### 66- from,to #### 
 Line 27 :   \item{from,to}{the left and right-most points of the grid at which the density is to be estimated. \emph{numeric} or \code{NULL} leading to automatic adjustment. See \code{\link{density}} for more details.} # plotDistClass.Rd
 
-#### 66- GRalgo #### 
+#### 67- GRalgo #### 
 Line 29 :   \item{GRalgo}{should a Growing Region algorithm be used to clean the thresholded parameter ? \code{logical}.} # calcThresholdMRIaggr.Rd
 
-#### 67- gzipped #### 
+#### 68- gridSearch #### 
+Line 28 :   \item{gridSearch}{Should grid search be used to find the mid-sagittal plane ? \emph{logical}.} # calcHemisphere.Rd
+
+#### 69- gzipped #### 
 Line 15 :   \item{gzipped}{is a character string that enables exportation of compressed (.gz) files.} # writeMRI.Rd
 Line 24 : 	\item{gzipped}{is a character string that enables exportation of compressed (.gz) files.} # writeMRIaggr.Rd
 
-#### 68- height #### 
+#### 70- height #### 
 Line 40 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # boxplotMask.Rd
 Line 35 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # calcBrainMask.Rd
-Line 36 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # calcHemisphere.Rd
+Line 42 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # calcHemisphere.Rd
 Line 27 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # calcROCthreshold.Rd
 Line 39 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # heatmapMRIaggr.Rd
 Line 15 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # initDisplayWindow.Rd
@@ -314,7 +321,7 @@ Line 90 :   \item{height}{the height of the device used to export the plot. \emp
 Line 43 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # plotDistClass.Rd
 Line 36 :   \item{height}{the height of the device used to export the plot. \emph{postive numeric}.} # plotTableLesion.Rd
 
-#### 69- hemisphere #### 
+#### 71- hemisphere #### 
 Line 22 :   \item{hemisphere}{the hemisphere to consider. \emph{character}.} # boxplotMask.Rd
 Line 16 :   \item{hemisphere}{the hemisphere to use. \emph{character}.} # calcDistTissues.Rd
 Line 24 :   \item{hemisphere}{the hemisphere to use. \emph{character}.} # calcRegionaContrast.Rd
@@ -332,32 +339,32 @@ Line 13 :   \item{hemisphere}{the hemisphere of interest. \emph{character}. See 
 Line 17 :   \item{hemisphere}{the hemisphere to consider. \emph{character}.} # selectN.Rd
 Line 18 :   \item{hemisphere}{the hemisphere to extract. \emph{character}.} # selectNormalization.Rd
 
-#### 70- hemispheres #### 
-Line 19 :   \item{hemispheres}{the presence or absence of lesion in each cerebral hemisphere. \emph{data.frame}.}   # MRIaggr-class.Rd
+#### 72- hemispheres #### 
+Line 19 :   \item{hemispheres}{the presence or absence of lesion(s) in each hemisphere. \emph{data.frame}.}   # MRIaggr-class.Rd
 
-#### 71- history #### 
-Line 17 :   \item{history}{the list of the \code{calc} or \code{const} methods that have been already applied on the \code{MRIaggr} object. \emph{data.frame}.}   # MRIaggr-class.Rd
+#### 73- history #### 
+Line 17 :   \item{history}{a list of the \code{calc} or \code{const} methods that have been applied to the \code{MRIaggr} object . \emph{data.frame}.}   # MRIaggr-class.Rd
 Line 18 :   \item{history}{should the\code{calc} and \code{const} methods that have been applied to the object be listed ? \emph{logical}.} # summary.MRIaggr.Rd
 
-#### 72- history_front #### 
+#### 74- history_front #### 
 Line 28 :   \item{history_front}{should the propagation front of the GR set be recorded ? \emph{logical}.} # calcGR.Rd
 Line 25 :   \item{history_front}{should the propagation front of the GR set be recorded ? \emph{logical}.} # GRalgo.Rd
 
-#### 73- history_sigma #### 
+#### 75- history_sigma #### 
 Line 26 :   \item{history_sigma}{should the values of sigma be recorded ? \emph{logical}.} # calcGR.Rd
 Line 23 :   \item{history_sigma}{should the values of sigma be recorded ? \emph{logical}.} # GRalgo.Rd
 
-#### 74- history_step #### 
+#### 76- history_step #### 
 Line 27 :   \item{history_step}{should the number of observations included in the growing region set be recorded ? \emph{logical}.} # calcGR.Rd
 Line 24 :   \item{history_step}{should the number of observations included in the GR set be recorded ? \emph{logical}.} # GRalgo.Rd
 
-#### 75- i_pos #### 
-Line 19 :   \item{i_pos}{the first coordinate of the center of the mid-saggital plane. \emph{numeric}.} # calcHemi_cpp.Rd
+#### 77- i_pos #### 
+Line 19 :   \item{i_pos}{the first coordinate of the center of the mid-sagittal plane. \emph{numeric}.} # calcHemi_cpp.Rd
 
-#### 76- i_test #### 
-Line 26 :   \item{i_test}{the abscissa or the number of abscissa to test. \emph{numeric vector} or \emph{positive integer}.} # calcHemisphere.Rd
+#### 78- i_test #### 
+Line 29 :   \item{i_test}{the abscissa or the number of abscissa to test. \emph{numeric vector} or \emph{positive integer}.} # calcHemisphere.Rd
 
-#### 77- identifier #### 
+#### 79- identifier #### 
 Line 10 :   \item{identifier}{the patient identifier. \emph{character}.}   # Carto3D-class.Rd
 Line 13 :   \item{identifier}{the identifier of the patient from which the data originated. \emph{character}. REQUIRED.} # constCarto3D.Rd
 Line 18 :   \item{identifier}{the identifiers of the patients for which the graphics should be displayed. \emph{character vector} or \code{NULL} leading to use all patients.} # constLatex.Rd
@@ -365,110 +372,107 @@ Line 14 :   \item{identifier}{the identifier of the patient to which belong the 
 Line 21 :   \item{identifier}{the identifiers of the patients for which the graphics should be displayed. \emph{character vector} or \code{NULL} leading to use all patients.} # initConstLatex.Rd
 Line 10 :   \item{identifier}{the patient identifier. \emph{character}.}   # MRIaggr-class.Rd
 
-#### 78- index #### 
+#### 80- index #### 
 Line 13 :   \item{index}{the coordinates of additionnal points to display. \emph{data.frame} or \emph{list}.} # initIndex.Rd
 
-#### 79- index_data #### 
+#### 81- index_data #### 
 Line 13 :   \item{index_data}{index of the non NA data.} # filtrage2D_cpp.Rd
 Line 13 :   \item{index_data}{index of the non NA data.} # filtrage2Dmed_cpp.Rd
 Line 16 :   \item{index_data}{index of the non NA data.} # filtrage3D_cpp.Rd
 Line 15 :   \item{index_data}{index of the non NA data.} # filtrage3Dmed_cpp.Rd
 
-#### 80- index_k #### 
+#### 82- index_k #### 
 Line 14 :   \item{index_k}{the index of the observations on the hemisphere of interest. \emph{integer vector}.} # calcContro_cpp.Rd
 
-#### 81- index_k_contro #### 
-Line 15 :   \item{index_k_contro}{the index of the observations on the controlateral hemisphere. \emph{integer vector}.} # calcContro_cpp.Rd
+#### 83- index_k_contro #### 
+Line 15 :   \item{index_k_contro}{the index of the observations on the contralateral hemisphere. \emph{integer vector}.} # calcContro_cpp.Rd
 
-#### 82- index_NNA #### 
+#### 84- index_NNA #### 
 Line 12 :   \item{index_NNA}{the index of the coordinates in a array in C version (beginning at 0). \emph{numerical vector}.} # calcGroupsCoords_cpp.Rd
 
-#### 83- index1 #### 
+#### 85- index1 #### 
 Line 19 :   \item{index1}{the coordinates of additionnal points to display. \emph{data.frame} or \emph{list} or \code{NULL}.} # outlineMRIaggr.Rd
 
-#### 84- index1,index2,index3 #### 
+#### 86- index1,index2,index3 #### 
 Line 44 :   \item{index1,index2,index3}{the coordinates of additionnal points to display. \emph{data.frame} or \emph{list} or \code{NULL}.} # multiplot.Rd
 
-#### 85- indexNum #### 
+#### 87- indexNum #### 
 Line 17 :   \item{indexNum}{the number associated to the index (for display). \emph{numeric}.} # initIndex.Rd
 
-#### 86- init #### 
+#### 88- init #### 
 Line 16 :   \item{init}{should the mask be initialized ? \emph{logical}. See the details section.} # initMask.Rd
 Line 18 :   \item{init}{should the slice numbers be initialized if \code{num} equals \code{NULL} ? \emph{logical}.  } # initNum.Rd
 Line 17 :   \item{init}{should the parameters be initialized if \code{param} equals \code{NULL} ? \emph{logical}.} # initParameter.Rd
 
-#### 87- iter_max #### 
+#### 89- iter_max #### 
 Line 22 :   \item{iter_max}{the maximum number of iterations for the expansion of the growing region. \code{postive integer}.}   # calcGR.Rd
 Line 20 :   \item{iter_max}{the maximum number of iterations for the expansion of the growing region. \code{postive integer}.}   # GRalgo.Rd
 
-#### 88- j_pos #### 
-Line 20 :   \item{j_pos}{the second coordinate of the center of the mid-saggital plane. \emph{numeric}.} # calcHemi_cpp.Rd
+#### 90- j_pos #### 
+Line 20 :   \item{j_pos}{the second coordinate of the center of the mid-sagittal plane. \emph{numeric}.} # calcHemi_cpp.Rd
 
-#### 89- j_test #### 
-Line 27 :   \item{j_test}{the ordinates or the number of ordinates to test. \emph{numeric vector} or \emph{positive integer}.} # calcHemisphere.Rd
-
-#### 90- keep.index #### 
+#### 91- keep.index #### 
 Line 15 :   \item{keep.index}{should the previous \code{index} parameter be saved in the \code{ls_descStats} slot ? \emph{logical}.} # constReduceMRIaggr.Rd
 
-#### 91- kernel #### 
+#### 92- kernel #### 
 Line 26 :   \item{kernel}{the smoothing kernel to use. \emph{character}. See \code{\link{density}} for more details.} # plotDistClass.Rd
 
-#### 92- kmeans.n_groups #### 
+#### 93- kmeans.n_groups #### 
 Line 27 :   \item{kmeans.n_groups}{the number of groups to use in the kmeans algorithm. \emph{postive integer vector}.} # calcBrainMask.Rd
 
-#### 93- kmeans.Neighborhood #### 
+#### 94- kmeans.Neighborhood #### 
 Line 28 :   \item{kmeans.Neighborhood}{the range of the neighborhood. \emph{postive integer}.} # calcBrainMask.Rd
 
-#### 94- label #### 
+#### 95- label #### 
 Line 24 :   \item{label}{the legend that will be displayed under each figure of a given parameter. \emph{character vector} or \code{NULL} leading to use \code{param} for the legend.} # constLatex.Rd
 Line 25 :   \item{label}{the legend that will be displayed under each figure of a given parameter. \emph{character vector} or \code{NULL} leading to use \code{param} for the legend.} # initConstLatex.Rd
 
-#### 95- lambda #### 
+#### 96- lambda #### 
 Line 17 :   \item{lambda}{the importance of the penalization by the distance. \emph{numeric}.} # calcContro_cpp.Rd
 Line 19 :   \item{lambda}{the importance of the penalization. \emph{numeric}.} # calcControlateral.Rd
 
-#### 96- las #### 
+#### 97- las #### 
 Line 34 :   \item{las}{the style of the axis labels. Any of \code{0}, \code{1}, \code{2} or \code{3}.} # heatmapMRIaggr.Rd
 
-#### 97- legend #### 
+#### 98- legend #### 
 Line 19 :   \item{legend}{how should the legend be displayed ? \emph{logical} or \code{NULL}.} # initCol.Rd
 Line 68 :   \item{legend}{how should the legend be displayed ? \emph{logical} or \code{NULL}.} # multiplot.Rd
 Line 26 :   \item{legend}{how should the legend be displayed ? \emph{logical} or \code{NULL}.} # outlineMRIaggr.Rd
 
-#### 98- long_name #### 
+#### 99- long_name #### 
 Line 19 :   \item{long_name}{the complete name for the error message ? \emph{character}.} # initMask.Rd
 Line 22 :   \item{long_name}{the complete name for the error message ? \emph{character}.} # initParameter.Rd
 
-#### 99- ls.array #### 
+#### 100- ls.array #### 
 Line 13 :   \item{ls.array}{the value of the contrast parameter(s) for each observation. \code{list of array}. REQUIRED.} # constMRIaggr.Rd
 
-#### 100- ls.Carto3D #### 
+#### 101- ls.Carto3D #### 
 Line 12 :   \item{ls.Carto3D}{a list of \code{\linkS4class{Carto3D}} objects. REQUIRED.} # Carto3D2MRIaggr.Rd
 
-#### 101- ls_indexK #### 
+#### 102- ls_indexK #### 
 Line 15 :   \item{ls_indexK}{the index of the voxels on each slice. \emph{list}.} # calcHemi_cpp.Rd
 
-#### 102- ls_statDesc #### 
+#### 103- ls_statDesc #### 
 Line 26 :   \item{ls_statDesc}{a slot to store additional data. \emph{list}.}   # MRIaggr-class.Rd
 
-#### 103- lty #### 
+#### 104- lty #### 
 Line 24 :   \item{lty}{the line type used to represent the volume. \emph{numeric vector}.} # plotTableLesion.Rd
-Line 15 :   \item{lty}{the type of line used to represent the mid-saggital plan. \emph{numeric vector}.} # pointsHemisphere.Rd
+Line 15 :   \item{lty}{the type of line used to represent the mid-sagittal plan. \emph{numeric vector}.} # pointsHemisphere.Rd
 
-#### 104- lwd #### 
+#### 105- lwd #### 
 Line 36 :   \item{lwd}{the line width. \emph{postive numeric}.} # plotDistClass.Rd
 Line 25 :   \item{lwd}{the line width. \emph{postive numeric}.} # plotTableLesion.Rd
 Line 14 :   \item{lwd}{the line width. \emph{postive numeric}.} # pointsHemisphere.Rd
 
-#### 105- M_data #### 
+#### 106- M_data #### 
 Line 11 :   \item{M_data}{matrix to which the filter will be applied.} # filtrage2D_cpp.Rd
 Line 11 :   \item{M_data}{matrix to which the filter will be applied.} # filtrage2Dmed_cpp.Rd
 
-#### 106- M_operateur #### 
+#### 107- M_operateur #### 
 Line 12 :   \item{M_operateur}{the filter to be applied.} # filtrage2D_cpp.Rd
 Line 12 :   \item{M_operateur}{the filter to be applied.} # filtrage2Dmed_cpp.Rd
 
-#### 107- main #### 
+#### 108- main #### 
 Line 32 :   \item{main}{an overall title for the plot. \emph{character}.} # boxplotMask.Rd
 Line 31 :   \item{main}{an overall title for the plot. \emph{character}.} # heatmapMRIaggr.Rd
 Line 17 :   \item{main}{an overall title for the legend. \emph{character}.} # legendMRI.Rd
@@ -477,24 +481,24 @@ Line 32 :   \item{main}{an overall title for the plot. \emph{character}.} # plot
 Line 28 :   \item{main}{an overall title for the plot. \emph{character}.} # plotMRI.Rd
 Line 26 :   \item{main}{an overall title for the plot. \emph{character}.} # plotTableLesion.Rd
 
-#### 108- main.legend #### 
+#### 109- main.legend #### 
 Line 86 :   \item{main.legend}{a main title for the legend. \emph{character}.} # multiplot.Rd
 
-#### 109- mar #### 
+#### 110- mar #### 
 Line 33 :   \item{mar}{the number of margin lines to be specified on the four sides of the plot. \emph{positive numeric vector of size 4}.} # heatmapMRIaggr.Rd
 Line 22 :   \item{mar}{the number of margin lines to be specified on the four sides of the plot. \emph{positive numeric vector of size 4}.} # initDisplayWindow.Rd
 Line 14 :   \item{mar}{the number of margin lines to be specified on the four sides of the legend. \emph{positive numeric vector of size 4}.} # legendMRI.Rd
 Line 70 :   \item{mar}{the number of margin lines to be specified on the four sides of the plot. \emph{positive numeric vector of size 4}.} # multiplot.Rd
 Line 28 :   \item{mar}{the number of margin lines to be specified on the four sides of the plot. \emph{positive numeric vector of size 4}.} # plotTableLesion.Rd
 
-#### 110- mar.legend #### 
+#### 111- mar.legend #### 
 Line 85 :   \item{mar.legend}{the number of margin lines to be specified on the four sides of the legend. \emph{numeric vector  of size 4}.} # multiplot.Rd
 
-#### 111- mask #### 
+#### 112- mask #### 
 Line 20 :   \item{mask}{the binary contrast parameter(s) defining the spatial group(s). \emph{character vector}. REQUIRED.} # boxplotMask.Rd
 Line 15 :   \item{mask}{the binary contrast parameter(s) defining the spatial groups from which the distance will be computed. \emph{character vector}. REQUIRED.} # calcDistMask.Rd
 Line 15 :   \item{mask}{the binary contrast parameter that should be used to identifying the spatial groups. \emph{character}. REQUIRED.} # calcGroupsMask.Rd
-Line 23 :   \item{mask}{the binary contrast parameter(s) indicating the lesion. \emph{character vector} or \code{NULL} if no mask is available.} # calcHemisphere.Rd
+Line 25 :   \item{mask}{the binary contrast parameter(s) indicating the lesion. \emph{character vector} or \code{NULL} if no mask is available.} # calcHemisphere.Rd
 Line 18 :   \item{mask}{the binary contrast parameter that will be used as the outcome in the ROC analysis. \emph{character vector}. REQUIRED.} # calcROCthreshold.Rd
 Line 17 :   \item{mask}{the binary contrast parameter that should be smoothed. \emph{character}.} # calcSmoothMask.Rd
 Line 20 :   \item{mask}{the binary contrast parameter indentifing the lesion at time[1]. \code{character} or \code{NULL} if no mask is available.} # calcTableHypoReperf.Rd
@@ -506,16 +510,19 @@ Line 16 :   \item{mask}{the binary contrast parameter indicating the lesion. \em
 Line 18 :   \item{mask}{the binary contrast parameter indicating the lesion. \emph{character}. REQUIRED.} # plotTableLesion.Rd
 Line 17 :   \item{mask}{should the mask be considered as an available contrast parameter ? \emph{logical}.} # selectParameter.Rd
 
-#### 112- maskN #### 
+#### 113- maskN #### 
 Line 14 :   \item{maskN}{the binary contrast parameter indicating the lesion. \emph{character}. REQUIRED.} # calcTableLesion.Rd
 
-#### 113- max_groups #### 
+#### 114- max_groups #### 
 Line 14 :   \item{max_groups}{the maximum number of groups. \emph{postive integer}.} # calcGroupsCoords.Rd
 Line 15 :   \item{max_groups}{the maximum number of groups. \emph{postive integer}.} # calcGroupsCoords_cpp.Rd
 Line 13 :   \item{max_groups}{the maximum number of groups. \emph{postive integer}.} # calcGroupsW.Rd
 Line 13 :   \item{max_groups}{the maximum number of groups. \emph{postive integer}.} # calcGroupsW_cpp.Rd
 
-#### 114- method #### 
+#### 115- maxit #### 
+Line 35 :   \item{maxit}{The maximum number of iterations. \emph{postive integer}. See the details section of \code{optim}.} # calcHemisphere.Rd
+
+#### 116- method #### 
 Line 20 :   \item{method}{the distance measure to be used. \emph{character}. This must be one of \code{"euclidean"}, \code{"maximum"}, \code{"minkowski"} or \code{"greatcircle"}.}   # calcW.Rd
 Line 23 :   \item{method}{the correlation coefficient which is to be computed. Can be \code{"pearson"}, \code{"kendall"} or \code{"spearman"}.} # heatmapMRIaggr.Rd
 Line 21 :   \item{method}{the name of the function that called the initializer. \emph{character}.} # initCol.Rd
@@ -528,12 +535,12 @@ Line 20 :   \item{method}{the name of the function that called the initializer. 
 Line 23 :   \item{method}{the name of the function that called the initializer. \emph{character}.} # initParameter.Rd
 Line 23 :   \item{method}{the name of the function that called the initializer. \emph{character}.} # initWindow.Rd
 
-#### 115- mfrow #### 
+#### 117- mfrow #### 
 Line 19 :   \item{mfrow}{the division of the device in plot region. \emph{numeric vector of size 2}.} # initDisplayWindow.Rd
 Line 20 :   \item{mfrow}{the division of the device in plot region. \emph{numeric vector of size 2}.} # initWindow.Rd
 Line 69 :   \item{mfrow}{the division of the device in plot region. \emph{numeric vector of size 2} or \code{NULL} leading automatic adjustment.} # multiplot.Rd
 
-#### 116- mgp #### 
+#### 118- mgp #### 
 Line 33 :   \item{mgp}{the margin line for the axis title, axis labels and axis line. \emph{positive numeric vector of size 3}.} # boxplotMask.Rd
 Line 32 :   \item{mgp}{the margin line for the axis title, axis labels and axis line. \emph{positive numeric vector of size 3}.} # heatmapMRIaggr.Rd
 Line 23 :   \item{mgp}{the margin line for the axis title, axis labels and axis line. \emph{positive numeric vector of size 3}.} # initDisplayWindow.Rd
@@ -541,53 +548,53 @@ Line 71 :   \item{mgp}{the margin line for the axis title, axis labels and axis 
 Line 33 :   \item{mgp}{the margin line for the axis title, axis labels and axis line. \emph{positive numeric vector of size 3}.} # plotDistClass.Rd
 Line 27 :   \item{mgp}{the margin line for the axis title, axis labels and axis line. \emph{positive numeric vector of size 3}.} # plotTableLesion.Rd
 
-#### 117- midplane #### 
-Line 20 :   \item{midplane}{the position of the mid-sagittal plan. \emph{data.frame}.}   # MRIaggr-class.Rd
-Line 45 :   \item{midplane}{should the mid-saggital plan be displayed ? \emph{logical}.} # multiplot.Rd
+#### 119- midplane #### 
+Line 20 :   \item{midplane}{the position of the mid-sagittal plane. \emph{data.frame}.}   # MRIaggr-class.Rd
+Line 45 :   \item{midplane}{should the mid-sagittal plan be displayed ? \emph{logical}.} # multiplot.Rd
 
-#### 118- min_dist #### 
+#### 120- min_dist #### 
 Line 14 :   \item{min_dist}{if the distance between the new point and the initial point is inferior to \code{min_dist}, then the definition of the region ends. \emph{numeric}. Only active if \code{sequential} is \code{TRUE}.} # outline.Rd
 Line 34 :   \item{min_dist}{if the distance between the new point and the initial point is inferior to \code{min_dist}, then the definition of the region ends. \emph{numeric}. Only active if \code{sequential} is \code{TRUE}.} # outlineMRIaggr.Rd
 
-#### 119- mu #### 
+#### 121- mu #### 
 Line 15 :   \item{mu}{should the centering values for the normalization be returned. \emph{logical}.  Active only if \code{type} is \code{"slice"} or \code{"3slices"}.} # selectNormalization.Rd
 
-#### 120- mu_type #### 
+#### 122- mu_type #### 
 Line 16 :   \item{mu_type}{the type of centering. Can be \code{"mean"} or \code{"median"}. } # calcNormalization.Rd
 
-#### 121- n #### 
+#### 123- n #### 
 Line 18 :   \item{n}{the number of voxels. \emph{integer}.} # calcHemi_cpp.Rd
 Line 12 :   \item{n}{maximum number of points to define the outline. \emph{integer}.} # outline.Rd
 Line 32 :   \item{n}{maximum number of points to define the outline. \emph{integer}.} # outlineMRIaggr.Rd
 
-#### 122- n.plot #### 
+#### 124- n.plot #### 
 Line 19 :   \item{n.plot}{the number of images to display. \emph{integer}.} # initWindow.Rd
 
-#### 123- n.points #### 
-Line 30 :   \item{n.points}{the number of points that represent the mid-saggital plan to computed. \code{positive integer}.} # calcHemisphere.Rd
+#### 125- n.points #### 
+Line 32 :   \item{n.points}{the number of points that represent the mid-sagittal plan to computed. \code{positive integer}.} # calcHemisphere.Rd
 
-#### 124- n_num #### 
+#### 126- n_num #### 
 Line 16 :   \item{n_num}{the number of slices. \emph{integer}.} # calcHemi_cpp.Rd
 
-#### 125- na.rm #### 
+#### 127- na.rm #### 
 Line 16 :   \item{na.rm}{should observations with missing values be removed ? \emph{logical}.} # array2df.Rd
 Line 21 :   \item{na.rm}{should observations with missing values in their neighborhood be set to NA ? Otherwise the ponderation is adjusted. \emph{logical}.} # calcFilter.Rd
 Line 27 :   \item{na.rm}{should observations with missing values be removed ? \emph{logical}.} # selectContrast.Rd
 
-#### 126- na.value #### 
+#### 128- na.value #### 
 Line 15 :   \item{na.value}{the value with which NA values are replaced. \emph{numeric} or NA.}     # readMRI.Rd
 
-#### 127- na_rm #### 
+#### 129- na_rm #### 
 Line 15 :   \item{na_rm}{should the observations with missing values in their neighborhood be removed ? Otherwise the ponderation is adjusted.}   # filtrage2D_cpp.Rd
 Line 14 :   \item{na_rm}{should the observations with missing values in their neighborhood be removed ? Otherwise the ponderation is adjusted.}   # filtrage2Dmed_cpp.Rd
 Line 18 :   \item{na_rm}{should the observations with missing values in their neighborhood be removed ? Otherwise the ponderation is adjusted.}   # filtrage3D_cpp.Rd
 Line 16 :   \item{na_rm}{should the observations with missing values in their neighborhood be removed ? Otherwise the ponderation is adjusted.}   # filtrage3Dmed_cpp.Rd
 
-#### 128- name #### 
-Line 14 :   \item{name}{the name of the element storing \code{value}. \emph{character}. REQUIRED.} # affectDescStats.Rd
+#### 130- name #### 
+Line 14 :   \item{name}{the name of the element storing \code{value}. \emph{character}. REQUIRED.} # allocDescStats.Rd
 Line 14 :   \item{name}{the name of the element to select. \emph{character} or \code{NULL} leading to select all available elements.} # selectDescStats.Rd
 
-#### 129- name_newparam #### 
+#### 131- name_newparam #### 
 Line 14 :   \item{name_newparam}{the name of the contrast parameter to which cooresponds \code{array}. \emph{character}.} # array2df.Rd
 Line 16 :   \item{name_newparam}{the name of the new distance parameters. \emph{character vector}.} # calcDistMask.Rd
 Line 22 :   \item{name_newparam}{the name of the new parameters. \emph{character vector}.} # calcFilter.Rd
@@ -596,38 +603,41 @@ Line 36 :   \item{name_newparam}{the name of the new parameters. \code{character
 Line 23 :   \item{name_newparam}{the name of the new paramaters containing the probabilistic segmentation. \emph{character vector of size 3}.}   # calcTissueType.Rd
 Line 42 :   \item{name_newparam}{the name of the new parameter. \emph{character}.} # outlineMRIaggr.Rd
 
-#### 130- names_coords #### 
+#### 132- names_coords #### 
 Line 15 :   \item{names_coords}{the name of the coordinates. \emph{character vector}.} # array2df.Rd
 
-#### 131- names_dirs #### 
+#### 133- names_dirs #### 
 Line 20 :   \item{names_dirs}{the names of the subdirectory(ies). \emph{character} or \emph{character vector}.} # initConstLatex.Rd
 
-#### 132- Neighborhood #### 
+#### 134- Neighborhood #### 
 Line 19 :   \item{Neighborhood}{the type of neighborhood. \emph{character}.} # calcDistMask.Rd
 Line 13 :   \item{Neighborhood}{the type of neighborhood. \emph{character}.} # calcGroupsCoords.Rd
 Line 13 :   \item{Neighborhood}{the type of neighborhood. \emph{character}.} # calcGroupsCoords_cpp.Rd
 Line 11 :   \item{Neighborhood}{the name of neighborhood configuration. \cr Any of \code{"2D_N4"}, \code{"2D_N8"} \code{"3D_N6"} \code{"3D_N10"} \code{"3D_N18"} \code{"3D_N26"}.} # initNeighborhood.Rd
 Line 18 :   \item{Neighborhood}{the type of neighborhood used to defined the edges. \emph{character}.} # plotLesion3D.Rd
 
-#### 133- Neighborhood_2D #### 
+#### 135- Neighborhood_2D #### 
 Line 21 :   \item{Neighborhood_2D}{the type of 2D neighborhood. \emph{character}.} # calcSmoothMask.Rd
 
-#### 134- Neighborhood_3D #### 
+#### 136- Neighborhood_3D #### 
 Line 25 :   \item{Neighborhood_3D}{the type of 3D neighborhood. \emph{character}.} # calcSmoothMask.Rd
 
-#### 135- Neighborhood_V #### 
+#### 137- Neighborhood_V #### 
 Line 31 :   \item{Neighborhood_V}{the type of neighborhood to use for the spatial regularization. \emph{character}.} # calcSmoothMask.Rd
 
-#### 136- niter #### 
+#### 138- NelderMead #### 
+Line 34 :   \item{NelderMead}{Should the center of the grid search be searched using Nelder-Mead algorithm or set to the center of the image ? \emph{logical}.} # calcHemisphere.Rd
+
+#### 139- niter #### 
 Line 16 :   \item{niter}{the number of iterations used by \code{mritc.bayes}. \emph{positive integer}.} # calcTissueType.Rd
 
-#### 137- nnei #### 
+#### 140- nnei #### 
 Line 17 :   \item{nnei}{the number of neighbors. \emph{positive integer}.} # calcTissueType.Rd
 
-#### 138- norm #### 
+#### 141- norm #### 
 Line 19 :   \item{norm}{should the filtered correspond to a weighted mean over site ? (or a weighted sum). \emph{logical}.} # calcFilter.Rd
 
-#### 139- norm_mu #### 
+#### 142- norm_mu #### 
 Line 23 :   \item{norm_mu}{the type of centering to apply on the parameter values. \emph{character}.} # boxplotMask.Rd
 Line 22 :   \item{norm_mu}{the type of centering to apply on the parameter values. \emph{character}.} # calcTableHypoReperf.Rd
 Line 49 :   \item{norm_mu}{the type of centering to apply on the parameter values. \emph{character}.} # multiplot.Rd
@@ -635,7 +645,7 @@ Line 22 :   \item{norm_mu}{the type of centering to apply on the parameter value
 Line 25 :   \item{norm_mu}{the type of centering to apply on the parameter values. \emph{character}. See the details section.} # selectContrast.Rd
 Line 17 : 	\item{norm_mu}{the type of centering to apply on the parameter values. \emph{character}. See the details section.} # writeMRIaggr.Rd
 
-#### 140- norm_sigma #### 
+#### 143- norm_sigma #### 
 Line 24 :   \item{norm_sigma}{the type of scaling to apply on the parameter values. \emph{character}.} # boxplotMask.Rd
 Line 23 :   \item{norm_sigma}{the type of scaling to apply on the parameter values. \emph{character}.} # calcTableHypoReperf.Rd
 Line 50 :   \item{norm_sigma}{the type of scaling to apply on the parameter values. \emph{character}.} # multiplot.Rd
@@ -643,14 +653,14 @@ Line 23 :   \item{norm_sigma}{the type of scaling to apply on the parameter valu
 Line 26 :   \item{norm_sigma}{the type of scaling to apply on the parameter values. \emph{character}. See the details section.} # selectContrast.Rd
 Line 18 : 	\item{norm_sigma}{the type of scaling to apply on the parameter values. \emph{character}. See the details section.} # writeMRIaggr.Rd
 
-#### 141- normalization #### 
-Line 18 :   \item{normalization}{the normalization values for the contrast parameters. \emph{list}.}   # MRIaggr-class.Rd
+#### 144- normalization #### 
+Line 18 :   \item{normalization}{the normalization values of each contrast parameter. \emph{list}.}   # MRIaggr-class.Rd
 
-#### 142- num #### 
+#### 145- num #### 
 Line 21 :   \item{num}{the slices to consider. \emph{numeric vector} or \code{NULL}. REQUIRED.} # boxplotMask.Rd
 Line 15 :   \item{num}{the slices to extract. \emph{numeric vector} or \code{NULL}.} # calcControlateral.Rd
 Line 15 :   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.} # calcDistTissues.Rd
-Line 19 :   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.} # calcHemisphere.Rd
+Line 21 :   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.} # calcHemisphere.Rd
 Line 23 :   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.} # calcRegionaContrast.Rd
 Line 22 :   \item{num}{the slices to use. \emph{numeric vector} or \code{NULL}.} # calcW.Rd
 Line 15 :   \item{num}{the slices to extract. \emph{numeric vector} or \code{NULL}.} # Carto3D2MRIaggr.Rd
@@ -668,16 +678,16 @@ Line 16 :   \item{num}{the slices to consider. \emph{numeric vector} or \code{NU
 Line 17 :   \item{num}{the slices to extract. \emph{numeric vector} or \code{NULL}.} # selectNormalization.Rd
 Line 16 : 	\item{num}{the slices to extract. \emph{numeric vector} or \code{NULL}.} # writeMRIaggr.Rd
 
-#### 143- num.main #### 
+#### 146- num.main #### 
 Line 79 :   \item{num.main}{should the slice number be written over each plot. \emph{logical}.} # multiplot.Rd
 
-#### 144- object #### 
-Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectClinic.Rd
-Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectContrast.Rd
-Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectDescStats.Rd
-Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectHemisphere.Rd
-Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectNormalization.Rd
-Line 13 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # affectTable.Rd
+#### 147- object #### 
+Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocClinic.Rd
+Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocContrast.Rd
+Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocDescStats.Rd
+Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocHemisphere.Rd
+Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocNormalization.Rd
+Line 13 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # allocTable.Rd
 Line 17 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # boxplotMask.Rd
 Line 17 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcBrainMask.Rd
 Line 13 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcControlateral.Rd
@@ -685,7 +695,7 @@ Line 14 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUI
 Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcDistTissues.Rd
 Line 16 :   \item{object}{an \code{array} or an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcFilter.Rd
 Line 14 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcGroupsMask.Rd
-Line 17 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcHemisphere.Rd
+Line 19 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcHemisphere.Rd
 Line 14 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcNormalization.Rd
 Line 15 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcRegionaContrast.Rd
 Line 16 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # calcROCthreshold.Rd
@@ -732,25 +742,25 @@ Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUI
 Line 12 :   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # supprDescStats.Rd
 Line 14 : 	\item{object}{an \code{object} of class \code{\linkS4class{MRIaggr}}. REQUIRED.} # writeMRIaggr.Rd
 
-#### 145- operator #### 
+#### 148- operator #### 
 Line 21 :   \item{operator}{should the median absolute deviation be used to estimte the variability of the group contrast (\code{"mad"}) or the standard deviation (\code{"sd"}).}   # GRalgo.Rd
 
-#### 146- operator_index1 #### 
+#### 149- operator_index1 #### 
 Line 35 :   \item{operator_index1}{the operator to apply between the index1 observations and the outlined observations. Can be \code{"none"} \code{"intersection"} \code{"difference"} or \code{"union"}.} # outlineMRIaggr.Rd
 
-#### 147- overwrite #### 
-Line 15 :   \item{overwrite}{if clinical parameters with the same names are already stored in \code{object@clinic}, can they be overwritten ? \emph{logical}.}   # affectClinic.Rd
-Line 16 :   \item{overwrite}{if a contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.}   # affectContrast.Rd
-Line 15 :   \item{overwrite}{if an element with the same name is already stored in \code{object@ls_descStats}, can it be overwritten ? \emph{logical}.}   # affectDescStats.Rd
-Line 14 :   \item{overwrite}{if the characteristics of a mid-saggital plan are already stored in \code{object}, can they be overwritten ? \emph{logical}.}   # affectHemisphere.Rd
-Line 14 :   \item{overwrite}{if normalization values are already stored in \code{object}, can they be overwritten ? \emph{logical}.}   # affectNormalization.Rd
-Line 16 :   \item{overwrite}{if tables are already stored in \code{object@normalization}, can they be overwritten ? \emph{logical}.}   # affectTable.Rd
+#### 150- overwrite #### 
+Line 15 :   \item{overwrite}{if clinical parameters with the same names are already stored in \code{object@clinic}, can they be overwritten ? \emph{logical}.}   # allocClinic.Rd
+Line 16 :   \item{overwrite}{if a contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.}   # allocContrast.Rd
+Line 15 :   \item{overwrite}{if an element with the same name is already stored in \code{object@ls_descStats}, can it be overwritten ? \emph{logical}.}   # allocDescStats.Rd
+Line 14 :   \item{overwrite}{if the characteristics of a mid-saggital plan are already stored in \code{object}, can they be overwritten ? \emph{logical}.}   # allocHemisphere.Rd
+Line 14 :   \item{overwrite}{if normalization values are already stored in \code{object}, can they be overwritten ? \emph{logical}.}   # allocNormalization.Rd
+Line 16 :   \item{overwrite}{if tables are already stored in \code{object@normalization}, can they be overwritten ? \emph{logical}.}   # allocTable.Rd
 Line 42 :   \item{overwrite}{if a mask is already stored in \code{object@data}, can it be overwritten ? \emph{logical}.} # calcBrainMask.Rd
 Line 23 :   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.} # calcControlateral.Rd
 Line 23 :   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.} # calcDistMask.Rd
 Line 26 :   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object@data}, can they be overwritten ? \emph{logical}.}   # calcFilter.Rd
 Line 24 :   \item{overwrite}{if spatial groups are already stored in \code{object@ls_descStats}, can they be overwritten ? \emph{logical}.}   # calcGroupsMask.Rd
-Line 43 :   \item{overwrite}{if a midplane is already stored in \code{object@midplane}, can it be overwritten ? \emph{logical}.}   # calcHemisphere.Rd
+Line 49 :   \item{overwrite}{if a midplane is already stored in \code{object@midplane}, can it be overwritten ? \emph{logical}.}   # calcHemisphere.Rd
 Line 24 :   \item{overwrite}{if normalization values are already stored in \code{object@normalization}, can they be overwritten ? \emph{logical}.}   # calcNormalization.Rd
 Line 29 :   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object} can they be overwritten ? \emph{logical}.}   # calcRegionaContrast.Rd
 Line 33 :   \item{overwrite}{if a threshold analysis is already stored in \code{object@ls_descStats}, can it be overwritten ? \emph{logical}.}   # calcROCthreshold.Rd
@@ -762,33 +772,33 @@ Line 25 :   \item{overwrite}{if tissue types are already stored in \code{object@
 Line 31 :   \item{overwrite}{if a neighborhood matrix is already stored in \code{object@ls_descStats}, can it be overwritten ? \emph{logical}.} # calcW.Rd
 Line 44 :   \item{overwrite}{if a contrast parameter with the same names is already stored in \code{object@data}, can it be overwritten ? \emph{logical}.}   # outlineMRIaggr.Rd
 
-#### 148- p #### 
-Line 23 :   \item{p}{the penalization factor. \emph{positive numeric}.} # calcHemi_cpp.Rd
-Line 20 :   \item{p}{the type of distance for the penalization. \emph{positive numeric}.} # calcHemisphere.Rd
+#### 151- p #### 
+Line 24 :   \item{p}{the penalization factor. \emph{positive numeric}.} # calcHemi_cpp.Rd
+Line 22 :   \item{p}{the type of distance for the penalization. \emph{positive numeric}.} # calcHemisphere.Rd
 
-#### 149- p_data #### 
+#### 152- p_data #### 
 Line 13 :   \item{p_data}{spatial dimensions of the data.} # filtrage3D_cpp.Rd
 Line 12 :   \item{p_data}{spatial dimensions of the data.} # filtrage3Dmed_cpp.Rd
 
-#### 150- p_operateur #### 
+#### 153- p_operateur #### 
 Line 15 :   \item{p_operateur}{spatial dimensions of the filter.} # filtrage3D_cpp.Rd
 Line 14 :   \item{p_operateur}{spatial dimensions of the filter.} # filtrage3Dmed_cpp.Rd
 
-#### 151- palette #### 
+#### 154- palette #### 
 Line 17 :   \item{palette}{the colors or the palette to use when associating colors to intensities. \emph{character vector} or \emph{character}.} # initCol.Rd
 Line 12 :   \item{palette}{the colors or the palette to use when associating colors to observation intensities. \emph{character vector}.} # legendMRI.Rd
 Line 55 :   \item{palette}{the colors or the palette to use when associating colors to observation intensities. \emph{character vector} or \emph{character}.} # multiplot.Rd
 Line 27 :   \item{palette}{the colors or the palette to use when associating colors to observation intensities. \emph{character vector} or \emph{character}.} # outlineMRIaggr.Rd
 Line 15 :   \item{palette}{the colors or the palette to use when associating colors to observation intensities. \emph{character vector}.} # plotMRI.Rd
 
-#### 152- param #### 
-Line 14 :   \item{param}{the names of the contrast parameters. \emph{character vector} or \code{NULL} leading to use the name of the \code{value} argument.} # affectContrast.Rd
+#### 155- param #### 
+Line 14 :   \item{param}{the names of the contrast parameters. \emph{character vector} or \code{NULL} leading to use the name of the \code{value} argument.} # allocContrast.Rd
 Line 19 :   \item{param}{the contrast parameter(s) associated with the lesion mask(s). \emph{character vector}. REQUIRED.} # boxplotMask.Rd
 Line 18 :   \item{param}{the contrast parameter(s) that should be used to identify the brain observations. \emph{character vector}. REQUIRED} # calcBrainMask.Rd
 Line 14 :   \item{param}{the contrast parameters to normalize. \emph{character vector}. REQUIRED.} # calcControlateral.Rd
 Line 13 :   \item{param}{the contrast parameters to consider. \emph{character vector}. REQUIRED.} # calcDistTissues.Rd
 Line 17 :   \item{param}{the contrast parameter to be filtered. \emph{character vector}. REQUIRED.} # calcFilter.Rd
-Line 18 :   \item{param}{the contrast parameter that should be used to distinguish the two hemispheres. \emph{character}. REQUIRED.} # calcHemisphere.Rd
+Line 20 :   \item{param}{the contrast parameter that should be used to distinguish the two hemispheres. \emph{character}. REQUIRED.} # calcHemisphere.Rd
 Line 15 :   \item{param}{the contrast parameters to normalize. \emph{character vector}. REQUIRED.} # calcNormalization.Rd
 Line 16 :   \item{param}{the contrast parameter(s) from which the regional parameter(s) will be computed. \emph{character vector}. REQUIRED.} # calcRegionaContrast.Rd
 Line 17 :   \item{param}{the contrast parameter(s) that should be used to identify the observations inside the mask. \emph{character vector}. REQUIRED.} # calcROCthreshold.Rd
@@ -813,22 +823,22 @@ Line 19 :   \item{param}{the contrast parameters for which the normalization val
 Line 15 :   \item{param}{should detailed information be printed for the contrast parameters ? \emph{logical}.} # summary.MRIaggr.Rd
 Line 15 : 	\item{param}{the contrast parameters to extract. \emph{character vector} or \code{NULL}. REQUIRED.} # writeMRIaggr.Rd
 
-#### 153- param.ref #### 
-Line 17 :   \item{param.ref}{the parameter to use as a reference for the identification of the controlateral voxel. \emph{character} or \code{NULL} if no reference parameter available.} # calcControlateral.Rd
+#### 156- param.ref #### 
+Line 17 :   \item{param.ref}{the parameter to use as a reference for the identification of the contralateral voxel. \emph{character} or \code{NULL} if no reference parameter available.} # calcControlateral.Rd
 
-#### 154- param.update #### 
+#### 157- param.update #### 
 Line 26 :   \item{param.update}{which type of parameter should be stored in the object ? Any of \code{"shift"} \code{"reperf"} \code{"reperf_pc"} \code{"deperf"} \code{"deperf_pc"}.} # calcTableHypoReperf.Rd
 
-#### 155- param_ref #### 
-Line 18 :   \item{param_ref}{the parameter to be used as a reference to identify the controlateral voxel. \emph{character}.} # calcContro_cpp.Rd
+#### 158- param_ref #### 
+Line 18 :   \item{param_ref}{the parameter to be used as a reference to identify the contralateral voxel. \emph{character}.} # calcContro_cpp.Rd
 
-#### 156- parameter #### 
+#### 159- parameter #### 
 Line 11 :   \item{parameter}{the name of the contrast parameter. \emph{character}.}    # Carto3D-class.Rd
 
-#### 157- path #### 
+#### 160- path #### 
 Line 41 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # boxplotMask.Rd
 Line 36 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # calcBrainMask.Rd
-Line 37 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # calcHemisphere.Rd
+Line 43 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # calcHemisphere.Rd
 Line 28 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # calcROCthreshold.Rd
 Line 40 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # heatmapMRIaggr.Rd
 Line 13 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # initDisplayWindow.Rd
@@ -837,7 +847,7 @@ Line 91 :   \item{path}{the directory where the plot file will be created. \emph
 Line 44 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # plotDistClass.Rd
 Line 37 :   \item{path}{the directory where the plot file will be created. \emph{character}.} # plotTableLesion.Rd
 
-#### 158- pch #### 
+#### 161- pch #### 
 Line 15 :   \item{pch}{the symbol with which the observations will be displayed. \emph{positive integer}.} # initCol.Rd
 Line 57 :   \item{pch}{the symbol with which the observations will be displayed. \emph{positive integer} or \code{NULL} leading to use the \code{image} function instead of \code{plot}.} # multiplot.Rd
 Line 16 :   \item{pch}{the symbol with which the observations will be displayed. \emph{positive integer}.} # outline.Rd
@@ -845,76 +855,82 @@ Line 38 :   \item{pch}{the symbol with which the observations will be displayed.
 Line 35 :   \item{pch}{the symbol with which the distribution will be displayed. \emph{positive integer}.} # plotDistClass.Rd
 Line 21 :   \item{pch}{the symbol with which the observations will be displayed. \emph{positive integer}.} # plotMRI.Rd
 
-#### 159- pch.default #### 
+#### 162- pch.default #### 
 Line 19 :   \item{pch.default}{the default label used to plot the observations. \emph{numeric}.} # initIndex.Rd
 
-#### 160- pch.NA #### 
+#### 163- pch.NA #### 
 Line 61 :   \item{pch.NA}{the label to use to plot the NAs. \emph{postive integer}.} # multiplot.Rd
 Line 25 :   \item{pch.NA}{the label to use to plot the NAs. \emph{postive integer}.} # plotMRI.Rd
 
-#### 161- penalty #### 
-Line 22 :   \item{penalty}{the type of objective function. Can be \code{"symmetry"} or \code{"asymmetry"}.} # calcHemisphere.Rd
+#### 164- penalty #### 
+Line 24 :   \item{penalty}{the type of objective function. Can be \code{"symmetry"} or \code{"asymmetry"}.} # calcHemisphere.Rd
 
-#### 162- performance #### 
+#### 165- penaltyNA #### 
+Line 22 :   \item{penaltyNA}{a penalty factor for the percent of voxel without controlateral correspondant. \emph{numeric}.} # calcHemi_cpp.Rd
+
+#### 166- performance #### 
 Line 14 :   \item{performance}{an object of class \code{performance} can be supplied instead of arguments \code{x} and \code{y}.}   # calcAUPRC.Rd
 
-#### 163- plot #### 
+#### 167- plot #### 
 Line 25 :   \item{plot}{should the results be plotted ? \emph{logical}.} # calcBrainMask.Rd
-Line 32 :   \item{plot}{should the results be plotted ? \emph{logical}.} # calcHemisphere.Rd
+Line 38 :   \item{plot}{should the results be plotted ? \emph{logical}.} # calcHemisphere.Rd
 Line 21 :   \item{plot}{the type of the graphic to display? \emph{character} or \code{FALSE}. See the details section.} # calcROCthreshold.Rd
 
-#### 164- plotPerPage #### 
+#### 168- plotPerPage #### 
 Line 29 :   \item{plotPerPage}{the number of image that should be displayed on the same page. \emph{strictly positive interger}.} # constLatex.Rd
 Line 27 :   \item{plotPerPage}{the number of image that should be displayed on the same page. \emph{strictly positive interger}.} # initConstLatex.Rd
 
-#### 165- points.values #### 
+#### 169- points.values #### 
 Line 24 :   \item{points.values}{should the correlation values be printed on the plot ? \emph{logical}.} # heatmapMRIaggr.Rd
 
-#### 166- pos_default_value #### 
+#### 170- pos_default_value #### 
 Line 16 :   \item{pos_default_value}{the coordinates of the observation that contains the reference value. \emph{numeric vector} with length the number of dimension of array.} # constCarto3D.Rd
 Line 17 :   \item{pos_default_value}{the coordinates of the observations that contains the reference value. \emph{numeric vector}.}    # constMRIaggr.Rd
 
-#### 167- power #### 
+#### 171- power #### 
 Line 18 :   \item{power}{the power of the kernel. \emph{postive numeric}.} # calcRegionaContrast.Rd
 Line 13 :   \item{power}{the power of the kernel. \emph{numeric}.} # EDK.Rd
 
-#### 168- pty #### 
+#### 172- pty #### 
 Line 21 :   \item{pty}{the type of plot region to be used. Can be \code{"s"} or \code{"m"}.} # initDisplayWindow.Rd
 Line 72 :   \item{pty}{the type of plot region to be used. Can be \code{"s"} or \code{"m"}.}   # multiplot.Rd
 
-#### 169- px_max #### 
+#### 173- px_max #### 
 Line 25 :   \item{px_max}{the maximum number of points that can be ploted. \emph{integer}.} # plotLesion3D.Rd
 
-#### 170- quantiles #### 
+#### 174- quantiles #### 
 Line 18 :   \item{quantiles}{the quantiles values to display on the legend. \emph{numeric vector of size 5} or \code{NULL}.} # legendMRI.Rd
 
-#### 171- quantiles.legend #### 
+#### 175- quantiles.legend #### 
 Line 82 :   \item{quantiles.legend}{should the quantiles of the data be displayed on the legend ? \emph{logical}.} # multiplot.Rd
 
-#### 172- radius #### 
+#### 176- radius #### 
 Line 26 :   \item{radius}{the radius of spheres. \emph{numeric}. See \code{plot3d} for more details.} # plotLesion3D.Rd
 
-#### 173- range #### 
+#### 177- range #### 
 Line 17 :   \item{range}{the range of acceptable contrast values for the growing region group. \code{numeric vector of size 2}.} # calcGR.Rd
 Line 19 :   \item{range}{only distances smaller than \code{range} are stored in \code{W}. \code{postive numeric}. REQUIRED.} # calcW.Rd
 Line 16 :   \item{range}{the range of acceptable contrast values for the growing region group. \code{numeric vector of size 2}.} # GRalgo.Rd
 Line 14 :   \item{range}{the range of acceptable contrast values for the growing region group. \code{numeric vector of size 2}.} # initGR.Rd
 
-#### 174- range.coords #### 
+#### 178- range.coords #### 
 Line 15 :   \item{range.coords}{the maximum coordinate in each dimension to be considered. \emph{numeric vector} with length equal to the number of columns of \code{coords}.} # df2array.Rd
 Line 20 :     \item{range.coords}{the maximum coordinate in each dimension to be considered. \emph{numeric vector} of length 3.} # writeMRIaggr.Rd
 
-#### 175- range.seed #### 
+#### 179- range.seed #### 
 Line 18 :   \item{range.seed}{the range of acceptable contrast values for the seeds. \code{numeric vector of size 2}.} # calcGR.Rd
 Line 15 :   \item{range.seed}{the range of acceptable contrast values for the seeds. \code{numeric vector of size 2}.} # initGR.Rd
 
-#### 176- reorient #### 
+#### 180- reltol #### 
+Line 36 :   \item{reltol}{Relative convergence tolerance. \emph{positive numeric}. See the details section of \code{optim}.} # calcHemisphere.Rd
+
+#### 181- reorient #### 
 Line 20 :   \item{reorient}{is a logical variable (default = TRUE) that enforces Qform/Sform transformations. Only active if \code{format} equals \code{nifti}.} # readMRI.Rd
 
-#### 177- res #### 
+#### 182- res #### 
 Line 43 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer} or \code{NA}.} # boxplotMask.Rd
 Line 38 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # calcBrainMask.Rd
-Line 39 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # calcHemisphere.Rd
+Line 45 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # calcHemisphere.Rd
 Line 30 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # calcROCthreshold.Rd
 Line 42 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # heatmapMRIaggr.Rd
 Line 17 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # initDisplayWindow.Rd
@@ -923,191 +939,191 @@ Line 93 :   \item{res}{the nominal resolution in ppi which will be recorded in t
 Line 46 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # plotDistClass.Rd
 Line 39 :   \item{res}{the nominal resolution in ppi which will be recorded in the bitmap file. \emph{positive integer}.} # plotTableLesion.Rd
 
-#### 178- rm.2Dhole #### 
+#### 183- rm.2Dhole #### 
 Line 22 :   \item{rm.2Dhole}{should the 2D wholes inside the mask be removed ? \emph{logical}.} # calcSmoothMask.Rd
 
-#### 179- rm.3Dhole #### 
+#### 184- rm.3Dhole #### 
 Line 26 :   \item{rm.3Dhole}{should the 3D wholes inside the mask be removed ? \emph{logical}.} # calcSmoothMask.Rd
 
-#### 180- rm.array #### 
+#### 185- rm.array #### 
 Line 18 :   \item{rm.array}{should the object on which \emph{array} argument points be removed form the global environment ? \code{logical}.} # constCarto3D.Rd
 
-#### 181- rm.Carto3D #### 
+#### 186- rm.Carto3D #### 
 Line 13 :   \item{rm.Carto3D}{should the object on which the \code{ls.Carto3D} argument points be removed form the global environment ? \code{logical}.} # Carto3D2MRIaggr.Rd
 
-#### 182- rm.CSF #### 
+#### 187- rm.CSF #### 
 Line 18 :   \item{rm.CSF}{should the cerebral spinal fluid observations be excluded ? \emph{logical}.} # calcNormalization.Rd
 Line 25 :   \item{rm.CSF}{should the cerebral spinal fluid observations be excluded ? \code{logical} or \emph{character}.} # calcThresholdMRIaggr.Rd
 
-#### 183- rm.GM #### 
+#### 188- rm.GM #### 
 Line 19 :   \item{rm.GM}{should the grey matter observations be excluded ? \emph{logical}.} # calcNormalization.Rd
 
-#### 184- rm.ls.array #### 
+#### 189- rm.ls.array #### 
 Line 22 :   \item{rm.ls.array}{should the object on which the \code{ls.array} argument points be removed form the global environment ? \emph{logical}.} # constMRIaggr.Rd
 
-#### 185- rm.WM #### 
+#### 190- rm.WM #### 
 Line 20 :   \item{rm.WM}{should the white matter observations be excluded ? \emph{logical}.} # calcNormalization.Rd
 
-#### 186- row.norm #### 
+#### 191- row.norm #### 
 Line 27 :   \item{row.norm}{should the resulting matrix be row-normalized ? \code{TRUE/FALSE}.} # calcW.Rd
 
-#### 187- sample #### 
+#### 192- sample #### 
 Line 12 :   \item{sample}{the weight of each voxel in the computation of the barycenter. \emph{positive numeric}.} # calcRadius_cpp.Rd
 
-#### 188- scale #### 
+#### 193- scale #### 
 Line 26 :   \item{scale}{should the contrast parameters be scaled ? \emph{logical}.} # boxplotMask.Rd
 Line 21 :   \item{scale}{should the contrast be scaled ? \code{logical}.}   # calcGR.Rd
 Line 21 :   \item{scale}{should the contrast parameters be scaled ? \emph{logical}.} # heatmapMRIaggr.Rd
 Line 16 :   \item{scale}{the scaling factor to convert \code{height} and \code{height} to standard unit. \emph{numeric}.} # initDisplayWindow.Rd
 Line 18 :   \item{scale}{should the contrast be scaled ? \code{logical}.}   # initGR.Rd
 
-#### 189- sd.robust #### 
+#### 194- sd.robust #### 
 Line 23 :   \item{sd.robust}{should the median absolute deviation be used to estimte the variability of the group contrast, or the standard deviation ? \code{logical}.} # calcGR.Rd
 
-#### 190- sd_data #### 
-Line 22 :   \item{sd_data}{the standard deviation of the parameter. \emph{numeric}.} # calcHemi_cpp.Rd
+#### 195- sd_data #### 
+Line 23 :   \item{sd_data}{the standard deviation of the parameter. \emph{numeric}.} # calcHemi_cpp.Rd
 
-#### 191- seed #### 
+#### 196- seed #### 
 Line 15 :   \item{seed}{the index of the initial seeds or a binary indicator of the initial seeds. \code{positive integer vector} or \code{logical vector}. REQUIRED.} # calcGR.Rd
 Line 31 :   \item{seed}{the index of the seeds for the growing region algorithm . \code{positive integer vector}. } # calcThresholdMRIaggr.Rd
 Line 14 :   \item{seed}{the index of the initial seeds or a binary indicator of the initial seeds. \code{positive integer vector} or \code{logical vector}.} # GRalgo.Rd
 Line 13 :   \item{seed}{the index of the initial seeds or a binary indicator of the initial seeds. \code{positive integer vector} or \code{logical vector}.} # initGR.Rd
 
-#### 192- sep #### 
+#### 197- sep #### 
 Line 18 :   \item{sep}{the separator between the parameter names and the time points. \emph{character}.} # calcTableHypoReperf.Rd
 
-#### 193- sequential #### 
+#### 198- sequential #### 
 Line 13 :   \item{sequential}{should the region edge be updated on the graphical device after each point ? \emph{logical}.} # outline.Rd
 Line 33 :   \item{sequential}{should the region edge be updated on the graphical device after each point ? \emph{logical}.} # outlineMRIaggr.Rd
 
-#### 194- sigma #### 
+#### 199- sigma #### 
 Line 16 :   \item{sigma}{should the scaling values for the normalization be returned. \emph{logical}.  Active only if \code{type} is \code{"slice"} or \code{"3slices"}.} # selectNormalization.Rd
 
-#### 195- sigma_max #### 
+#### 200- sigma_max #### 
 Line 16 :   \item{sigma_max}{the maximum admissible value for the variability of the group contrast. \code{positive numeric}. REQUIRED.} # calcGR.Rd
 Line 15 :   \item{sigma_max}{the maximum admissible value for the variability of the group contrast. \code{positive numeric}.} # GRalgo.Rd
 
-#### 196- sigma_type #### 
+#### 201- sigma_type #### 
 Line 17 :   \item{sigma_type}{the type of scaling. Can be \code{"sd"} or \code{"mad"}.} # calcNormalization.Rd
 
-#### 197- size #### 
+#### 202- size #### 
 Line 17 :   \item{size}{the number of bytes per element in the byte stream. \emph{integer}. See the documentation of the \code{writeBin} function for more details.} # readMRI.Rd
 Line 14 :   \item{size}{should the values in the table correspond to a number of voxels (\code{FALSE}) or a volume (\code{TRUE}).} # selectTable.Rd
 Line 14 :   \item{size}{the number of bytes per element in the byte stream. \emph{integer}. See the documentation of the \code{writeBin} function for more details.} # writeMRI.Rd
 Line 23 : 	\item{size}{the number of bytes per element in the byte stream. \emph{integer}. See the documentation of the \code{writeBin} function for more details.} # writeMRIaggr.Rd
 
-#### 198- size_2Dgroup #### 
+#### 203- size_2Dgroup #### 
 Line 20 :   \item{size_2Dgroup}{the minimum size of the 2D groups. \emph{positive integer} or \code{"unique"}.} # calcSmoothMask.Rd
 
-#### 199- size_3Dgroup #### 
+#### 204- size_3Dgroup #### 
 Line 24 :   \item{size_3Dgroup}{the minimum size of the 3D groups. \emph{positive integer} or \code{"unique"}.} # calcSmoothMask.Rd
 
-#### 200- skull.n_groups #### 
+#### 205- skull.n_groups #### 
 Line 30 :   \item{skull.n_groups}{the number of groups to use in the kmeans algorithm to obtain the skull.} # calcBrainMask.Rd
 
-#### 201- skull.param #### 
+#### 206- skull.param #### 
 Line 29 :   \item{skull.param}{the parameter used to identify the skull. \emph{character}.} # calcBrainMask.Rd
 
-#### 202- slice_var #### 
+#### 207- slice_var #### 
 Line 19 :   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}   # initNum.Rd
 Line 47 :   \item{slice_var}{the type of view to use. \code{"i"} for sagittal view, \code{"j"} for coronal view and \code{"k"} for transverse view. \emph{character}.}   # multiplot.Rd
 Line 22 :   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}   # selectContrast.Rd
 Line 22 :   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}   # selectCoords.Rd
 Line 18 :   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}   # selectDescStats.Rd
 
-#### 203- spatial_res #### 
+#### 208- spatial_res #### 
 Line 17 :   \item{spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # calcDistMask.Rd
 Line 21 :   \item{spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # calcW.Rd
 Line 20 :   \item{spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # plotLesion3D.Rd
 Line 18 :   \item{spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # selectCoords.Rd
 
-#### 204- SPM #### 
+#### 209- SPM #### 
 Line 19 :   \item{SPM}{is a logical variable (default = FALSE) that forces the voxel data values to be rescaled using the funused1 ANALYZE header field. This is an undocumented convention of ANALYZE files processed using the Statistical Parametric Mapping (SPM) software. Only active if \code{format} equals \code{analyse}.} # readMRI.Rd
 
-#### 205- step #### 
+#### 210- step #### 
 Line 19 :   \item{step}{the step between two consecutive breaks. \emph{numeric}.}   # GRalgo.Rd
 
-#### 206- sub #### 
+#### 211- sub #### 
 Line 19 :   \item{sub}{if \code{TRUE}, use the higher resolution model; otherwise, use the whole voxel method. \emph{logical}.} # calcTissueType.Rd
 
-#### 207- subdivisions #### 
+#### 212- subdivisions #### 
 Line 13 :   \item{subdivisions}{the maximum number of subintervals used for the integration. \emph{positive integer}.} # calcAUPRC.Rd
 
-#### 208- subsection #### 
+#### 213- subsection #### 
 Line 23 :   \item{subsection}{the names of subsections for the latex document. \emph{character vector} or \code{NULL} leading to use \code{param} for naming the subsections.} # constLatex.Rd
 Line 24 :   \item{subsection}{the names of subsections for the latex document. \emph{character vector} or \code{NULL} leading to use \code{param} for naming the subsections.} # initConstLatex.Rd
 
-#### 209- subset #### 
+#### 214- subset #### 
 Line 12 :   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.} # calcGroupsW.Rd
 Line 12 :   \item{subset}{the subset of observations to use. \emph{positive integer vector}.} # calcGroupsW_cpp.Rd
-Line 21 :   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.} # calcHemisphere.Rd
+Line 23 :   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.} # calcHemisphere.Rd
 Line 24 :   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.} # calcW.Rd
 Line 28 :   \item{subset}{the subset of observations to extract. \emph{positive integer vector} or \code{NULL} leading to use all observations} # selectContrast.Rd
 Line 21 :   \item{subset}{the subset of observations to extract. \emph{positive integer vector} or \code{NULL} leading to use all observations} # selectCoords.Rd
 Line 18 :   \item{subset}{the subset of observations to consider. \emph{positive integer vector} or \code{NULL} leading to consider all observations.} # selectN.Rd
 
-#### 210- subset_bary #### 
+#### 215- subset_bary #### 
 Line 14 :   \item{subset_bary}{an indicator of the observations that should be kept ? \emph{logical vector}.} # calcRadius_cpp.Rd
 
-#### 211- subset_W #### 
+#### 216- subset_W #### 
 Line 15 :   \item{subset_W}{the subset of observations to select. \emph{integer vector} or \code{NULL} leading to select all the observations.} # selectDescStats.Rd
 
-#### 212- symetrie #### 
-Line 24 :   \item{symetrie}{the type of objective function. \code{TRUE} correspond to \code{"symmetry"} and \code{FALSE} to \code{"asymmetry"}.} # calcHemi_cpp.Rd
+#### 217- symetrie #### 
+Line 25 :   \item{symetrie}{the type of objective function. \code{TRUE} correspond to \code{"symmetry"} and \code{FALSE} to \code{"asymmetry"}.} # calcHemi_cpp.Rd
 
-#### 213- table #### 
+#### 218- table #### 
 Line 20 :   \item{table}{a list of data.frame to display in the table format. \emph{list of data.frame} or \code{NULL} if there is no table to display.} # constLatex.Rd
 Line 23 :   \item{table}{a list of data.frame to display in the table format. \emph{list of data.frame} or \code{NULL} if there is no table to display.} # initConstLatex.Rd
 
-#### 214- table_hypoperfusion #### 
+#### 219- table_hypoperfusion #### 
 Line 24 :   \item{table_hypoperfusion}{the volumic hypoperfusion data. \emph{data.frame}.}   # MRIaggr-class.Rd
 
-#### 215- table_lesion #### 
+#### 220- table_lesion #### 
 Line 22 :   \item{table_lesion}{the vertical distribution of the lesion volumes. \emph{data.frame}.}   # MRIaggr-class.Rd
 
-#### 216- table_reperfusion #### 
+#### 221- table_reperfusion #### 
 Line 23 :   \item{table_reperfusion}{the volumic reperfusion data. \emph{data.frame}.}   # MRIaggr-class.Rd
 
-#### 217- test #### 
+#### 222- test #### 
 Line 15 :   \item{test}{should the mask be checked ? \emph{logical}.  } # initMask.Rd
 Line 17 :   \item{test}{should the slice numbers be checked ? \emph{logical}.  } # initNum.Rd
 Line 16 :   \item{test}{should the parameters be checked ? \emph{logical}.} # initParameter.Rd
 
-#### 218- th.breaks #### 
+#### 223- th.breaks #### 
 Line 21 :   \item{th.breaks}{the number of thresholds to use. \emph{postive integer}.} # calcBrainMask.Rd
 
-#### 219- th.select_optima #### 
+#### 224- th.select_optima #### 
 Line 23 :   \item{th.select_optima}{the rank of the optimum to retain. \emph{postive integer}.} # calcBrainMask.Rd
 
-#### 220- th.smoothing #### 
+#### 225- th.smoothing #### 
 Line 22 :   \item{th.smoothing}{should the derivative be smoothed ? \emph{logical}.} # calcBrainMask.Rd
 
-#### 221- th.upper #### 
+#### 226- th.upper #### 
 Line 24 :   \item{th.upper}{should the observations above the selected threshold be retained ? Else the observations bellow will the selected threshold be retained. \emph{logical}.} # calcBrainMask.Rd
 
-#### 222- threshold #### 
+#### 227- threshold #### 
 Line 13 :   \item{threshold}{observations with a \code{sample} value below the value of \code{threshold} are discarded. \emph{numeric}.}  # calcRadius_cpp.Rd
 Line 17 :   \item{threshold}{the value of the hypoperfusion thresholds. \emph{numeric vector}.} # calcTableHypoReperf.Rd
 Line 26 :   \item{threshold}{the thresholds to be used for the discretization of the contrast parameter. \code{numeric vector}.} # calcThresholdMRIaggr.Rd
 Line 16 :   \item{threshold}{the value above which the local mean of the binary parameters is assigned to 1 (and otherwise to 0). \emph{numeric between 0 and 1}.} # constCompressMRIaggr.Rd
 
-#### 223- time #### 
+#### 228- time #### 
 Line 16 :   \item{time}{two time points. \emph{character vector of size 2}. REQUIRED.} # calcTableHypoReperf.Rd
 
-#### 224- title #### 
+#### 229- title #### 
 Line 34 :   \item{title}{the title of the latex document. \emph{character}.} # constLatex.Rd
 
-#### 225- tol #### 
+#### 230- tol #### 
 Line 14 :   \item{tol}{numeric precision for the consistency check. \emph{positive numeric}.} # Carto3D2MRIaggr.Rd
 Line 18 :   \item{tol}{numeric precision for the consistency check. \emph{positive numeric}.} # constMRIaggr.Rd
 
-#### 226- trace #### 
-Line 16 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectClinic.Rd
-Line 17 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectContrast.Rd
-Line 16 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectDescStats.Rd
-Line 15 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectHemisphere.Rd
-Line 15 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectNormalization.Rd
-Line 17 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # affectTable.Rd
+#### 231- trace #### 
+Line 16 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocClinic.Rd
+Line 17 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocContrast.Rd
+Line 16 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocDescStats.Rd
+Line 15 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocHemisphere.Rd
+Line 15 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocNormalization.Rd
+Line 17 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # allocTable.Rd
 Line 40 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcBrainMask.Rd
 Line 23 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcContro_cpp.Rd
 Line 21 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcControlateral.Rd
@@ -1117,7 +1133,7 @@ Line 24 :   \item{trace}{should the execution of the function be traced ? \emph{
 Line 15 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcGroupsCoords.Rd
 Line 16 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcGroupsCoords_cpp.Rd
 Line 22 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcGroupsMask.Rd
-Line 41 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcHemisphere.Rd
+Line 47 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcHemisphere.Rd
 Line 22 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcNormalization.Rd
 Line 15 :   \item{trace}{should the radius of the spatial group be printed ? \emph{logical}.}  # calcRadius_cpp.Rd
 Line 26 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # calcRegionaContrast.Rd
@@ -1139,16 +1155,16 @@ Line 19 :   \item{trace}{should a summary of all attributes should be displayed 
 Line 14 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # supprContrast.Rd
 Line 14 :   \item{trace}{should the execution of the function be traced ? \emph{logical}.} # supprDescStats.Rd
 
-#### 227- trim #### 
+#### 232- trim #### 
 Line 28 :   \item{trim}{the length in mm with which the imported images will be cropped (left, bottom, right top). \emph{numeric vector of size 4}.} # constLatex.Rd
 
-#### 228- trim.legend #### 
+#### 233- trim.legend #### 
 Line 32 :   \item{trim.legend}{the length in mm with which the legend of the images will be cropped. \emph{numeric vector of size 4}.} # constLatex.Rd
 
-#### 229- type #### 
-Line 15 :   \item{type}{the type of volumic information. Can be \code{"lesion"} \code{"reperfusion"} \code{"hypoperfusion"}. REQUIRED.} # affectTable.Rd
+#### 234- type #### 
+Line 15 :   \item{type}{the type of volumic information. Can be \code{"lesion"} \code{"reperfusion"} \code{"hypoperfusion"}. REQUIRED.} # allocTable.Rd
 Line 19 :   \item{type}{the method to use. Can be \code{"threshold"} or \code{"kmeans"}.} # calcBrainMask.Rd
-Line 16 :   \item{type}{the method used to compute the controlateral correspondent of each voxel. Can be \code{"mean"}, \code{"median"} or \code{"1NN_penalised"}.} # calcControlateral.Rd
+Line 16 :   \item{type}{the method used to compute the contralateral correspondent of each voxel. Can be \code{"mean"}, \code{"median"} or \code{"1NN_penalised"}.} # calcControlateral.Rd
 Line 25 :   \item{type}{the type of plot to display. Any of \code{"image"} or \code{"image.plot"} or \code{FALSE} meaning no plot.} # heatmapMRIaggr.Rd
 Line 34 :   \item{type}{the type of plot to display. \emph{character}. See \code{\link{plot.default}} for more details.} # plotDistClass.Rd
 Line 27 :   \item{type}{the type of item to plot. \emph{character}. See \code{plot3d} for more details.} # plotLesion3D.Rd
@@ -1157,26 +1173,26 @@ Line 14 :   \item{type}{the type of normalization. Must be on of \code{"global"}
 Line 16 :   \item{type}{the type of parameter to select. \emph{character}. See the details section.} # selectParameter.Rd
 Line 13 :   \item{type}{the table to extract. Can be \code{"lesion"}, \code{"reperfusion"} or \code{"hypoperfusion"}. REQUIRED.} # selectTable.Rd
 
-#### 230- type.breaks #### 
+#### 235- type.breaks #### 
 Line 20 :   \item{type.breaks}{should the break points be equally space according the range of data values (\code{"range"}), centered (\code{"range_center"}) or correspond to the quantile values (\code{"quantile"}) ?} # initCol.Rd
 Line 54 :   \item{type.breaks}{should the break points be equally space according the range of data values (\code{"range"}), centered (\code{"range_center"}) or correspond to the quantile values (\code{"quantile"}) ?.} # multiplot.Rd
 
-#### 231- type.plot #### 
+#### 236- type.plot #### 
 Line 24 :   \item{type.plot}{the type of plot to be displayed. Can be \code{"plot3d"} or \code{"shapelist3d"}.} # plotLesion3D.Rd
 
-#### 232- type_med #### 
-Line 21 :   \item{type_med}{should the median controlateral value be used ? \emph{logical}.} # calcContro_cpp.Rd
+#### 237- type_med #### 
+Line 21 :   \item{type_med}{should the median contralateral value be used ? \emph{logical}.} # calcContro_cpp.Rd
 
-#### 233- type_moy #### 
-Line 20 :   \item{type_moy}{should the mean controlateral value be used ? \emph{logical}.} # calcContro_cpp.Rd
+#### 238- type_moy #### 
+Line 20 :   \item{type_moy}{should the mean contralateral value be used ? \emph{logical}.} # calcContro_cpp.Rd
 
-#### 234- type_NN #### 
-Line 22 :   \item{type_NN}{should the closest controlateral voxel according to the reference parameter be used ? \emph{logical}.} # calcContro_cpp.Rd
+#### 239- type_NN #### 
+Line 22 :   \item{type_NN}{should the closest contralateral voxel according to the reference parameter be used ? \emph{logical}.} # calcContro_cpp.Rd
 
-#### 235- unit #### 
+#### 240- unit #### 
 Line 42 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # boxplotMask.Rd
 Line 37 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # calcBrainMask.Rd
-Line 38 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # calcHemisphere.Rd
+Line 44 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # calcHemisphere.Rd
 Line 29 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # calcROCthreshold.Rd
 Line 41 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # heatmapMRIaggr.Rd
 Line 17 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # initWindow.Rd
@@ -1185,16 +1201,16 @@ Line 45 :   \item{unit}{the units in which \code{height} and \code{width} are gi
 Line 38 :   \item{unit}{the units in which \code{height} and \code{width} are given. \emph{character}.} # plotTableLesion.Rd
 Line 13 :   \item{unit}{should the unit be returned ? \emph{logical}.} # selectVoxelSize.Rd
 
-#### 236- unit_angle #### 
-Line 29 :   \item{unit_angle}{the unit in which the angle is given. Can be \code{"radian"} or \code{"degree"}.} # calcHemisphere.Rd
+#### 241- unit_angle #### 
+Line 31 :   \item{unit_angle}{the unit in which the angle is given. Can be \code{"radian"} or \code{"degree"}.} # calcHemisphere.Rd
 
-#### 237- update.object #### 
+#### 242- update.object #### 
 Line 41 :   \item{update.object}{should the resulting mask be stored in \code{object} as a \code{"mask"} parameter ? \emph{logical}.} # calcBrainMask.Rd
-Line 22 :   \item{update.object}{should the resulting controlateral parameters be stored in \code{object} ? \emph{logical}.} # calcControlateral.Rd
+Line 22 :   \item{update.object}{should the resulting contralateral parameters be stored in \code{object} ? \emph{logical}.} # calcControlateral.Rd
 Line 22 :   \item{update.object}{should the resulting distance parameters be stored in \code{object} ? \emph{logical}.} # calcDistMask.Rd
 Line 25 :   \item{update.object}{should the resulting filtered parameters be stored in \code{object} ? \emph{logical}.} # calcFilter.Rd
 Line 23 :   \item{update.object}{should the resulting spatial groups be stored in \code{object} ? \emph{logical}.} # calcGroupsMask.Rd
-Line 42 :   \item{update.object}{should the resulting midplane be stored in \code{object} ? \emph{logical}.} # calcHemisphere.Rd
+Line 48 :   \item{update.object}{should the resulting midplane be stored in \code{object} ? \emph{logical}.} # calcHemisphere.Rd
 Line 23 :   \item{update.object}{should the resulting normalization values be stored in \code{object} ? \emph{logical}.} # calcNormalization.Rd
 Line 28 :   \item{update.object}{should the resulting regional parameters be stored in \code{object} ? \emph{logical}.} # calcRegionaContrast.Rd
 Line 32 :   \item{update.object}{should the resulting threshold analysis be stored in \code{object@ls_descStats} ? \emph{logical}.} # calcROCthreshold.Rd
@@ -1206,52 +1222,48 @@ Line 24 :   \item{update.object}{should the resulting tissue types be stored in 
 Line 30 :   \item{update.object}{should the resulting neighborhood matrix be stored in \code{object} ? \emph{logical}.} # calcW.Rd
 Line 43 :   \item{update.object}{should the new parameter be stored in \code{object} ? \emph{logical}.} # outlineMRIaggr.Rd
 
-#### 238- upper #### 
+#### 243- upper #### 
 Line 25 :   \item{upper}{should the entire matrix (\code{NULL}) or only the upper-triagonal (\code{TRUE}) or only the lower-triagonal (\code{FALSE}) values be calculated ?} # calcW.Rd
 
-#### 239- value #### 
-Line 13 :   \item{value}{the clinical data. A one row \emph{data.frame}. REQUIRED.} # affectClinic.Rd
-Line 13 :   \item{value}{the value of each contrast parameter (in columns) at each voxel (in rows). \emph{data.frame}. REQUIRED.} # affectContrast.Rd
-Line 13 :   \item{value}{any R object. REQUIRED.} # affectDescStats.Rd
-Line 13 :   \item{value}{a \emph{list} of \emph{data.frame}. Names must be among \code{"midplane"}, \code{"hemispheres"} \code{"data"}. See the Details section. REQUIRED.}   # affectHemisphere.Rd
-Line 13 :   \item{value}{the normalisation values. A \emph{list} of \emph{data.frame}. REQUIRED.} # affectNormalization.Rd
-Line 14 :   \item{value}{the volumic information. \emph{data.frame}. REQUIRED.} # affectTable.Rd
+#### 244- value #### 
+Line 13 :   \item{value}{the clinical data. A one row \emph{data.frame}. REQUIRED.} # allocClinic.Rd
+Line 13 :   \item{value}{the value of each contrast parameter (in columns) at each voxel (in rows). \emph{data.frame}. REQUIRED.} # allocContrast.Rd
+Line 13 :   \item{value}{any R object. REQUIRED.} # allocDescStats.Rd
+Line 13 :   \item{value}{a \emph{list} of \emph{data.frame}. Names must be among \code{"midplane"}, \code{"hemispheres"} \code{"data"}. See the Details section. REQUIRED.}   # allocHemisphere.Rd
+Line 13 :   \item{value}{the normalisation values. A \emph{list} of \emph{data.frame}. REQUIRED.} # allocNormalization.Rd
+Line 14 :   \item{value}{the volumic information. \emph{data.frame}. REQUIRED.} # allocTable.Rd
 Line 17 :   \item{value}{the contrast parameter value for each voxel. \emph{numeric vector}.} # calcHemi_cpp.Rd
 Line 13 :   \item{value}{the name of the parameter(s) that should be removed. \emph{character vector}. REQUIRED.} # supprContrast.Rd
 Line 13 :   \item{value}{the name of the element(s) that should be removed. \emph{character vector}. REQUIRED.} # supprDescStats.Rd
 
-#### 240- var_ref #### 
+#### 245- var_ref #### 
 Line 19 :   \item{var_ref}{the variance of the reference parameter. \emph{numeric}.} # calcContro_cpp.Rd
 
-#### 241- Vbackground_max #### 
-Line 30 :   \item{Vbackground_max}{background observations with a proportion of neighbors belonging to the mask higher than \code{Vbackground_max} are affected to the mask. \emph{numeric between 0 and 1}.} # calcSmoothMask.Rd
+#### 246- Vbackground_max #### 
+Line 30 :   \item{Vbackground_max}{background observations with a proportion of neighbors belonging to the mask higher than \code{Vbackground_max} are attributed to the mask. \emph{numeric between 0 and 1}.} # calcSmoothMask.Rd
 
-#### 242- Vec_data #### 
+#### 247- Vec_data #### 
 Line 12 :   \item{Vec_data}{vector of data to which the filter will be applied.} # filtrage3D_cpp.Rd
 Line 11 :   \item{Vec_data}{vector of data to which the filter will be applied.} # filtrage3Dmed_cpp.Rd
 
-#### 243- Vec_operateur #### 
+#### 248- Vec_operateur #### 
 Line 14 :   \item{Vec_operateur}{vector representing the filter to be applied.} # filtrage3D_cpp.Rd
 Line 13 :   \item{Vec_operateur}{vector representing the filter to be applied.} # filtrage3Dmed_cpp.Rd
 
-#### 244- verbose #### 
+#### 249- verbose #### 
 Line 16 :   \item{verbose}{is a logical variable that allows text-based feedback during execution of the function.}  # writeMRI.Rd
 Line 25 : 	\item{verbose}{is a logical variable that allows text-based feedback during execution of the function.}  # writeMRIaggr.Rd
 
-#### 245- Vmask_min #### 
-Line 29 :   \item{Vmask_min}{mask observations with a proportion of neighbors belonging to the mask lower than \code{Vmask_min} are affected to the background. \emph{numeric between 0 and 1}.} # calcSmoothMask.Rd
+#### 250- Vmask_min #### 
+Line 29 :   \item{Vmask_min}{mask observations with a proportion of neighbors belonging to the mask lower than \code{Vmask_min} are attributed to the background. \emph{numeric between 0 and 1}.} # calcSmoothMask.Rd
 
-#### 246- voxelDim #### 
-Line 13 :   \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}   # Carto3D-class.Rd
-Line 13 :   \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}   # MRIaggr-class.Rd
+#### 251- voxelDim #### 
+Line 14 :   \item{voxelDim}{the voxel size with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}   # Carto3D-class.Rd
+Line 17 :   \item{voxelDim}{the voxel size with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.} # constCarto3D.Rd
+Line 20 :   \item{voxelDim}{the voxel size with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.} # constMRIaggr.Rd
+Line 14 :   \item{voxelDim}{the voxel size dimensions its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}   # MRIaggr-class.Rd
 
-#### 247- voxelSize #### 
-Line 14 :   \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}   # Carto3D-class.Rd
-Line 17 :   \item{voxelSize}{the spatial dimensions of a voxel  with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.} # constCarto3D.Rd
-Line 20 :   \item{voxelSize}{the spatial dimensions of a voxel  with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.} # constMRIaggr.Rd
-Line 14 :   \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}   # MRIaggr-class.Rd
-
-#### 248- W #### 
+#### 252- W #### 
 Line 14 :   \item{W}{the neighborhood matrix. \code{dgCMatrix}. REQUIRED.} # calcGR.Rd
 Line 18 :   \item{W}{the neighborhood matrix. \emph{dgCMatrix} or \code{"ifany"} leading to use the neighborhood matrix stored in the \code{object} if any and else computate this matrix.} # calcGroupsMask.Rd
 Line 11 :   \item{W}{the neighborhood matrix. \emph{dgCMatrix}. REQUIRED.} # calcGroupsW.Rd
@@ -1261,28 +1273,28 @@ Line 30 :   \item{W}{the neighborhood matrix. \emph{dgCMatrix} or \code{"ifany"}
 Line 13 :   \item{W}{the neighborhood matrix. \code{dgCMatrix}.} # GRalgo.Rd
 Line 12 :   \item{W}{the neighborhood matrix. \code{dgCMatrix}.} # initGR.Rd
 
-#### 249- W.range #### 
+#### 253- W.range #### 
 Line 19 :   \item{W.range}{the neighborhood range. \emph{postive numeric}. REQUIRED.} # calcGroupsMask.Rd
 Line 21 :   \item{W.range}{the neighborhood range. \emph{postive numeric}. Required only if \code{W} have to be computed.} # calcRegionaContrast.Rd
 Line 33 :   \item{W.range}{only distances smaller than \code{W.range} are stored in \code{W}. \code{postive numeric}.} # calcThresholdMRIaggr.Rd
 
-#### 250- W.spatial_res #### 
+#### 254- W.spatial_res #### 
 Line 20 :   \item{W.spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # calcGroupsMask.Rd
 Line 22 :   \item{W.spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # calcRegionaContrast.Rd
 Line 34 :   \item{W.spatial_res}{a dilatation factor for the coordinates. \emph{positive numeric vector of size 3}.} # calcThresholdMRIaggr.Rd
 
-#### 251- w_contrast #### 
+#### 255- w_contrast #### 
 Line 20 :   \item{w_contrast}{should the influence of each neighbor be ponderated by the difference in signal with the considered observation ? \emph{logical}.} # calcFilter.Rd
 Line 14 :   \item{w_contrast}{should the influence of each neighbor be ponderated by the difference in signal with the considered observation ?} # filtrage2D_cpp.Rd
 Line 17 :   \item{w_contrast}{should the influence of each neighbor be ponderated by the difference in signal with the considered observation ?} # filtrage3D_cpp.Rd
 
-#### 252- what #### 
+#### 256- what #### 
 Line 16 :   \item{what}{an object whose mode will give the mode of the vector to be read, or a character vector of length one describing the mode: one of "numeric", "double", "integer", "int", "logical", "complex", "character", "raw". Only active if \code{format} equals \code{rawb.gz}.} # readMRI.Rd
 
-#### 253- width #### 
+#### 257- width #### 
 Line 39 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # boxplotMask.Rd
 Line 34 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # calcBrainMask.Rd
-Line 35 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # calcHemisphere.Rd
+Line 41 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # calcHemisphere.Rd
 Line 26 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # calcROCthreshold.Rd
 Line 27 :   \item{width}{the width of each image relative to the linewidth. \emph{positive numeric}.} # constLatex.Rd
 Line 38 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # heatmapMRIaggr.Rd
@@ -1292,13 +1304,13 @@ Line 89 :   \item{width}{the width of the device used to export the plot. \emph{
 Line 42 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # plotDistClass.Rd
 Line 35 :   \item{width}{the width of the device used to export the plot. \emph{postive numeric}.} # plotTableLesion.Rd
 
-#### 254- width.legend #### 
+#### 258- width.legend #### 
 Line 31 :   \item{width.legend}{the width of the legend image relative to the linewidth. \emph{numeric between 0 and 1}.} # constLatex.Rd
 
-#### 255- window #### 
+#### 259- window #### 
 Line 29 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # boxplotMask.Rd
 Line 32 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # calcBrainMask.Rd
-Line 33 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # calcHemisphere.Rd
+Line 39 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # calcHemisphere.Rd
 Line 24 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # calcROCthreshold.Rd
 Line 29 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # heatmapMRIaggr.Rd
 Line 11 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # initDisplayWindow.Rd
@@ -1307,37 +1319,37 @@ Line 67 :   \item{window}{the type of device on which the plot will be displayed
 Line 30 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # plotDistClass.Rd
 Line 22 :   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.} # plotTableLesion.Rd
 
-#### 256- x #### 
+#### 260- x #### 
 Line 11 :   \item{x}{the biomarker values. \emph{numeric vector}. REQUIRED.} # calcAUPRC.Rd
 Line 11 :   \item{x}{the data on which the kernel will be applied. \emph{numeric} or \emph{numeric vector}.} # EDK.Rd
 
-#### 257- x.legend #### 
+#### 261- x.legend #### 
 Line 34 :   \item{x.legend}{the x coordinates of the legend. \emph{numeric} or \emph{character}.} # boxplotMask.Rd
 Line 37 :   \item{x.legend}{the x coordinates of the legend. \emph{numeric} or \emph{character}.} # plotDistClass.Rd
 
-#### 258- xlab #### 
+#### 262- xlab #### 
 Line 76 :   \item{xlab}{a title for the x axis. \emph{character}.} # multiplot.Rd
 Line 26 :   \item{xlab}{a title for the x axis. \emph{character}.} # plotMRI.Rd
 
-#### 259- xlim #### 
+#### 263- xlim #### 
 Line 21 :   \item{xlim}{the x limits of the plot. \emph{numeric vector of size 2}.} # initWindow.Rd
 Line 63 :   \item{xlim}{the x limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the x limits.} # multiplot.Rd
 Line 24 :   \item{xlim}{the y limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the x limits.} # outlineMRIaggr.Rd
 Line 21 :   \item{xlim}{the x limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the x limits.} # plotLesion3D.Rd
 Line 19 :   \item{xlim}{the x limits of the plot. \emph{numeric vector of size 2}.} # plotMRI.Rd
 
-#### 260- y #### 
+#### 264- y #### 
 Line 12 :   \item{y}{the class labels. \emph{numeric vector}, \emph{character vector} or \emph{logical vector}. REQUIRED.} # calcAUPRC.Rd
 
-#### 261- y.legend #### 
+#### 265- y.legend #### 
 Line 35 :   \item{y.legend}{the y coordinates of the legend. \emph{numeric} or \emph{character}.} # boxplotMask.Rd
 Line 38 :   \item{y.legend}{the y coordinates of the legend. \emph{numeric} or \emph{character}.} # plotDistClass.Rd
 
-#### 262- ylab #### 
+#### 266- ylab #### 
 Line 77 :   \item{ylab}{a title for the y axis. \emph{character}.} # multiplot.Rd
 Line 27 :   \item{ylab}{a title for the y axis. \emph{character}.} # plotMRI.Rd
 
-#### 263- ylim #### 
+#### 267- ylim #### 
 Line 30 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the y limits.} # boxplotMask.Rd
 Line 22 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2}.} # initWindow.Rd
 Line 64 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the y limits.} # multiplot.Rd
@@ -1346,18 +1358,18 @@ Line 28 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2
 Line 22 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the y limits.} # plotLesion3D.Rd
 Line 20 :   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2}.} # plotMRI.Rd
 
-#### 264- zlim #### 
+#### 268- zlim #### 
 Line 23 :   \item{zlim}{the z limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the z limits.} # plotLesion3D.Rd
 
 
  
 ################################# 93 files .Rd #################################
-affectClinic.Rd
-affectContrast.Rd
-affectDescStats.Rd
-affectHemisphere.Rd
-affectNormalization.Rd
-affectTable.Rd
+allocClinic.Rd
+allocContrast.Rd
+allocDescStats.Rd
+allocHemisphere.Rd
+allocNormalization.Rd
+allocTable.Rd
 array2df.Rd
 boxplotMask.Rd
 calcAUPRC.Rd

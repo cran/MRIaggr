@@ -20,10 +20,10 @@ ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 }
 \value{
-  A \code{\linkS4class{MRIaggr}} object.
+  a \code{\linkS4class{MRIaggr}} object.
 }
 \examples{
-## load nifti files 
+## load NIFTI files 
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 
 Pat1.TTP.t0.nifti <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")

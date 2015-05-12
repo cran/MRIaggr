@@ -53,11 +53,11 @@ The arguments \code{th.breaks}, \code{th.smoothing}, \code{th.select_optima} and
 \code{th.smoothing} can be set to an \emph{integer} to specify the width of the smoothing kernel.
 
 The k-means approach seeks the most spatially coherent partition of the observations, among the possible partitions defined by the \code{kmeans.n_groups} argument. 
-The mean number of neighbors averaged over observations (spatial potential) is used as a metric of the spatial coherency of the partition. \cr
+The mean number of neighbors averaged over observations (spatial potential) is used as a metric of the spatial coherence of the partition. \cr
 The arguments \code{kmeans.n_groups}, \code{kmeans.Neighborhood} and \code{upper} are only active if \code{type} is \code{"kmeans"}.
 
 The skull step consists in identifying the skull with an additionnal parameter (T1 sequence appears well suited for this purpose), and remove the corresponding observations from the brain mask. 
-It is the partition that gives the best spatial coherency  for the final brain mask that is retained, leaving the posibility of no skull stripping.
+It is the partition that gives the best spatial coherence  for the final brain mask that is retained, leaving the posibility of no skull stripping.
 
 The plot is active only if \code{type} is \code{"threshold"}.
 }
@@ -85,7 +85,7 @@ If \code{type} is \code{"kmeans"}, a \emph{list} containing :
 \code{\link{calcSmoothMask}} to spatially regularized the obtained mask.
 }
 \examples{
-## load nifti files and convert them to MRIaggr
+## load NIFTI files and convert them to MRIaggr
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list(readMRI(file=file.path(path.Pat1,"T1_t0"),format="nifti"),
                  readMRI(file=file.path(path.Pat1,"T2_GRE_t0"),format="nifti"))

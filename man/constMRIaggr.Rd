@@ -7,7 +7,7 @@ Construct a \code{\linkS4class{MRIaggr}} object from a list of array, each array
 \usage{
 constMRIaggr(ls.array,identifier,param,default_value=NULL,
          pos_default_value=c(1,1,1),tol=10^{-10},
-		 voxelSize=NULL,trace=TRUE,rm.ls.array=FALSE) 
+		 voxelDim=NULL,trace=TRUE,rm.ls.array=FALSE) 
 }
 \arguments{
   \item{ls.array}{the value of the contrast parameter(s) for each observation. \code{list of array}. REQUIRED.}
@@ -17,7 +17,7 @@ constMRIaggr(ls.array,identifier,param,default_value=NULL,
   \item{pos_default_value}{the coordinates of the observations that contains the reference value. \emph{numeric vector}.}   
   \item{tol}{numeric precision for the consistency check. \emph{positive numeric}.}
   
-  \item{voxelSize}{the spatial dimensions of a voxel  with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}
+  \item{voxelDim}{the voxel size with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}
   \item{trace}{should the execution of the function be traced ? \emph{logical}.}
   \item{rm.ls.array}{should the object on which the \code{ls.array} argument points be removed form the global environment ? \emph{logical}.}
 }
@@ -30,11 +30,11 @@ Information about the \code{param} argument can be found in the details section 
 \code{pos_default_value} is active only if \code{default_value} is set to \code{NULL}.
 }
 \value{
-  A \code{\linkS4class{MRIaggr}} object.
+  a \code{\linkS4class{MRIaggr}} object.
 }
 \examples{
 #### 1- 1st method ####
-## load nifti files
+## load NIFTI files
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")

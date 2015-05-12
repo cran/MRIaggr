@@ -1,6 +1,6 @@
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 #%%%%%
-#%%%%% Fichier test 1.1 : loading nifti files and convert them to carto3D and MRIaggr object
+#%%%%% Fichier test 1.1 : loading NIFTI files and convert them to carto3D and MRIaggr object
 #%%%%%
 #%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

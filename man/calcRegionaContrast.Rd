@@ -29,6 +29,8 @@ Compute the regional contrast parameters.
   \item{overwrite}{if contrast parameters with the same names are already stored in \code{object} can they be overwritten ? \emph{logical}.}  
 }
 \details{
+This function requires to have installed the \emph{Matrix} and the \emph{spam} package to work.
+
 ARGUMENTS : \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 

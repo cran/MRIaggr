@@ -42,7 +42,7 @@ Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,
 "nifti.Pat1_TTP_t0" %in% ls()
 
 # example 
-## load nifti files
+## load NIFTI files
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
 
@@ -78,7 +78,7 @@ MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param=param,pos_default_
 
 #### example 
 #### 1- 1st method
-## load nifti files
+## load NIFT files
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
@@ -93,7 +93,7 @@ MRIaggr.Pat1 <- constMRIaggr(list(nifti.Pat1_TTP_t0,nifti.Pat1_DWI_t0,
 
 
 #### 2- 2nd method
-## load nifti files
+## load NIFTI files
 param <- c("DWI_t0.nii","MASK_DWI_t0.nii","MTT_t0.nii","TTP_t0.nii","T1_t0.nii","T2_GRE_t0.nii",
            "MTT_t1.nii","TTP_t1.nii","T2_FLAIR_t2.nii","MASK_T2_FLAIR_t2.nii")
 
@@ -146,7 +146,7 @@ res4 <- array2df(array=array(c(Yarray,Yarray,Yarray),dim=c(10,10,3)))
 res4[res4$k==1,]-res4[res4$k==2,]
 
 #### example 
-## load a nifti file (array format)
+## load a NIFTI file (array format)
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
 dim(nifti.Pat1_TTP_t0)
@@ -200,7 +200,7 @@ MRIaggr.Pat1 <- Carto3D2MRIaggr(list(Pat1.TTP.t0.Carto3D,
 )
 
 # example
-## load nifti files 
+## load NIFTI files 
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 
 Pat1.TTP.t0.nifti <- readMRI(file=file.path(path,"TTP_t0"),format="nifti")
@@ -280,7 +280,7 @@ fields::image.plot(res3$contrast[[1]])
 fields::image.plot(res4$contrast[[2]])
 
 #### 2- with MRIaggr data
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red",package="MRIaggr")
 carto <- selectContrast(MRIaggr.Pat1_red,param="DWI_t0")
 coords <- selectCoords(MRIaggr.Pat1_red)
@@ -325,7 +325,7 @@ calcAUPRC(performance=perfXY,subdivisions=10000)
 
 #### example
 #### 1- with MRIaggr data 
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red,package="MRIaggr")
 
 ## select parameter and binary outcome
@@ -399,7 +399,7 @@ if(try(require(fields))){
   par(mfrow=c(2,3),mar=rep(2,4),mgp=c(1.5,0.5,0))
   fields::image.plot(M,breaks=breaks, col=terrain.colors(n.breaks-1),main="initial data")
   fields::image.plot(filtreG3_F.C,breaks=breaks, col=terrain.colors(n.breaks-1),main="gaussian filter (bdw 3px/na.rm=F/.cpp)",zlim=range(M))
-  fields::image.plot(filtreG3_T.C,breaks=breaks, col=terrain.colors(n.breaks-1),main="gaussian filter bandwith 3px (bdw 3px/na.rm=T/.cpp)",zlim=range(M))
+  fields::image.plot(filtreG3_T.C,breaks=breaks, col=terrain.colors(n.breaks-1),main="gaussian filter bandwidth 3px (bdw 3px/na.rm=T/.cpp)",zlim=range(M))
   
   fields::image.plot(filtreG3w_F.C,breaks=breaks, col=terrain.colors(n.breaks-1),main="Wgaussian filter (bdw 3px/na.rm=F/.cpp)",zlim=range(M))
   fields::image.plot(filtreG3med_F.C,breaks=breaks, col=terrain.colors(n.breaks-1),main="median filter (bdw 3px/na.rm=F/.cpp)",zlim=range(M))
@@ -427,7 +427,7 @@ filtre2Dn_narm.C <- calcFilter(M,filter="2D_N4",na.rm=TRUE)$res
 
 
 #### example
-## load a nifti file
+## load a NIFTI file
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 nifti.Pat1_DWI_t0 <- readMRI(file=file.path(path,"DWI_t0"),format="nifti")
 
@@ -466,7 +466,7 @@ res.Groups$group_size
 
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select data
@@ -530,7 +530,7 @@ if(require(spam) && require(Matrix)){
 
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select data
@@ -561,7 +561,7 @@ multiplot(coords[MASK_DWI_t0==1,],contrast=res.Groups$group,
 # load data 
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 #### 2- data.frame function
@@ -637,7 +637,7 @@ W[1:10,1:10]
 
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 #### 1- data.frame method ####
@@ -759,7 +759,7 @@ Y <- rnorm(n^2)
 multiplot(object=data.frame(expand.grid(1:n,1:n),1),
              contrast=Y,window=FALSE)
 
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 ## select data
@@ -787,7 +787,7 @@ multiplot(object=data[,c("i","j","k")],num=3,
 #### test
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 num <- 3
 

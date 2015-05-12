@@ -18,6 +18,8 @@ Extract elements in the \code{ls_descStats} slot of a \code{\linkS4class{MRIaggr
   \item{slice_var}{the type of slice to extract. \code{"i"} for sagittal, \code{"j"} for coronal and \code{"k"} for transverse. \emph{character}.}  
 }
 \details{
+This function requires to have installed the \emph{Matrix} and the \emph{spam} package to work when argument \code{name} is set to \code{"W_euclidean"}.
+
 ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 
@@ -30,9 +32,9 @@ Each of the \code{num}, \code{hemisphere} and \code{subset} argument define a su
 It is the intersection of all these three subsets is extracted.
 }
 \seealso{ 
- \code{\link{affectDescStats<-}} to affect elements in the \code{ls_descStats} slot. \cr
+ \code{\link{allocDescStats<-}} to allocate elements in the \code{ls_descStats} slot. \cr
  \code{\link{calcHemisphere}} to identify the hemispheres. \cr
- \code{\link{affectHemisphere<-}} and \code{\link{affectContrast<-}} to affect hemispheres obtained from an external source.
+ \code{\link{allocHemisphere<-}} and \code{\link{allocContrast<-}} to allocate hemispheres obtained from an external source.
 }
 \examples{
 ## load a MRIaggr object
@@ -52,7 +54,7 @@ selectParameter(MRIaggr.Pat1_red,type="ls_descStats")
 ## select a specific element 
 res <- selectDescStats(MRIaggr.Pat1_red,name="GroupsLesion")
 
-## compute and affect a neighborhood matrix
+## compute and allocate a neighborhood matrix
 calcW(MRIaggr.Pat1_red,range=3,update.object=TRUE,overwrite=TRUE,
       spatial_res=c(1.875,1.875,6))
 

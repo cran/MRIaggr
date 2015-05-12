@@ -108,7 +108,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP_t0",num=3,hemisphere="lesion",legend=FALSE
 
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 ## display raw parameter
@@ -191,7 +191,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP_t0",num=3,hemisphere="lesion",legend=FALSE
 #### test
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 ## select data

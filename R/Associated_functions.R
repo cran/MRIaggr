@@ -1,27 +1,27 @@
 #### 1- Construction functions for the objects Carto3D and MRIaggr ####
 
 constCarto3D <- function(array,identifier,param,default_value=NULL,
-                         pos_default_value=c(1,1,1),voxelSize=NULL,rm.array=FALSE){
+                         pos_default_value=c(1,1,1),voxelDim=NULL,rm.array=FALSE){
   
   nom.array <- as.character(substitute(array))
   
   
   #### conversion du format ####
   if(class(array) == "anlz"){ # analyse object
-    if(is.null(voxelSize)){
-      voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=array@vox_units, stringsAsFactors = FALSE)
-      voxelSize[,c("i","j","k")] <- array@pixdim[2:4] 
+    if(is.null(voxelDim)){
+      voxelDim <- data.frame(i=NA,j=NA,k=NA,unit=array@vox_units, stringsAsFactors = FALSE)
+      voxelDim[,c("i","j","k")] <- array@pixdim[2:4] 
     }
     array <- array@.Data
   }else if(class(array) %in% c("nifti","niftiExtension","niftiAuditTrail")){ # nifti object
-    if(is.null(voxelSize)){
-      voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=oro.nifti::convert.units(oro.nifti::xyzt2space(array@xyzt_units)), stringsAsFactors = FALSE)
-      voxelSize[,c("i","j","k")] <- array@pixdim[2:4]    
+    if(is.null(voxelDim)){
+      voxelDim <- data.frame(i=NA,j=NA,k=NA,unit=oro.nifti::convert.units(oro.nifti::xyzt2space(array@xyzt_units)), stringsAsFactors = FALSE)
+      voxelDim[,c("i","j","k")] <- array@pixdim[2:4]    
     }
     array <- array@.Data
   }else if(is.list(array) && length(array)==2 && "img" %in% names(array)){ # dicom object
     array <- array$img
-    voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
+    voxelDim <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
   }else{ # array object
     if(class(array) %in% c("matrix","array") == FALSE){
       stop("constCarto3D : wrong specification of \'array\' \n",
@@ -29,7 +29,7 @@ constCarto3D <- function(array,identifier,param,default_value=NULL,
            "class(array) : ",class(array),"\n")
       
     }
-    voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
+    voxelDim <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE)
   }
   
   if(length(dim(array))==4 && dim(array)[4]==1){
@@ -63,7 +63,7 @@ constCarto3D <- function(array,identifier,param,default_value=NULL,
   res <- new(Class="Carto3D",
              identifier = identifier,
              parameter = param,
-             voxelSize=voxelSize,
+             voxelDim=voxelDim,
              default_value = as.character(default_value),
              contrast = array)
   
@@ -79,7 +79,7 @@ constCarto3D <- function(array,identifier,param,default_value=NULL,
 
 constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
                          pos_default_value=c(1,1,1),
-                         tol=10^{-10},voxelSize=NULL,
+                         tol=10^{-10},voxelDim=NULL,
                          trace=TRUE,rm.ls.array=FALSE){
   
   nom.ls.array <- as.character(substitute(ls.array))
@@ -130,12 +130,12 @@ constMRIaggr <- function(ls.array,identifier,param,default_value=NULL,
     if(is.null(default_value)){
       ls.Carto3D[[iter_m]] <- constCarto3D(ls.array[[iter_m]],
                                            identifier=identifier,param=param[iter_m],default_value=NULL,
-                                           pos_default_value=pos_default_value,voxelSize=voxelSize)
+                                           pos_default_value=pos_default_value,voxelDim=voxelDim)
       
     }else{
       ls.Carto3D[[iter_m]] <- constCarto3D(ls.array[[iter_m]],
                                            identifier=identifier,param=param[iter_m],default_value=default_value[iter_m],
-                                           pos_default_value=NULL,voxelSize=voxelSize)      
+                                           pos_default_value=NULL,voxelDim=voxelDim)      
     }
     
   }
@@ -498,15 +498,15 @@ Carto3D2MRIaggr <- function(ls.Carto3D,rm.Carto3D=FALSE,tol=10^{-10},
   #### preparation ####
   
   if(is.null(num)){
-    num <- seq(1,selectVoxelDim(ls.Carto3D[[1]])$k,by=1)
+    num <- seq(1,selectFieldDim(ls.Carto3D[[1]])$k,by=1)
   }
-  voxelDim <- data.frame(i=selectVoxelDim(ls.Carto3D[[1]])$i,
-                         j=selectVoxelDim(ls.Carto3D[[1]])$j,
+  fieldDim <- data.frame(i=selectFieldDim(ls.Carto3D[[1]])$i,
+                         j=selectFieldDim(ls.Carto3D[[1]])$j,
                          k=length(num), stringsAsFactors = FALSE)
   
   default_value <- data.frame(matrix("NA",ncol=length(ls.Carto3D),nrow=1),stringsAsFactors=FALSE)
   identifiant <- selectIdentifier(ls.Carto3D[[1]])
-  size <- ls.Carto3D[[1]]@voxelSize
+  size <- ls.Carto3D[[1]]@voxelDim
   
   data_global <- data.frame(matrix(NA,
                                    nrow=selectN(ls.Carto3D[[1]],num=num),
@@ -556,8 +556,8 @@ Carto3D2MRIaggr <- function(ls.Carto3D,rm.Carto3D=FALSE,tol=10^{-10},
              identifier=identifiant,
              contrast=data_global,
              default_value=default_value,
-             voxelDim=voxelDim,
-             voxelSize=size)
+             fieldDim=fieldDim,
+             voxelDim=size)
   
   return(res)
 }
@@ -962,13 +962,23 @@ calcThreshold <- function(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=
   } 
   
   if(GRalgo==TRUE){
-    
+    #### test package W
+	test.package <- requireNamespace("spam",quietly=TRUE)
+    if(test.package==FALSE){
+              stop("calcThreshold : this function requires to have installed the spam package to work \n")
+    }
+			
+	test.package <- requireNamespace("Matrix",quietly=TRUE)
+    if(test.package==FALSE){
+       stop("calcThreshold : this function requires to have installed the Matrix package to work \n")
+    }
+			
     if(is.character(seed) && all(seed %in% names(contrast))){
       seed <- contrast[,seed,drop=FALSE] 
       
       if(as.logical==TRUE){seed <- apply(seed,2,as.logical)}
       if(any(apply(seed,2,is.logical)==FALSE)){
-        stop("calcThreshold[Class_MRIaggr.R] : type of \'seed\' is not logical \n",
+        stop("calcThreshold : type of \'seed\' is not logical \n",
              "proposed type : ",paste(apply(seed,2,class),collapse=" "),"\n",
              "to force the conversion to logical set \'as.logical\'= TRUE \n")
       }    
@@ -1147,6 +1157,17 @@ calcThreshold <- function(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=
 
 calcGroupsW <- function(W,subset=NULL,max_groups=10000){ 
   
+  #### test package W
+  test.package <- requireNamespace("spam",quietly=TRUE)
+  if(test.package==FALSE){
+           stop("calcGroupsW : this function requires to have installed the spam package to work \n")
+  }
+			
+	test.package <- requireNamespace("Matrix",quietly=TRUE)
+    if(test.package==FALSE){
+       stop("calcGroupsW : this function requires to have installed the Matrix package to work \n")
+    }
+	
   if("dgCMatrix" %in% is(W)==F){
     stop("calcGroupsW : wrong specification of \'W\' \n",
          "\'W\' must be of class dgCMatrix \n",
@@ -1189,8 +1210,18 @@ setMethod(f ="calcW",
           signature ="data.frame",
           definition = function(object,range,method="euclidean",upper=NULL,format="dgCMatrix",row.norm=FALSE,
                                 spatial_res=rep(1,ncol(object)))
-          {
-            
+          { 
+			#### test package W
+            test.package <- requireNamespace("spam",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("calcW : this function requires to have installed the spam package to work \n")
+            }
+			
+			test.package <- requireNamespace("Matrix",quietly=TRUE)
+            if(test.package==FALSE){
+              stop("calcW : this function requires to have installed the Matrix package to work \n")
+            }
+			
             if(format %in% c("spam","dgCMatrix")==FALSE){
               stop("calcW[data.frame] : wrong specification of \'format\' \n",
                    "valid format : \"spam\" \"dgCMatrix\" \n",
@@ -1225,7 +1256,7 @@ setMethod(f ="calcW",
                 pSum[pSum==0] <- -1
                 W <- W/pSum
               }
-              W <- drop0(W,is.Csparse=TRUE)
+              W <- Matrix::drop0(W,is.Csparse=TRUE)
             }      
             
             return(list(res=W,
@@ -1954,7 +1985,7 @@ setMethod(f ="calcFilter",
             if(filter_split[[4]] %in% c("N","G","I","P","S") && length(M.dim)==3){
               if(filter_split[[1]]==2){
                 for(iter_k in 1:(M.dim[3])){
-                  
+                 
                   resCpp <- filtrage2D_cpp(M_data=object[,,iter_k],
                                            M_operateur=filter,
                                            index_data=which(!is.na(object[,,iter_k]),arr.ind=TRUE)-1,
@@ -1967,12 +1998,13 @@ setMethod(f ="calcFilter",
                     Mres[,,iter_k] <- resCpp$Mres
                   }      
                 }
-              }else{     
+              }else{  
+      
                 resCpp <- filtrage3D_cpp(Vec_data=as.vector(object),p_data=dim(object),
                                          Vec_operateur=as.vector(filter),p_operateur=dim(filter),
                                          index_data=which(!is.na(object),arr.ind=TRUE)-1,
                                          w_contrast=w_contrast,
-                                         na_rm=na.rm)
+                                         na_rm=na.rm)                
                 
                 if(norm==TRUE){
                   Mres <- resCpp$Mres/resCpp$Wres
@@ -2644,7 +2676,7 @@ initDirPat_constLatex <- function(dir,param,identifier,trace){
   names_dirs <- unlist(lapply(strsplit(dirs_plot,split="/"),function(x){x[length(x)]}))
   
   if(trace==TRUE){
-    cat("%% ",n.dirs_plot," directories founded in the root directory \n",sep="")
+    cat("%% ",n.dirs_plot," directories found in the root directory \n",sep="")
   }
   
   ## dir restrected to param
@@ -2687,7 +2719,7 @@ initDirPat_constLatex <- function(dir,param,identifier,trace){
   n.identifier <- length(identifier)
   
   if(trace==TRUE){
-    cat("%% ",length(Allidentifier)," identifiers founded in the subdirectories \n",sep="")
+    cat("%% ",length(Allidentifier)," identifiers found in the subdirectories \n",sep="")
     cat("% ",n.identifier," identifiers will be considered according to \'param\' argument \n \n",sep="")
   }
   
@@ -2786,7 +2818,7 @@ initPlot_constLatex <- function(dir,names_dirs,dirs_plot,identifier,table,
       ls.legend[[iter_dir]] <- legend_tempo
       
       if(length(index_plot)==0){
-        stop("constLatex : an legend file was founded but with no corresponding image \n",
+        stop("constLatex : an legend file was found but with no corresponding image \n",
              "directory : ",dirs_plot[iter_dir]," \n",
              "legend file : \"",list.files(dirs_plot[iter_dir])[legend_tempo>0],"\" \n") 
       }

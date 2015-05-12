@@ -3,7 +3,7 @@
 \alias{supprContrast<-}
 \alias{supprContrast<-,MRIaggr-method}
 \description{
-Remove a contrast parameter from a MRIaggr object.
+Remove a contrast parameter from a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
 \S4method{supprContrast}{MRIaggr}(object,trace=TRUE) <- value
@@ -18,7 +18,7 @@ ARGUMENTS: \cr
 \code{value} can be a \emph{numeric vector} indicating the position of the parameters to remove in the \code{data} slot.
 }
 \seealso{ 
- \code{\link{affectContrast<-}} to affect a contrast parameter. \cr
+ \code{\link{allocContrast<-}} to allocate a contrast parameter. \cr
  \code{\link{selectParameter}} to display the contrast parameters.
 }
 \value{
@@ -37,6 +37,6 @@ supprContrast(MRIaggr.Pat1_red) <- c("MTT_t0","MASK_DWI_t0")
 ## remaining contrast parameters
 selectParameter(MRIaggr.Pat1_red)
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

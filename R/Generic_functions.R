@@ -1,8 +1,8 @@
 #
 #***************** 0 Objet methodes generiques ********************
 #
-# A) Selecteurs 
-# B) Affectants
+# A) Affecters 
+# B) Allocators
 # C) Methode 
 
 # if (!isGeneric("summary")){
@@ -77,46 +77,46 @@ setGeneric(name="selectTable",
 )
 
 # Carto3D MRIaggr 
+setGeneric(name="selectFieldDim",
+           def=function(object,...){standardGeneric("selectFieldDim")}
+)
+
+# Carto3D MRIaggr 
 setGeneric(name="selectVoxelDim",
            def=function(object,...){standardGeneric("selectVoxelDim")}
 )
 
-# Carto3D MRIaggr 
-setGeneric(name="selectVoxelSize",
-           def=function(object,...){standardGeneric("selectVoxelSize")}
-)
-
-##### B) Affectants ############################################
+##### B) allocants ############################################
 
 
 # MRIaggr 
-setGeneric(name="affectContrast<-",
-           def=function(object,param=NULL,default_value=NULL,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectContrast<-")}
+setGeneric(name="allocContrast<-",
+           def=function(object,param=NULL,default_value=NULL,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocContrast<-")}
 )
 
 # MRIaggr
-setGeneric(name="affectClinic<-",
-           def=function(object,add=FALSE,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectClinic<-")}
+setGeneric(name="allocClinic<-",
+           def=function(object,add=FALSE,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocClinic<-")}
 )
 
 # MRIaggr 
-setGeneric(name="affectDescStats<-",
-           def=function(object,name,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectDescStats<-")}
+setGeneric(name="allocDescStats<-",
+           def=function(object,name,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocDescStats<-")}
 )
 
 # MRIaggr
-setGeneric(name="affectHemisphere<-",
-           def=function(object,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectHemisphere<-")}
+setGeneric(name="allocHemisphere<-",
+           def=function(object,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocHemisphere<-")}
 )
 
 # MRIaggr
-setGeneric(name="affectNormalization<-",
-           def=function(object,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectNormalization<-")}
+setGeneric(name="allocNormalization<-",
+           def=function(object,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocNormalization<-")}
 )
 
 # MRIaggr 
-setGeneric(name="affectTable<-",
-           def=function(object,type,overwrite=FALSE,trace=TRUE,value){standardGeneric("affectTable<-")}
+setGeneric(name="allocTable<-",
+           def=function(object,type,overwrite=FALSE,trace=TRUE,value){standardGeneric("allocTable<-")}
 )
 
 # MRIaggr
@@ -140,9 +140,9 @@ setGeneric(name ="calcBrainMask",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectContrast(object,param="mask",overwrite=res$overwrite,trace=res$trace) <- res$res$best_group
+               allocContrast(object,param="mask",overwrite=res$overwrite,trace=res$trace) <- res$res$best_group
                
                # update history
                object@history <- c(object@history,
@@ -162,14 +162,14 @@ setGeneric(name ="calcBrainMask",
 )
 
 # MRIaggr
-setGeneric(name="calcControlateral",
+setGeneric(name="calcContralateral",
            def=function(object,...){
              
-             res <- standardGeneric("calcControlateral")
+             res <- standardGeneric("calcContralateral")
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                newdata <- data.frame(matrix(NA,nrow=selectN(object),ncol=ncol(res$data)))
                names(newdata) <- names(res$data)   
@@ -177,11 +177,11 @@ setGeneric(name="calcControlateral",
                newdata[res$data[,"index"],] <- res$data
                newdata <- newdata[,names(newdata) %in% c("index","i_hemisphere","j_hemisphere","hemisphere") == FALSE]
                
-               affectContrast(object,overwrite=res$overwrite,trace=res$trace) <- newdata
+               allocContrast(object,overwrite=res$overwrite,trace=res$trace) <- newdata
                
                # update history
                object@history <- c(object@history,
-                                   list(calcControlateral=list(call=match.call(),date=date()))
+                                   list(calcContralateral=list(call=match.call(),date=date()))
                )
                
                # update object
@@ -207,9 +207,9 @@ setGeneric(name ="calcDistMask",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res
+               allocContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res
                
                # update history
                object@history <- c(object@history,
@@ -241,11 +241,11 @@ setGeneric(name="calcFilter",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                param <- setdiff(names(res$res),c("i","j","k"))              
                
-               affectContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res[,param,drop=F]
+               allocContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res[,param,drop=F]
                
                # update history
                object@history <- c(object@history,
@@ -275,9 +275,9 @@ setGeneric(name="calcGroupsMask",
               
               if(res$update.object==TRUE){
                 
-                # affect
+                # alloc
                 nom_object <- as.character(substitute(object))
-                affectDescStats(object,name="GroupsLesion",overwrite=res$overwrite,trace=res$trace) <- lapply(res$res,function(x){x$group_size})
+                allocDescStats(object,name="GroupsLesion",overwrite=res$overwrite,trace=res$trace) <- lapply(res$res,function(x){x$group_size})
                 
                 # update history
                 object@history <- c(object@history,
@@ -303,13 +303,13 @@ setGeneric(name="calcHemisphere",
              
              if(res$update.object==TRUE){
            
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectHemisphere(object,overwrite=res$overwrite,trace=res$trace) <- list(midplane=res$res$midplane,                                                                                            
+               allocHemisphere(object,overwrite=res$overwrite,trace=res$trace) <- list(midplane=res$res$midplane,                                                                                            
                                                                                         data=res$res$data)
                
                if(!is.null(res$res$hemispheres)){
-                 affectHemisphere(object,overwrite=res$overwrite,trace=res$trace) <- list(hemispheres=res$res$hemispheres)
+                 allocHemisphere(object,overwrite=res$overwrite,trace=res$trace) <- list(hemispheres=res$res$hemispheres)
                }
                
                # update history
@@ -336,9 +336,9 @@ setGeneric(name="calcROCthreshold",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectDescStats(object,name="Mask_threshold",overwrite=res$overwrite,trace=res$trace) <- res$res
+               allocDescStats(object,name="Mask_threshold",overwrite=res$overwrite,trace=res$trace) <- res$res
                
                eval(parse(text=paste(
                  "assign(\"",nom_object,"\",value=object,
@@ -366,9 +366,9 @@ setGeneric(name="calcNormalization",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectNormalization(object,overwrite=res$overwrite,trace=res$trace) <- res$res
+               allocNormalization(object,overwrite=res$overwrite,trace=res$trace) <- res$res
                
                # update history
                object@history <- c(object@history,
@@ -397,9 +397,9 @@ setGeneric(name="calcRegionalContrast",
              }else{
                if(res$update.object==TRUE){
                  
-                 # affect
+                 # alloc
                  nom_object <- as.character(substitute(object))
-                 affectContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res
+                 allocContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res
                  
                  # update history
                  object@history <- c(object@history,
@@ -426,9 +426,9 @@ setGeneric(name="calcSmoothMask",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectContrast(object,param="mask",overwrite=res$overwrite,trace=res$trace) <- res$res$mask
+               allocContrast(object,param="mask",overwrite=res$overwrite,trace=res$trace) <- res$res$mask
                
                # update history
                object@history <- c(object@history,
@@ -454,15 +454,15 @@ setGeneric(name="calcTableHypoReperf",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                
                if("volume_hypo" %in% names(res$res)){
-                 affectTable(object,type="hypoperfusion",overwrite=res$overwrite,trace=res$trace) <- res$res$volume_hypo
+                 allocTable(object,type="hypoperfusion",overwrite=res$overwrite,trace=res$trace) <- res$res$volume_hypo
                }
                
                if("volume_reperf" %in% names(res$res)){
-                 affectTable(object,type="reperfusion",overwrite=res$overwrite,trace=res$trace) <- res$res$volume_reperf
+                 allocTable(object,type="reperfusion",overwrite=res$overwrite,trace=res$trace) <- res$res$volume_reperf
                }
                
                if("pixel" %in% names(res$res)){
@@ -477,7 +477,7 @@ setGeneric(name="calcTableHypoReperf",
                    "nom_param <- c(\"i\",\"j\",\"k\",",paste(paste("param.",res$param.update,sep=""),collapse=","),")",
                    sep="")))
                  
-                 affectContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res$pixel[,nom_param]
+                 allocContrast(object,overwrite=res$overwrite,trace=res$trace) <- res$res$pixel[,nom_param]
                }
                
                # update history
@@ -504,9 +504,9 @@ setGeneric(name="calcTableLesion",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectTable(object,type="lesion",overwrite=res$overwrite,trace=res$trace) <- res$res
+               allocTable(object,type="lesion",overwrite=res$overwrite,trace=res$trace) <- res$res
                
                # update history
                object@history <- c(object@history,
@@ -531,12 +531,12 @@ setGeneric(name ="calcThresholdMRIaggr",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                default_value <- data.frame(matrix(TRUE,ncol=length(res$name_newparam)))
                names(default_value) <- res$name_newparam
                
-               affectContrast(object,param=res$name_newparam,default_value=default_value,overwrite=res$overwrite,trace=res$trace) <- res$res[,res$name_newparam]
+               allocContrast(object,param=res$name_newparam,default_value=default_value,overwrite=res$overwrite,trace=res$trace) <- res$res[,res$name_newparam]
                
                # update history
                object@history <- c(object@history,
@@ -562,10 +562,10 @@ setGeneric(name="calcTissueType",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                
-               affectContrast(object,param=res$name_newparam,overwrite=res$overwrite,trace=res$trace) <- res$res$prob
+               allocContrast(object,param=res$name_newparam,overwrite=res$overwrite,trace=res$trace) <- res$res$prob
                
                # update history
                object@history <- c(object@history,
@@ -591,9 +591,9 @@ setGeneric(name="calcW",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
-               affectDescStats(object,name="W_euclidean",overwrite=res$overwrite,trace=res$trace) <- res$res
+               allocDescStats(object,name="W_euclidean",overwrite=res$overwrite,trace=res$trace) <- res$res
                
                # update history
                object@history <- c(object@history,
@@ -620,12 +620,12 @@ setGeneric(name ="outlineMRIaggr",
              
              if(res$update.object==TRUE){
                
-               # affect
+               # alloc
                nom_object <- as.character(substitute(object))
                default_value <- data.frame(TRUE)
                names(default_value) <- res$name_newparam
                
-               affectContrast(object,param=res$name_newparam,default_value=default_value,overwrite=res$overwrite,trace=res$trace) <- res$res[,c("i","j","k",res$name_newparam)]
+               allocContrast(object,param=res$name_newparam,default_value=default_value,overwrite=res$overwrite,trace=res$trace) <- res$res[,c("i","j","k",res$name_newparam)]
                
                # update history
                object@history <- c(object@history,

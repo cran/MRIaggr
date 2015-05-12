@@ -34,9 +34,9 @@ par(mfrow=c(2,4),mar=rep(2.5,4))
 multiplot(MRIaggr.Pat1,param="DWI_t0",window=NULL,breaks=seq(0,300,1),legend=TRUE)
 multiplot(MRIaggr.Pat1red,param="DWI_t0",window=NULL,breaks=seq(0,300,1),legend=TRUE)
 
-#### 2- affectation of the clinical data ####
+#### 2- allocation of the clinical data ####
 df.clinical <- data.frame(Age=68,
-                          Gender="male",
+                          Sex="male",
                           NIHSS_H0=8,
                           NIHSS_t2=7,
                           NIHSS_D2=4,
@@ -49,19 +49,19 @@ df.clinical <- data.frame(Age=68,
                           FinalStroke_volume=29.526,
                           AcuteStroke_volume=25.2598)
 
-affectClinic(MRIaggr.Pat1) <- df.clinical
+allocClinic(MRIaggr.Pat1) <- df.clinical
 selectClinic(MRIaggr.Pat1)
 selectClinic(MRIaggr.Pat1,param="Age")
 
 #### 3- computation of the area of interest before brain extraction ####
 
 #### conversion of the mask to logical
-affectContrast(MRIaggr.Pat1,param="MASK_DWI_t0",overwrite=TRUE) <- as.logical(selectContrast(MRIaggr.Pat1,param="MASK_DWI_t0")>0)
-affectContrast(MRIaggr.Pat1,param="MASK_T2_FLAIR_t2",overwrite=TRUE) <- as.logical(selectContrast(MRIaggr.Pat1,param="MASK_T2_FLAIR_t2")>0)
+allocContrast(MRIaggr.Pat1,param="MASK_DWI_t0",overwrite=TRUE) <- as.logical(selectContrast(MRIaggr.Pat1,param="MASK_DWI_t0")>0)
+allocContrast(MRIaggr.Pat1,param="MASK_T2_FLAIR_t2",overwrite=TRUE) <- as.logical(selectContrast(MRIaggr.Pat1,param="MASK_T2_FLAIR_t2")>0)
 
 #### necrosis
 res <- calcTableLesion(MRIaggr.Pat1,maskN=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"))
-affectTable(MRIaggr.Pat1,type="lesion",overwrite=TRUE) <- res
+allocTable(MRIaggr.Pat1,type="lesion",overwrite=TRUE) <- res
 
 calcTableLesion(MRIaggr.Pat1,maskN=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
                    as.logical=TRUE,update.object=TRUE,overwrite=TRUE,trace=TRUE)
@@ -185,16 +185,16 @@ multiplot(MRIaggr.Pat1_red,
 
 
 #### 3- identification of the hemispheres ####
-res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,p=1,penalty="symmetry",
-                i_test=2,j_test=2,angle_test=2,mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
+res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
+                mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
                 trace=TRUE,update.object=TRUE,overwrite=TRUE)
 
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",
               midplane=TRUE)
 
 
-#### 4- calculation of the controlateral values ####
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","MTT_t0","TTP_t0","T2_FLAIR_t2"),
+#### 4- calculation of the contralateral values ####
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","MTT_t0","TTP_t0","T2_FLAIR_t2"),
                          num=NULL,type="mean",param.ref="T1_t0",
                          distband=1,lambda=1,
                          trace=TRUE,update.object=TRUE,overwrite=TRUE)
@@ -210,7 +210,7 @@ multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2_contro",num=1:3,
              window=NULL,hemisphere="lesion",main="normalized - slice ")
 
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),
                          num=NULL,type="mean",param.ref="T1_t0",distband=1,lambda=1,
                          trace=TRUE)
 
@@ -252,7 +252,7 @@ multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
              window=NULL,main="raw - slice ")
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
              window=NULL,main="normalized norm",
-             norm_mu="controlateral",norm_sigma="controlateral")
+             norm_mu="contralateral",norm_sigma="contralateral")
 
 names(selectNormalization(MRIaggr.Pat1_red))
 

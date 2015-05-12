@@ -7,8 +7,8 @@
 using namespace Rcpp;
 
 // calcHemi_cpp
-List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, List ls_indexK, int n_num, const NumericVector& value, int n, double i_pos, double j_pos, double angle_pos, double sd_data, double p, bool symetrie);
-RcppExport SEXP MRIaggr_calcHemi_cpp(SEXP coordsISEXP, SEXP coordsJSEXP, SEXP ls_indexKSEXP, SEXP n_numSEXP, SEXP valueSEXP, SEXP nSEXP, SEXP i_posSEXP, SEXP j_posSEXP, SEXP angle_posSEXP, SEXP sd_dataSEXP, SEXP pSEXP, SEXP symetrieSEXP) {
+List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, List ls_indexK, int n_num, const NumericVector& value, int n, double i_pos, double j_pos, double angle_pos, double penaltyNA, double sd_data, double p, bool symetrie);
+RcppExport SEXP MRIaggr_calcHemi_cpp(SEXP coordsISEXP, SEXP coordsJSEXP, SEXP ls_indexKSEXP, SEXP n_numSEXP, SEXP valueSEXP, SEXP nSEXP, SEXP i_posSEXP, SEXP j_posSEXP, SEXP angle_posSEXP, SEXP penaltyNASEXP, SEXP sd_dataSEXP, SEXP pSEXP, SEXP symetrieSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -21,10 +21,11 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< double >::type i_pos(i_posSEXP);
     Rcpp::traits::input_parameter< double >::type j_pos(j_posSEXP);
     Rcpp::traits::input_parameter< double >::type angle_pos(angle_posSEXP);
+    Rcpp::traits::input_parameter< double >::type penaltyNA(penaltyNASEXP);
     Rcpp::traits::input_parameter< double >::type sd_data(sd_dataSEXP);
     Rcpp::traits::input_parameter< double >::type p(pSEXP);
     Rcpp::traits::input_parameter< bool >::type symetrie(symetrieSEXP);
-    __result = Rcpp::wrap(calcHemi_cpp(coordsI, coordsJ, ls_indexK, n_num, value, n, i_pos, j_pos, angle_pos, sd_data, p, symetrie));
+    __result = Rcpp::wrap(calcHemi_cpp(coordsI, coordsJ, ls_indexK, n_num, value, n, i_pos, j_pos, angle_pos, penaltyNA, sd_data, p, symetrie));
     return __result;
 END_RCPP
 }

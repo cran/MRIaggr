@@ -39,10 +39,10 @@ Possible values for the \code{hemisphere} argument are:
 \item \code{"left"} : select the observations from the left hemisphere.
 \item \code{"right"} : select the observations from the right hemisphere.
 \item \code{"lesion"} : select the observations belonging to the hemisphere(s) that contain(s) the lesion (if any). 
-\item \code{"controlateral"} : select the observations belonging to the hemisphere(s) that do not contain(s) the lesion (if any).
+\item \code{"contralateral"} : select the observations belonging to the hemisphere(s) that do not contain(s) the lesion (if any).
 }
-To select observations from a given hemisphere (all values except \code{"both"}), the parameter \code{hemisphere} must have been affected to the object using, for instance, \code{\link{calcHemisphere}}.
-In addition for \code{"lesion"} and \code{"controlateral"} values,  the slot \code{@hemispheres} has to be filled using, for instance, \code{\link{calcHemisphere}}.
+To select observations from a given hemisphere (all values except \code{"both"}), the parameter \code{hemisphere} must have been allocated to the object using, for instance, \code{\link{calcHemisphere}}.
+In addition for \code{"lesion"} and \code{"contralateral"} values,  the slot \code{@hemispheres} has to be filled using, for instance, \code{\link{calcHemisphere}}.
 
 Possible values for the centering argument (\code{norm_mu}) and the scaling argument (\code{norm_sigma}) are:
 \itemize{
@@ -50,9 +50,9 @@ Possible values for the centering argument (\code{norm_mu}) and the scaling argu
 \item \code{"global"} : the centering or scaling value is computed using all the observations.
 \item \code{"global_1slice"} : the centering or scaling value is computed using all the observations that belong to the slice of the observation to normalize.
 \item \code{"global_3slices"} : the centering or scaling value is computed using all the observations that belong to the slice of the observation to normalize, the slice above (if any) and the slice below (if any).
-\item \code{"controlateral"} : the centering or scaling value is computed using the observations from the controlateral hemisphere.
-\item \code{"controlateral_1slice"} :  the centering or scaling value is computed using the observations from the controlateral hemisphere that belong to the slice of the observation to normalize.
-\item \code{"controlateral_3slices"} :  the centering or scaling value is computed using the observations from the controlateral hemisphere that belong to the slice of the observation to normalize, the slice above (if any) and the slice below (if any).
+\item \code{"contralateral"} : the centering or scaling value is computed using the observations from the contralateral hemisphere.
+\item \code{"contralateral_1slice"} :  the centering or scaling value is computed using the observations from the contralateral hemisphere that belong to the slice of the observation to normalize.
+\item \code{"contralateral_3slices"} :  the centering or scaling value is computed using the observations from the contralateral hemisphere that belong to the slice of the observation to normalize, the slice above (if any) and the slice below (if any).
 \item \code{"default_value"} : the default value of the parameter stored in the slot \code{@default_value} is used for the centering (for \code{norm_mu} only).
 }
 
@@ -73,12 +73,12 @@ Then they are scaled by division with the value returned by \code{norm_sigma}.
    A \code{"vector"}, \emph{matrix} or a \emph{data.frame}. In the latter two cases, each row corresponds to a voxel and each column to a coordinate.
 }
 \seealso{ 
- \code{\link{calcControlateral}}, \code{\link{calcRegionalContrast}}, \code{\link{calcFilter}} and \code{\link{calcTissueType}} to retreat and affect the modified contrast parameters. \cr
- \code{\link{affectContrast<-}} to affect new contrast parameters. \cr 
- \code{\link{calcNormalization}} to compute and affect the normalisation values. \cr
- \code{\link{affectNormalization<-}} to affect the normalization values when obtained from an external source. \cr
- \code{\link{calcHemisphere}} and \code{\link{calcControlateral}} to compute and affect the hemispheres. \cr
- \code{\link{affectHemisphere<-}} and \code{\link{affectContrast<-}} to affect hemispheres obtained from an external source.
+ \code{\link{calcContralateral}}, \code{\link{calcRegionalContrast}}, \code{\link{calcFilter}} and \code{\link{calcTissueType}} to retreat and allocate the modified contrast parameters. \cr
+ \code{\link{allocContrast<-}} to allocate new contrast parameters. \cr 
+ \code{\link{calcNormalization}} to compute and allocate the normalisation values. \cr
+ \code{\link{allocNormalization<-}} to allocate the normalization values when obtained from an external source. \cr
+ \code{\link{calcHemisphere}} and \code{\link{calcContralateral}} to compute and allocate the hemispheres. \cr
+ \code{\link{allocHemisphere<-}} and \code{\link{allocContrast<-}} to allocate hemispheres obtained from an external source.
 }
 \examples{
 #### 1- Carto3D method ####
@@ -119,9 +119,9 @@ dim(carto)
 head(carto)
 
 ## select a subset of parameters on slices 1 to 3 and normalized the center 
-## the values using the controlateral
+## the values using the contralateral
 carto <- selectContrast(MRIaggr.Pat1_red,num=1:3,param=c("DWI_t0","T2_FLAIR_t2"),
-                     norm_mu="controlateral")
+                     norm_mu="contralateral")
 dim(carto)
 head(carto)
 

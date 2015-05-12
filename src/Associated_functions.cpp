@@ -30,12 +30,28 @@ double medianVecDouble_cpp(std::vector<double> data);
 //  1 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
 List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, List ls_indexK, int n_num, const NumericVector& value, int n,
-                    double i_pos, double j_pos, double angle_pos,
-                    double sd_data, double p, bool symetrie){ 
+                  double i_pos, double j_pos, double angle_pos,
+                  double penaltyNA, double sd_data, double p, bool symetrie){ 
+  
+  // validite de angle_pos  
+  if(abs(angle_pos)>M_PI/2){
+    if(symetrie){
+      return(List::create(Named("criteria")  = NA_REAL,
+                          Named("numberAssociated")  = NA_REAL,
+                          Named("pcNA")  = NA_REAL,                      
+                          Named("compromise")  = -1));
+      
+    }else{
+      return(List::create(Named("criteria")  = NA_REAL,
+                          Named("numberAssociated")  = NA_REAL,
+                          Named("pcNA")  = NA_REAL,                      
+                          Named("compromise")  = +100000));
+    }
+  }
   
   // critere de symetrie
   double valeur_vois, dist_vois, asymetrie_valeur=0, poids_vois;
-  int asymetrie_nb=0;
+  int asymetrie_nb=0, voxel_nb=0;
   double distI, distJ ;
   double sdp_data = pow(sd_data,p);
   
@@ -55,51 +71,67 @@ List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, Li
     n_hemiL = 0;
     n_hemiR = 0;
     
-    i_nouveauL.resize(0);
-    i_nouveauR.resize(0);
-    j_nouveauL.resize(0);
-    j_nouveauR.resize(0);
-    valueL.resize(0);
-    valueR.resize(0);
+    i_nouveauL.resize(n_indexK);
+    i_nouveauR.resize(n_indexK);
+    j_nouveauL.resize(n_indexK);
+    j_nouveauR.resize(n_indexK);
+    valueL.resize(n_indexK);
+    valueR.resize(n_indexK);
+//    i_nouveauL.resize(0);i_nouveauL.reserve(n2_indexK);
+//    i_nouveauR.resize(0);i_nouveauR.reserve(n2_indexK);
+//    j_nouveauL.resize(0);j_nouveauL.reserve(n2_indexK);
+//    j_nouveauR.resize(0);j_nouveauR.reserve(n2_indexK);
+//    valueL.resize(0);valueL.reserve(n2_indexK);
+//    valueR.resize(0);valueR.reserve(n2_indexK);
     
     for(int iter_vx=0 ; iter_vx<n_indexK ; iter_vx++){
       iter_vxAll = indexK[iter_vx];  
       
       // nouvelles coordonnees
-      i_tempo = cos_alpha*(coordsI[iter_vxAll]-i_pos) - sin_alpha*(coordsJ[iter_vxAll]-j_pos);
+      distI = coordsI[iter_vxAll]-i_pos;
+      distJ = coordsJ[iter_vxAll]-j_pos;
+      i_tempo = cos_alpha*distI - sin_alpha*distJ;
       
       if(i_tempo>0){ // left hemisphere (radiological convention)
       
-      i_nouveauL.push_back(i_tempo);
-      j_nouveauL.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
-      valueL.push_back(value[iter_vxAll]);
+      i_nouveauL[n_hemiL] = i_tempo;
+      j_nouveauL[n_hemiL] = sin_alpha*distI + cos_alpha*distJ;
+      valueL[n_hemiL] = value[iter_vxAll];
+//      i_nouveauL.push_back(i_tempo);
+//      j_nouveauL.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
+//      valueL.push_back(value[iter_vxAll]);
       n_hemiL++;
       
       }else{ // right hemisphere
       
-      i_nouveauR.push_back(i_tempo);
-      j_nouveauR.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
-      valueR.push_back(value[iter_vxAll]);
+      i_nouveauR[n_hemiR] = i_tempo;
+      j_nouveauR[n_hemiR] = sin_alpha*distI + cos_alpha*distJ;
+      valueR[n_hemiR] = value[iter_vxAll];      
+//      i_nouveauR.push_back(i_tempo);
+//      j_nouveauR.push_back(sin_alpha*(coordsI[iter_vxAll]-i_pos) + cos_alpha*(coordsJ[iter_vxAll]-j_pos));
+//      valueR.push_back(value[iter_vxAll]);
       n_hemiR++;
+      
       }
       
     }
     
     // evalutation du critere de symetrie vis a vis de l hemisphere gauche
+    voxel_nb += n_hemiL;
+ 
     for(int iter_pxL=0 ; iter_pxL<n_hemiL ; iter_pxL++){
       poids_vois = 0;
       valeur_vois = 0;        
-      
-      // iteration sur les voisins : moyenne ponderee par les distance des valeurs voisines
-      for(int iter_pxR=0 ; iter_pxR<n_hemiR ; iter_pxR++){
+            
+      for(int iter_pxR=0 ; iter_pxR<n_hemiR ; iter_pxR++){ // iteration sur les voisins : moyenne ponderee par les distance des valeurs voisines
         
         distI = abs(i_nouveauL[iter_pxL]+i_nouveauR[iter_pxR]) ;
         distJ = abs(j_nouveauL[iter_pxL]-j_nouveauR[iter_pxR]) ;
         
         if(distI < 1 && distJ < 1){
           dist_vois = sqrt(pow(distI,2) + pow(distJ,2));
-          valeur_vois = valeur_vois + valueR[iter_pxR] * (2-dist_vois)         ;           
-          poids_vois = poids_vois + (2-dist_vois) ;
+          valeur_vois += valueR[iter_pxR] * (2-dist_vois)         ;           
+          poids_vois += (2-dist_vois) ;
         }
         
       }
@@ -108,20 +140,84 @@ List calcHemi_cpp(const IntegerVector& coordsI, const IntegerVector& coordsJ, Li
         
         valeur_vois = valeur_vois/poids_vois;
         if(symetrie){
-          asymetrie_valeur =  asymetrie_valeur + 1/(1+pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data);
+          asymetrie_valeur +=  1/(1+pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data);
         }else{        
-          asymetrie_valeur = asymetrie_valeur + pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data   ;
+          asymetrie_valeur += pow(abs(valueL[iter_pxL]-valeur_vois),p)/sdp_data   ;
         }
          
-        asymetrie_nb = asymetrie_nb + 1;
+        asymetrie_nb++;
       }
+    }
+    
+    // evalutation du critere de symetrie vis a vis de l hemisphere droit
+    voxel_nb += n_hemiR;
+ 
+    for(int iter_pxR=0 ; iter_pxR<n_hemiR ; iter_pxR++){
+      poids_vois = 0;
+      valeur_vois = 0;        
+            
+      for(int iter_pxL=0 ; iter_pxL<n_hemiL ; iter_pxL++){ // iteration sur les voisins : moyenne ponderee par les distance des valeurs voisines
+        
+        distI = abs(i_nouveauR[iter_pxL]+i_nouveauL[iter_pxR]) ;
+        distJ = abs(j_nouveauR[iter_pxL]-j_nouveauL[iter_pxR]) ;
+        
+        if(distI < 1 && distJ < 1){
+          dist_vois = sqrt(pow(distI,2) + pow(distJ,2));
+          valeur_vois += valueL[iter_pxL] * (2-dist_vois)         ;           
+          poids_vois += (2-dist_vois) ;
+        }
+        
+      }
+      
+      if(poids_vois>0){
+        
+        valeur_vois = valeur_vois/poids_vois;
+        if(symetrie){
+          asymetrie_valeur +=  1/(1+pow(abs(valueR[iter_pxR]-valeur_vois),p)/sdp_data);
+        }else{        
+          asymetrie_valeur += pow(abs(valueR[iter_pxR]-valeur_vois),p)/sdp_data   ;
+        }
+         
+        asymetrie_nb++;
+      }
+    }
+    
+  }
+  
+  // no voxel 
+  if(asymetrie_nb==0){
+    if(symetrie){
+      return(List::create(Named("criteria")  = NA_REAL,
+                          Named("numberAssociated")  = 0,
+                          Named("pcNA")  = 1,                      
+                          Named("compromise")  = -1));
+      
+    }else{
+      return(List::create(Named("criteria")  = NA_REAL,
+                          Named("numberAssociated")  = 0,
+                          Named("pcNA")  = 1,                      
+                          Named("compromise")  = +100000));
+    }
+  }
+  
+  // bilan
+  double compromise;  
+  double pcNA=(voxel_nb-asymetrie_nb)/(double)voxel_nb;
+  if(penaltyNA<=0){
+    compromise= asymetrie_valeur/asymetrie_nb;
+  }else{
+    if(symetrie){
+      compromise= asymetrie_valeur/asymetrie_nb-pow(pcNA,penaltyNA); // NA_nb penalize for mising data
+    }else{
+      compromise= asymetrie_valeur/asymetrie_nb+pcNA*penaltyNA; // NA_nb penalize for mising data
     }
   }
   
   // export
-  return(List::create(Named("asymetrie_valeur")  = asymetrie_valeur,
-                      Named("asymetrie_moy")  = asymetrie_valeur/asymetrie_nb,
-                      Named("asymetrie_nb")  = asymetrie_nb));
+  return(List::create(Named("criteria")  = asymetrie_valeur,
+                      Named("numberAssociated")  = asymetrie_nb,
+                      Named("pcNA")  = pcNA,                      
+                      Named("compromise")  = compromise));
   
 }
 
@@ -138,6 +234,7 @@ List calcContro_cpp(const arma::mat& contrast, const arma::mat& coords_px, const
                 int D = contrast.n_cols;
                 double dist1, dist2 ;
                 bool voisin_proche ;
+                int nb_neighbors = pow(2*d_lim,2);
                 int index_px, index_contro, nb_vois;       
                 arma::mat valeur_NormContro(n_k,D);
                 std::fill(valeur_NormContro.begin(),valeur_NormContro.end(),NA_REAL);
@@ -153,8 +250,8 @@ List calcContro_cpp(const arma::mat& contrast, const arma::mat& coords_px, const
                 // iteration sur les pixels
                 for(int iter_px=0 ; iter_px < n_k ; iter_px++){
                   index_px = index_k[iter_px];
-                  index_vois.resize(0);
-                  iter_vois.resize(0);
+                  index_vois.resize(0); index_vois.reserve(nb_neighbors);
+                  iter_vois.resize(0); iter_vois.reserve(nb_neighbors);
                   voisin_proche = false;
                                 
                   for(int iter_contro=0 ; iter_contro < n_k_contro ; iter_contro++ ){
@@ -199,8 +296,8 @@ List calcContro_cpp(const arma::mat& contrast, const arma::mat& coords_px, const
                           index_contro = index_vois[iter_vois];
                           poids_vois= 2*d_lim-sqrt(pow(coords_px(index_contro,0)+coords_px(index_px,0),2) + pow(coords_px(index_contro,1)-coords_px(index_px,1),2));
 
-                          valeur_moyenne = valeur_moyenne + poids_vois*contrast(index_contro,iter_d);
-                          norm = norm + poids_vois;
+                          valeur_moyenne += poids_vois*contrast(index_contro,iter_d);
+                          norm += poids_vois;
                     }
 
                      valeur_NormContro(iter_px,iter_d) = contrast(index_px,iter_d)-valeur_moyenne/norm;
@@ -323,9 +420,9 @@ List filtrage2D_cpp(const arma::mat& M_data, const arma::mat& M_operateur, const
      
     // ajustement des NA et maj
     if(R_IsNA(Mvoisin)==0){
-      sumNNA = sumNNA + abs(M_operateur(iter_l,iter_c)*Mintensite);
+      sumNNA += abs(M_operateur(iter_l,iter_c)*Mintensite);
  
-      Mres(index_data(iter_px,0),index_data(iter_px,1)) = Mres(index_data(iter_px,0),index_data(iter_px,1)) + M_operateur(iter_l,iter_c)*Mintensite*Mvoisin;
+      Mres(index_data(iter_px,0),index_data(iter_px,1)) += M_operateur(iter_l,iter_c)*Mintensite*Mvoisin;
     }else{
       
       if(na_rm){
@@ -430,9 +527,9 @@ List filtrage3D_cpp(const NumericVector& Vec_data, const IntegerVector& p_data,
 
     // ajustement des NA et maj
     if(R_IsNA(Mvoisin)==0){
-        sumNNA = sumNNA + abs(A_operateur(iter_l,iter_c,iter_d)*Mintensite);
+        sumNNA += abs(A_operateur(iter_l,iter_c,iter_d)*Mintensite);
 
-        Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) + A_operateur(iter_l,iter_c,iter_d)*Mintensite*Mvoisin;
+        Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) += A_operateur(iter_l,iter_c,iter_d)*Mintensite*Mvoisin;
                      
     }else{
       
@@ -488,7 +585,7 @@ arma::mat filtrage2Dmed_cpp(const arma::mat& M_data, const arma::mat& M_operateu
     
     // initialisation
     Mres(index_data(iter_px,0),index_data(iter_px,1)) = 0;
-    Mvoisin.resize(0);
+    Mvoisin.resize(0);Mvoisin.reserve(p_ref[0]*p_ref[1]);
     break_loop = false;
       
       
@@ -564,7 +661,7 @@ NumericVector filtrage3Dmed_cpp(const NumericVector& Vec_data, const IntegerVect
           
             // initialisation
           Mres(index_data(iter_px,0),index_data(iter_px,1),index_data(iter_px,2)) = 0;
-          Mvoisin.resize(0);
+          Mvoisin.resize(0);Mvoisin.reserve(p_ref[0]*p_ref[1]*p_data[2]);
           break_loop = false;
           
             // mise en place des matrices
@@ -719,27 +816,27 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
   vector<int> residual(n); // index des voxels a classer
   vector<int> coords_newVoisin(0);
   for(int iter=0 ; iter<n ; iter++){residual[iter] = iter;}
-  int n_affected=0; // iteration sur les voxels
+  int n_allocated=0; // iteration sur les voxels
   arma::mat group(n,2);  // definition des groupes  
   bool test_newVoisin;
   
   // trace
   double seq_trace = n*0.1;
        
-  while(n_affected<n && iter_group<=max_groups){ // tant qu il reste des vx a classer et que le nb max de groupe n est pas atteint
+  while(n_allocated<n && iter_group<=max_groups){ // tant qu il reste des vx a classer et que le nb max de groupe n est pas atteint
     iter_group = iter_group + 1 ;
     
     // ajout d un nouveau groupe
-    group(n_affected,0) = residual[0];
-    group(n_affected,1) = iter_group ;
-    n_affected = n_affected + 1 ;  
+    group(n_allocated,0) = residual[0];
+    group(n_allocated,1) = iter_group ;
+    n_allocated ++;  
     residual.erase(residual.begin());    
       
     group_size.push_back(group_size.size());
     group_size[group_size.size()-1] = 1 ;
     n_neighbors = 1;
                
-    while(n_neighbors>0 && n_affected<n){ // tant qu il reste des nouveaux voisins
+    while(n_neighbors>0 && n_allocated<n){ // tant qu il reste des nouveaux voisins
       n_neighbors_new=0;
       coords_newVoisin.resize(0);
       
@@ -757,7 +854,7 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
                     test_newVoisin = false;
                     break;                     
                   }else{
-                  index_tempo = index_tempo + sum_tempo*cum_coords_max[iter_p] ;
+                  index_tempo += sum_tempo*cum_coords_max[iter_p] ;
                   }                 
                   
                 }
@@ -773,7 +870,7 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
         iter_vois_min=0;       
         
       iter_res = 0 ;
-      while(iter_res<n-n_affected && iter_vois_min<coords_newVoisin.size()){
+      while(iter_res<n-n_allocated && iter_vois_min<coords_newVoisin.size()){
               
               while(index_NNA[residual[iter_res]]>coords_newVoisin[iter_vois_min] && iter_vois_min<coords_newVoisin.size()){
                 coords_newVoisin.erase(coords_newVoisin.begin() + iter_vois_min); // iter_vois_min++;                
@@ -781,9 +878,9 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
               
               if(index_NNA[residual[iter_res]]==coords_newVoisin[iter_vois_min]){ // matching               
                // attribution du groupe au voxel
-                 group(n_affected,0) = residual[iter_res];
-                 group(n_affected,1) = iter_group ;
-                 n_affected++ ;  
+                 group(n_allocated,0) = residual[iter_res];
+                 group(n_allocated,1) = iter_group ;
+                 n_allocated++ ;  
                
                 // maj de residual et neighbors_new
                 residual.erase(residual.begin() + iter_res);
@@ -795,16 +892,16 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
       }
       
       n_neighbors = n_neighbors_new;
-      group_size[iter_group-1] = group_size[iter_group-1] + n_neighbors;
+      group_size[iter_group-1] += n_neighbors;
       
-      if(trace && n_affected<n && (n_affected > seq_trace) ){
+      if(trace && n_allocated<n && (n_allocated > seq_trace) ){
         Rcout << "*" ;
         seq_trace = seq_trace + n*0.1;
       }
       
     }
     
-    Sum_group_size = Sum_group_size + group_size[iter_group-1];
+    Sum_group_size += group_size[iter_group-1];
     
   }  
   if(trace){Rcout << endl ;}
@@ -904,10 +1001,10 @@ List calcGroupsW_cpp(const S4& W, const IntegerVector& subset, int max_groups){
     }
     
     voisin_0 = voisin_1;
-    groupeSize[iter_group] = groupeSize[iter_group] + voisin_0.size();
+    groupeSize[iter_group] += voisin_0.size();
     }
     
-    iter_group = iter_group + 1 ;
+    iter_group++;
     
   }
   
@@ -1002,9 +1099,9 @@ List calcRadius_cpp(const arma::mat& coords, const NumericVector& sample, double
     index_Gp = Groupe_potentiel[iter_Gp];  
 
     for( int iter_d=0; iter_d < D ; iter_d++){
-      coord_bary[iter_d] = coord_bary[iter_d] + coords(index_Gp,iter_d)*sample[index_Gp];
+      coord_bary[iter_d] += coords(index_Gp,iter_d)*sample[index_Gp];
     }
-    norm = norm + sample[index_Gp];
+    norm += sample[index_Gp];
   }
   for( int iter_d=0; iter_d < D ; iter_d++){
     coord_bary[iter_d] = coord_bary[iter_d]/norm;
@@ -1018,11 +1115,11 @@ List calcRadius_cpp(const arma::mat& coords, const NumericVector& sample, double
     index_Gp = Groupe_potentiel[iter_Gp];
     
     for( int iter_d=0; iter_d < D ; iter_d++){
-      distance[index_Gp] = distance[index_Gp]+pow(coord_bary[iter_d]-coords(index_Gp,iter_d),2);      
+      distance[index_Gp] += pow(coord_bary[iter_d]-coords(index_Gp,iter_d),2);      
     }
     distance[index_Gp] = sqrt(distance[index_Gp]);
-    Rayon_medAVC = Rayon_medAVC + distance[index_Gp]*sample[index_Gp];
-    norm = norm + sample(index_Gp);
+    Rayon_medAVC += distance[index_Gp]*sample[index_Gp];
+    norm += sample(index_Gp);
   }
   
   

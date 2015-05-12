@@ -65,7 +65,7 @@ Chantal Revol-Muller, Francoise Peyrin, Yannick Carrillon and Christophe Odet. \
 }
 \examples{
 \dontrun{
-## load a MRIaggr object
+## load an \code{MRIaggr} object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 ## select data

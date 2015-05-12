@@ -26,11 +26,11 @@ Possible values for \code{type} are:
 }
 }
 \seealso{
- \code{\link{affectContrast<-}} to affect new parameters. 
+ \code{\link{allocContrast<-}} to allocate new parameters. 
 }
 \examples{
 #### 1- Carto3D method ####
-## load nifti files and convert them to Carto3D
+## load NIFTI files and convert them to Carto3D
 path.Pat1 <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")
@@ -49,5 +49,5 @@ res <- selectParameter(MRIaggr.Pat1_red)
 res <- selectParameter(MRIaggr.Pat1_red,type="ls_descStats")
 
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}

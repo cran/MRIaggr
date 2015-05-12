@@ -8,10 +8,10 @@ Example of processed \code{\linkS4class{MRIaggr}} object using the functionaliti
 \usage{MRIaggr.Pat1_red}
 \format{A \code{\linkS4class{MRIaggr}} object containing in addition to the contrast data :
 \itemize{
-\item the position of the mid-saggital plan.
+\item the position of the mid-sagittal plan.
 \item the normalization values for the contrast parameters.
 \item the spatial groups of lesion.
-\item the regional and controlateral normalised contrast values.
+\item the regional and contralateral normalised contrast values.
 \item the  CSF/WM/GM probabilistic membership.
 \item the neighborhood matrix.
 \item the lesion volumes per slice

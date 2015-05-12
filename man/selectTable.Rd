@@ -17,9 +17,9 @@ Extract the volumic information (lesion, hyperfusion or reperfusion) from a \cod
   A \emph{data.frame} containing volumetric measurements.
 }
 \seealso{ 
- \code{\link{calcTableHypoReperf}} to compute and affect the hypoperfusion and reperfusion tables. \cr 
- \code{\link{calcTableLesion}} to compute and affect the lesion table. \cr
- \code{\link{affectTable<-}} to affect data in the table slots. \cr 
+ \code{\link{calcTableHypoReperf}} to compute and allocate the hypoperfusion and reperfusion tables. \cr 
+ \code{\link{calcTableLesion}} to compute and allocate the lesion table. \cr
+ \code{\link{allocTable<-}} to allocate data in the table slots. \cr 
 }
 \examples{
 ## load a MRIaggr object

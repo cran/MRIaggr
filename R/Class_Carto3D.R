@@ -7,7 +7,7 @@
 ###### Sommaire #################
 # A) Class Definition
 # B) Selecters
-# C) Affecters
+# C) Allocators
 # D) Methods
 
 ##### A) Class Definition #############################################################
@@ -20,36 +20,36 @@ setClass(
     identifier  = "character",   # id patient 
     parameter = "character",     # parametre d intensite de la carto
     contrast = "data.frame",      # matrice integrant toutes les cartos d interet de dim (L,nb,l)
+    fieldDim = "data.frame",    # vecteur contenant les dimensions des cartos 2D (l,L,nb)
     voxelDim = "data.frame",    # vecteur contenant les dimensions des cartos 2D (l,L,nb)
-    voxelSize = "data.frame",    # vecteur contenant les dimensions des cartos 2D (l,L,nb)
     default_value ="character"
   ),
   
   validity = function(object){
-    #cat("--- Carto3D : checking --- ")
+    #cat("--- Carto3D : checking --- ",fill=TRUE)
     
     
-    if(ncol(object@voxelDim)!=3 || any(names(object@voxelDim)!=c("i","j","k")))
-    { stop("validity[Carto3D] : wrong specification of \'voxelDim\' \n",
+    if(ncol(object@fieldDim)!=3 || any(names(object@fieldDim)!=c("i","j","k")))
+    { stop("validity[Carto3D] : wrong specification of \'fieldDim\' \n",
            "required names : \"i\" \"j\" \"k\" \n",
-           "proposed names : ",names(object@voxelDim),"\n")   
+           "proposed names : ",names(object@fieldDim),"\n")   
     }
     
-    if(ncol(object@voxelSize)!=4 || any(names(object@voxelSize)!=c("i","j","k","unit")))
-    { stop("validity[Carto3D] : wrong specification of \'voxelSize\' \n",
+    if(ncol(object@voxelDim)!=4 || any(names(object@voxelDim)!=c("i","j","k","unit")))
+    { stop("validity[Carto3D] : wrong specification of \'voxelDim\' \n",
            "required names : \"i\" \"j\" \"k\" \"unit\" \n",
-           "proposed names : ",names(object@voxelSize),"\n")   
+           "proposed names : ",names(object@voxelDim),"\n")   
     }
     
     if(ncol(object@contrast) != 4 )
     {  stop("validity[Carto3D] : wrong specification of \'contrast\' \n",
             "required number of columns : 4 \n",
-            "proposed number of columns : ",object@voxelDim$i,"\n")
+            "proposed number of columns : ",object@fieldDim$i,"\n")
     }
     
-    if(nrow(object@contrast) != prod(object@voxelDim) )
+    if(nrow(object@contrast) != prod(object@fieldDim) )
     {  stop("validity[Carto3D] : wrong specification of \'contrast\' \n",
-            "required number of lines (prod(voxelDim))  : ",prod(object@voxelDim),"\n",
+            "required number of lines (prod(fieldDim))  : ",prod(object@fieldDim),"\n",
             "proposed number of lines : ",nrow(object@contrast),"\n")
     }    
     
@@ -71,7 +71,7 @@ setClass(
 setMethod(
   f="initialize",
   signature="Carto3D",
-  definition=function(.Object,identifier ,parameter, contrast, voxelDim, voxelSize, default_value){
+  definition=function(.Object,identifier ,parameter, contrast, fieldDim, voxelDim, default_value){
     
     if(missing(identifier ))
     {stop("initialize[Carto3D] : \'identifier\' is missing \n")}
@@ -101,11 +101,11 @@ setMethod(
       if(length(dim(contrast))==4 && dim(contrast)[4]==1)
       {contrast <- contrast[,,,1,drop=TRUE]}
       
-      if(missing(voxelDim))
-      {voxelDim <- data.frame(i=dim(contrast)[1],j=dim(contrast)[2],k=dim(contrast)[3]) }
+      if(missing(fieldDim))
+      {fieldDim <- data.frame(i=dim(contrast)[1],j=dim(contrast)[2],k=dim(contrast)[3]) }
       
-      if(missing(voxelSize))
-      {voxelSize <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE) }
+      if(missing(voxelDim))
+      {voxelDim <- data.frame(i=NA,j=NA,k=NA,unit=NA, stringsAsFactors = FALSE) }
       
       contrast <- data.frame(cbind(which(array(TRUE,dim=dim(contrast)),arr.ind=TRUE),
                                    as.vector(contrast)))
@@ -114,11 +114,11 @@ setMethod(
     
     .Object@contrast <- contrast
     
-    if(missing(voxelDim))
-    {stop("initialize[Carto3D] : \'voxelDim\' is missing \n")}
-    .Object@voxelDim <- voxelDim
+    if(missing(fieldDim))
+    {stop("initialize[Carto3D] : \'fieldDim\' is missing \n")}
+    .Object@fieldDim <- fieldDim
     
-    .Object@voxelSize <- voxelSize
+    .Object@voxelDim <- voxelDim
     
     if(!missing(default_value))
     {.Object@default_value <- default_value}else{
@@ -230,14 +230,14 @@ setMethod(f ="selectParameter",
           {return(object@parameter)    }
 )
 
-# selectVoxelDim
-setMethod(f ="selectVoxelDim",
+# selectFieldDim
+setMethod(f ="selectFieldDim",
           signature ="Carto3D",
           definition = function(object)
-          { return(object@voxelDim)  }
+          { return(object@fieldDim)  }
 )
 
-#####  C) Affecters #############################################################
+#####  C) Allocators #############################################################
 
 
 
@@ -284,13 +284,13 @@ setMethod(f ="initNum",
           {
             if(init==TRUE){
               if(is.null(num))
-              {num <- seq(1,object@voxelDim$k)}
+              {num <- seq(1,object@fieldDim$k)}
             }
             
             if(test==TRUE){
-              if(any(num %in% seq(1,object@voxelDim$k) == FALSE) || length(unique(num))!=length(num))
+              if(any(num %in% seq(1,object@fieldDim$k) == FALSE) || length(unique(num))!=length(num))
               {stop("initNum[Carto3D] : wrong specification of \'num\' \n",
-                    "valid values : ",paste(seq(1,object@voxelDim$k),collapse=" "),"\n",
+                    "valid values : ",paste(seq(1,object@fieldDim$k),collapse=" "),"\n",
                     "requested values : ",paste(num,collpase=" "),"\n")}
             }
             

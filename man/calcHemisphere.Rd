@@ -1,5 +1,5 @@
 \name{calcHemisphere}
-\title{Find the mid-saggital plan}
+\title{Find the mid-sagittal plan}
 \alias{calcHemisphere}
 \alias{calcHemisphere,MRIaggr-method}
 \description{
@@ -7,8 +7,10 @@ Find a plane that distinguish the two cerebral hemispheres.
 }
 \usage{
 \S4method{calcHemisphere}{MRIaggr}(object,param,num=NULL,p=1,subset=NULL,
-         penalty="symmetry",mask=NULL,as.logical=FALSE,i_test=5,j_test=5,
-         angle_test=5,unit_angle="radian",n.points=100,plot=TRUE,
+         penalty="symmetry",mask=NULL,as.logical=FALSE,n.points=100,
+		 gridSearch=TRUE,i_test=seq(-20,20,by=5),
+		 angle_test=seq(-30,30,by=5),unit_angle="degree",
+         NelderMead=TRUE,maxit=100,reltol=0.001,plot=TRUE,
          window=FALSE,filename=paste(object@identifier,"_calcHemisphere",sep=""),
          width=1000,height=700,path=NULL,unit="px",res=NA,
          trace=TRUE,update.object=FALSE,overwrite=FALSE)
@@ -23,12 +25,16 @@ Find a plane that distinguish the two cerebral hemispheres.
   \item{mask}{the binary contrast parameter(s) indicating the lesion. \emph{character vector} or \code{NULL} if no mask is available.}
   \item{as.logical}{should \code{mask} be convert to logical ? \emph{logical}.}
 
+  \item{gridSearch}{Should grid search be used to find the mid-sagittal plane ? \emph{logical}.}
   \item{i_test}{the abscissa or the number of abscissa to test. \emph{numeric vector} or \emph{positive integer}.}
-  \item{j_test}{the ordinates or the number of ordinates to test. \emph{numeric vector} or \emph{positive integer}.}
   \item{angle_test}{the angle or the number of angle to test. \emph{numeric vector} or \emph{postive integer}.}
   \item{unit_angle}{the unit in which the angle is given. Can be \code{"radian"} or \code{"degree"}.}
-  \item{n.points}{the number of points that represent the mid-saggital plan to computed. \code{positive integer}.}
+  \item{n.points}{the number of points that represent the mid-sagittal plan to computed. \code{positive integer}.}
 
+  \item{NelderMead}{Should the center of the grid search be searched using Nelder-Mead algorithm or set to the center of the image ? \emph{logical}.}
+  \item{maxit}{The maximum number of iterations. \emph{postive integer}. See the details section of \code{optim}.}
+  \item{reltol}{Relative convergence tolerance. \emph{positive numeric}. See the details section of \code{optim}.}
+  
   \item{plot}{should the results be plotted ? \emph{logical}.}
   \item{window}{the type of device on which the plot will be displayed. \emph{logical}, \code{NULL} or \code{character}.}
   \item{filename}{the name of the file used to export the plot. \emph{character}.}
@@ -51,8 +57,8 @@ Setting \code{p} to \code{1} leads to use the absolute difference ; setting \cod
 Information about the \code{window}, \code{filename}, \code{width}, \code{height}, \code{path}, \code{unit} and \code{res} arguments can be found in the details section of \code{\link{initWindow}}.
 
 FUNCTION: \cr
-This function seeks the plane that minimize the difference between controlateral values of the two hemispheres or maximize the similarity between the two hemispheres.
-There are 3 degree of freedom : two for the position of the center and one for the angle.
+This function seeks the plane that minimize the difference between contralateral values of the two hemispheres or maximize the similarity between the two hemispheres.
+There are 2 degree of freedom : one for the position of the center and one for the angle.
 The separation between the hemisphere is assumed to be identical for all slices. 
 From our experience, using an objective function based on symmetry gives better results compared to asymmetry.
 }
@@ -67,7 +73,7 @@ From our experience, using an objective function based on symmetry gives better 
   \item\code{[[moy]]} : an \emph{array} containing the mean value of the objective function for the various configurations.
   \item\code{[[optimum]]} : the parameters of the optimal midplane. \code{numeric vector}
   \item\code{[[midplane]]} : the position of the midplane points. \emph{matrix}.
-  \item\code{[[data]]} : the position of the observations relatively to the mid-saggital plane. \emph{matrix}.
+  \item\code{[[data]]} : the position of the observations with respect to the mid-sagittal plane. \emph{matrix}.
  \item\code{[[cv]]} : Was the optimum reached inside the parameter space and not at a border ? \emph{logical}.
   }
 }
@@ -81,11 +87,11 @@ res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
 }
 \dontshow{
 res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
-                      mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),i_test=1,j_test=1,angle_test=1,
+                      mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),i_test=3,angle_test=3,
                       trace=TRUE,update.object=TRUE,overwrite=TRUE)
 }
 
-## display the mid-saggital plan
+## display the mid-sagittal plan
 multiplot(MRIaggr.Pat1_red,param="T2_GRE_t0",num=3,legend=FALSE,
              midplane=TRUE,main="original coordinates - slice ")
 
@@ -95,10 +101,10 @@ multiplot(selectContrast(MRIaggr.Pat1_red,param=c("i_hemisphere","j_hemisphere",
              index1=cbind(0,seq(-50,50),3),main="new coordinates - slice ",legend=FALSE)
 
 
-## compute the mid-saggital plan and mark lesion
+## compute the mid-sagittal plan and mark lesion
 \dontrun{
 res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",
-         mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),
+         mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"),as.logical=TRUE,
          trace=TRUE,update.object=TRUE,overwrite=TRUE)
 }
 }

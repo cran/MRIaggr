@@ -17,7 +17,7 @@ Generate from an existing \code{\linkS4class{MRIaggr}} object a new one with low
   \item{trace}{should the execution of the function be traced ? \emph{logical}.}
 }
 \value{
-  A \code{\linkS4class{MRIaggr}} object.
+  a \code{\linkS4class{MRIaggr}} object.
 }
 \details{
 ARGUMENTS: \cr

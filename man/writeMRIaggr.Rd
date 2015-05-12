@@ -25,7 +25,7 @@ Write an image file from a \code{\linkS4class{MRIaggr}} object.
 	\item{verbose}{is a logical variable that allows text-based feedback during execution of the function.} 
  }
 \details{
-This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to analyze or nifti.
+This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to \code{"analyze"} or \code{"nifti"}.
 }
 \value{
   None.

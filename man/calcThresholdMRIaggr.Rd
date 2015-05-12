@@ -39,6 +39,8 @@ calcThreshold(contrast,param,hemisphere=NULL,rm.CSF=FALSE,threshold=1:10,
   \item{overwrite}{contrast parameters with the same names are already stored in \code{object@data}, can it be overwritten ? \emph{logical}.}  
 }
 \details{
+These functions require to have installed the \emph{Matrix} and the \emph{spam} package to work when argument \code{GRalgo} is set to \code{TRUE}.
+
 ARGUMENTS: \cr
 [data.frame method] the \code{hemisphere} argument must be one of the levels present in the column named \code{"hemisphere"} in data. \code{NULL} leading to use all observations. \cr
 [MRIaggr method] Information about the \code{hemisphere} arguments can be found in the details section of \code{\link{selectContrast}}. 
@@ -55,9 +57,6 @@ It can be done using \code{calcTissueType}.
 \examples{
 ## load a MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
-\dontrun{
-calcTissueType(MRIaggr.Pat1_red,param="T1_t0",update.object=TRUE,overwrite=TRUE)
-}
 
 #### 1- MRIaggr method 
 ## raw parameter

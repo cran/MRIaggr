@@ -30,7 +30,7 @@ sum(is.na(selectContrast(MRIaggr.Pat1_red,param="TTP_reperf")))
 length(selectContrast(MRIaggr.Pat1_red,param="TTP_reperf",na.rm=TRUE))
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select all parameters and all observations
@@ -49,9 +49,9 @@ dim(carto)
 head(carto)
 
 ## select a subset of parameters on slices 1 to 3 and normalized the center 
-## the values using the controlateral
+## the values using the contralateral
 carto <- selectContrast(MRIaggr.Pat1_red,num=1:3,param=c("DWI_t0","T2_FLAIR_t2"),
-                     norm_mu="controlateral")
+                     norm_mu="contralateral")
 dim(carto)
 head(carto)
 
@@ -80,7 +80,7 @@ head(carto)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select all clinical data
@@ -101,7 +101,7 @@ coords <- selectCoords(MRIaggr.Pat1_red,slice_var="j",num=16:18,subset="MASK_DWI
 coords <- selectCoords(MRIaggr.Pat1_red,slice_var="j",num=50:70,subset="MASK_DWI_t0")
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select all coordinates for all observations
@@ -143,7 +143,7 @@ head(coords)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select default values for all parameters
@@ -163,7 +163,7 @@ res <- selectDefault_value(MRIaggr.Pat1_red,param=c("T2_FLAIR_t2","DWI_t0"),as.n
 #### test
   
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select all elements in the slot @ls_descStats
@@ -196,7 +196,7 @@ res
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
@@ -210,7 +210,7 @@ selectVoxelDim(MRIaggr.Pat1_red)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
@@ -224,7 +224,7 @@ selectHistory(MRIaggr.Pat1_red)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
@@ -238,7 +238,7 @@ selectIdentifier(MRIaggr.Pat1_red)
 #### test
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## total number of observations
@@ -261,7 +261,7 @@ res <- selectNormalization(MRIaggr.Pat1_red,type="global",mu=TRUE,sigma=FALSE,he
 res <- selectNormalization(MRIaggr.Pat1_red,type="slice",mu=TRUE,sigma=FALSE,num=1,param="DWI_t0")
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## select all normalization values
@@ -291,7 +291,7 @@ res <- selectNormalization(MRIaggr.Pat1_red,type="3slices",mu=FALSE,sigma=TRUE,
 #### test
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## extract all imaging parameters
@@ -311,7 +311,7 @@ res <- selectParameter(MRIaggr.Pat1_red,type="ls_descStats")
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## selection
@@ -335,7 +335,7 @@ affectContrast(MRIaggr.Pat1_red,param="noise",default_value=data.frame("noise"=0
 affectContrast(MRIaggr.Pat1_red,param="mask",default_value=data.frame("mask"=0),overwrite=TRUE) <- rnorm(selectN(MRIaggr.Pat1_red))>10
 
 #### example 
-## load nifti files and convert them to MRIaggr
+## load NIFTI files and convert them to MRIaggr
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list()
 ls.array[[1]] <- readMRI(file=file.path(path,"DWI_t0"),format="nifti")
@@ -371,7 +371,7 @@ res <- selectContrast(MRIaggr.Pat1,param="MTT_t0_2D_G3")
 affectClinic(MRIaggr.Pat1_red) <- data.frame()
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## affect clinical data
@@ -390,7 +390,7 @@ selectClinic(MRIaggr.Pat1_red)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## affect a vector
@@ -418,7 +418,7 @@ selectDescStats(MRIaggr.Pat1_red,"GroupsLesion")
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## manual affectation
@@ -446,7 +446,7 @@ multiplot(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,midplane=TRUE,window=FALSE,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## parameters to normalize
@@ -469,7 +469,7 @@ resNormalization <- calcNormalization(MRIaggr.Pat1_red,param=param,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 #### 1- lesion 
@@ -506,7 +506,7 @@ selectTable(MRIaggr.Pat1_red,type="reperfusion")
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## available contrast parameters
@@ -524,7 +524,7 @@ selectParameter(MRIaggr.Pat1_red)
 # .local <- function (object, value, trace = TRUE) 
 
 #### test
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## existing elements in @ls_descStats
@@ -555,7 +555,7 @@ selectParameter(MRIaggr.Pat1_red,"ls_descStats")
 #### test
 
 #### example 
-## load nifti files and convert them to MRIaggr
+## load NIFTI files and convert them to MRIaggr
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list(readMRI(file=file.path(path,"T1_t0"),format="nifti"),
                  readMRI(file=file.path(path,"T2_GRE_t0"),format="nifti"))
@@ -596,32 +596,32 @@ multiplot(MRIaggr.Pat1,param="T2_GRE_t0",index1="mask")
 multiplot(MRIaggr.Pat1,param="mask")
 
 
-#### >b calcControlateral ####
-# ?calcControlateral
-# findMethods("calcControlateral",classes="MRIaggr")$MRIaggr
+#### >b calcContralateral ####
+# ?calcContralateral
+# findMethods("calcContralateral",classes="MRIaggr")$MRIaggr
 # .local <- function (object, param, num = NULL, type = "mean", 
 #                     param.ref = NULL, distband = 1, lambda = 1, trace = TRUE, 
 #                     update.object = FALSE, overwrite = FALSE) 
 
 #### test
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="mean",trace=TRUE)
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="mean",trace=TRUE)
 multiplot(res$data[,c("i","j","k")],
              res$data[,"DWI_t0_contro",drop=FALSE])
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="median",trace=TRUE)
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="median",trace=TRUE)
 multiplot(res$data[,c("i","j","k")],
              res$data[,"DWI_t0_contro",drop=FALSE])
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="1NN_penalised",param.ref="T1_t0",
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,type="1NN_penalised",param.ref="T1_t0",
                          distband=1,lambda=1,trace=TRUE)
 multiplot(res$data[,c("i","j","k")],
              res$data[,"DWI_t0_contro",drop=FALSE])
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
-## associate each observation to its controlateral correspondant 
+## associate each observation to its contralateral correspondant 
 ## according T1 parameter and compute the normalized parameters
-res <- calcControlateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,
+res <- calcContralateral(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),num=NULL,
                          type="mean",param.ref="T1_t0", distband=1,lambda=1,trace=TRUE)
 
 ## display
@@ -645,7 +645,7 @@ multiplot(res$data[,c("i","j","k"),drop=FALSE],
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute neighborhood matrix 
@@ -670,7 +670,7 @@ multiplot(coords[MASK_DWI_t0==1,],contrast=res.Groups$group,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute the distribution of DWI and T2 FLAIR for the CSF, WM, GM and lesion observations
@@ -688,7 +688,7 @@ res <- calcDistTissues(MRIaggr.Pat1_red,param=c("DWI_t0","T2_FLAIR_t2"),
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute and affect filtered parameter to the MRIaggr object
@@ -785,7 +785,7 @@ multiplot(resN.F$res[,c("i","j","k")],contrast=resN.F$res[,4],
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 # compute spatial groups
@@ -822,14 +822,14 @@ res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,p=1,penalty="symm
 
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
                       i_test=2,j_test=2,angle_test=2,
                       trace=TRUE,update.object=TRUE,overwrite=TRUE)
 
-## compute the mid-saggital plan
+## compute the mid-sagittal plan
 multiplot(MRIaggr.Pat1_red,param="T2_GRE_t0",num=3,legend=FALSE,
              midplane=TRUE,main="original coordinates - slice ")
 
@@ -839,7 +839,7 @@ multiplot(selectContrast(MRIaggr.Pat1_red,param=c("i_hemisphere","j_hemisphere",
              index1=cbind(0,seq(-50,50),3),main="new coordinates - slice ",legend=FALSE)
 
 
-## compute the mid-saggital plan and mark lesion
+## compute the mid-sagittal plan and mark lesion
 res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
                       mask=c("MASK_DWI_t0","MASK_T2_FLAIR_t2"), i_test=2,j_test=2,angle_test=2,
                       trace=TRUE,update.object=TRUE,overwrite=TRUE)
@@ -854,7 +854,7 @@ res <- calcHemisphere(MRIaggr.Pat1_red,param="T2_GRE_t0",num=1,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute normalization values
@@ -866,7 +866,7 @@ par(mfrow=c(2,4),mar=rep(1.5,4),mgp=c(2,0.5,0))
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
              legend=TRUE,window=NULL,main="raw - slice ")
 multiplot(MRIaggr.Pat1_red,param="T2_FLAIR_t2",num=1:3,
-             norm_mu="controlateral",norm_sigma="controlateral",
+             norm_mu="contralateral",norm_sigma="contralateral",
              legend=TRUE,window=NULL,main="normalized - slice ")
 
 ## extract normalization
@@ -880,7 +880,7 @@ selectNormalization(MRIaggr.Pat1_red,type="global",mu=TRUE,sigma=FALSE)
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute regional values
@@ -911,7 +911,7 @@ res <- calcROCthreshold(MRIaggr.Pat1_red,mask=c("MASK_DWI_t0"),param=c("DWI_t0")
                         as.logical=TRUE,plot="boxplot_Youden")
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## ROC analysis
@@ -1027,7 +1027,7 @@ for(test.threshold in c(1,4,10)){
 }
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 #### 1- directly
@@ -1122,7 +1122,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP.GR_t0",num=1:3,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compute table
@@ -1153,7 +1153,7 @@ calcThresholdMRIaggr(MRIaggr.Pat1_red,param=c("TTP_t0","MTT_t0"),threshold=1:10,
 
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 #### 1- MRIaggr method 
@@ -1196,7 +1196,7 @@ multiplot(MRIaggr.Pat1_red,param="TTP.GR_t0",main="TTP.GR_t0 - slice",
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## perform segmentation  (call mritc)
@@ -1252,7 +1252,7 @@ boxplotMask(MRIaggr.Pat1_red,param=c("DWI_t0","TTP_t0","MTT_t0"),mask="MASK_T2_F
             as.logical=TRUE,x.legend="bottomleft")
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## display
@@ -1278,7 +1278,7 @@ heatmapMRIaggr(MRIaggr.Pat1_red,param=c("MASK_T2_FLAIR_t2","DWI_t0","TTP_t0","MT
            col=cm.colors(50))
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red",package="MRIaggr")
 
 ## pearson
@@ -1329,7 +1329,7 @@ legend=NULL,window="png")
 
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data(MRIaggr.Pat1_red, package="MRIaggr")
 
 # display 3 slices 
@@ -1392,7 +1392,7 @@ multiplot(MRIaggr.Pat1_red,num=1:3,param="DWI_t0",
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## outline the area of interest
@@ -1445,7 +1445,7 @@ multiplot(MRIaggr.Pat1_red,param="userMask",
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## display
@@ -1479,7 +1479,7 @@ plotDistClass(MRIaggr.Pat1_red,param="DWI_t0",bw.adjust=2,
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 if(require(rgl)){
@@ -1506,7 +1506,7 @@ if(require(rgl)){
 #### test
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## matplot display of the lesion
@@ -1543,7 +1543,7 @@ summary(MRIaggr.Pat1_red,param=TRUE,clinic=TRUE,
         descStats = TRUE, history = TRUE)
 
 #### example 
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 summary(MRIaggr.Pat1_red)
@@ -1563,7 +1563,7 @@ summary(MRIaggr.Pat1_red)
 #### test
 
 #### example
-## load a MRIaggr object
+## load an MRIaggr object
 data("MRIaggr.Pat1_red", package="MRIaggr")
 
 ## compress the MRIaggr object
@@ -1589,7 +1589,7 @@ multiplot(MRIaggr.compressed,param="MASK_T2_FLAIR_t2",main="after - slice ")
 #### test
 
 #### example
-## load nifti files and convert them to MRIaggr
+## load NIFTI files and convert them to MRIaggr
 path <- system.file(file.path("nifti"),package = "MRIaggr")
 ls.array <- list(readMRI(file=file.path(path,"T2_GRE_t0"),format="nifti"))
 MRIaggr.Pat1 <- constMRIaggr(ls.array,identifier="Pat1",param="T2_GRE_t0")

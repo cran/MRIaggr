@@ -31,10 +31,12 @@ Computate a neighborhood matrix using spatial coordinates.
   \item{overwrite}{if a neighborhood matrix is already stored in \code{object@ls_descStats}, can it be overwritten ? \emph{logical}.}
 }
 \details{
+These functions require to have installed the \emph{Matrix} and the \emph{spam} package to work.
+
 ARGUMENTS: \cr
 Information about the \code{num} argument can be found in the details section of \code{\link{initNum}}.
 
-The \code{range} argument cooresponds to the \code{delta} argument of the \code{\link{nearest.dist}} function.
+The \code{range} argument cooresponds to the \code{delta} argument of the \code{nearest.dist} function from the \emph{spam} package.
 
 Information about the \code{hemisphere} argument can be found in the details section of \code{\link{selectContrast}}.
 

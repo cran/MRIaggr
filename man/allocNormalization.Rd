@@ -1,12 +1,12 @@
-\name{affectNormalization}
-\title{Affect normalization values}
-\alias{affectNormalization<-}
-\alias{affectNormalization<-,MRIaggr-method}
+\name{allocNormalization}
+\title{Allocate normalization values}
+\alias{allocNormalization<-}
+\alias{allocNormalization<-,MRIaggr-method}
 \usage{
-\S4method{affectNormalization}{MRIaggr}(object,overwrite=FALSE,trace=TRUE) <- value
+\S4method{allocNormalization}{MRIaggr}(object,overwrite=FALSE,trace=TRUE) <- value
 }
 \description{
-Affect normalization values to a \code{\linkS4class{MRIaggr}} object.
+Allocate normalization values to a \code{\linkS4class{MRIaggr}} object.
 }
 \arguments{
   \item{object}{an object of class \code{\linkS4class{MRIaggr}}. REQUIRED.}
@@ -51,15 +51,15 @@ data("MRIaggr.Pat1_red", package="MRIaggr")
 ## parameters to normalize
 param <- c("DWI_t0","T2_FLAIR_t2","T2_GRE_t0","TTP_t0")
 
-## manual affectation
+## manual allocation
 resNormalization <- calcNormalization(MRIaggr.Pat1_red,param=param)
-affectNormalization(MRIaggr.Pat1_red,overwrite=TRUE) <- resNormalization
+allocNormalization(MRIaggr.Pat1_red,overwrite=TRUE) <- resNormalization
 
-## automatic affectation
+## automatic allocation
 resNormalization <- calcNormalization(MRIaggr.Pat1_red,param=param,
                                       update.object=TRUE,overwrite=TRUE)
 
 }
-\concept{affect.}
+\concept{alloc.}
 \keyword{methods}
 

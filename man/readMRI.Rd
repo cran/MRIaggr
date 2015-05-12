@@ -22,7 +22,7 @@ readMRI(file, format, na.value = 0,
   }
 \details{
 
-This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to analyze or nifti.
+This function requires to have installed the \emph{oro.nifti} package to work if argument format is set to \code{"analyze"} or \code{"nifti"}.
 It requires to have installed the \emph{oro.dicom} package to work if argument format is set to dicom.
 
 ARGUMENTS :
@@ -41,7 +41,7 @@ The \code{flipud} corresponds to the \code{flipud} argument of the \code{oro.dic
 FUNCTION : \cr
 This function is inspired from the \code{readMRI} function of the mritc package. It calls
 \code{readANALYZE} of the oro.nifti package to read analyze files, 
-\code{readNIfTI} of the oro.nifti package to read nifti files, 
+\code{readNIfTI} of the oro.nifti package to read NIFTI files, 
 \code{readDICOMFile} of the oro.dicom package to read dicom files 
 and \code{readBin} of the base package to read rawb.gz.
 }
@@ -49,7 +49,7 @@ and \code{readBin} of the base package to read rawb.gz.
   A \code{nifti} object if \code{format="nifit"}, an \code{anlz} object if \code{format="analyse"} and else an \code{array}.
 }
 \examples{ 
-## load a nifti file
+## load a NIFTI file
 path.Pat1 <- system.file(file.path("nifti"),package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 dim(nifti.Pat1_TTP_t0)
@@ -60,7 +60,7 @@ path.Pat2 <- system.file("anlz", package="oro.nifti")
 analyse.avg <- readMRI(file.path(path.Pat2,"avg152T1"),format="analyze")
 graphics::image(analyse.avg[,,45,1])
 
-### load a nifti file (example of oro.nifti::readNIfTI)
+### load a NIFTI file (example of oro.nifti::readNIfTI)
 path.Pat3 <- system.file("nifti", package="oro.nifti")
 nifti.ffd <- readMRI(file.path(path.Pat3,"filtered_func_data"),format="nifti")
 graphics::image(nifti.ffd[,,10,32])

@@ -1,11 +1,11 @@
 \name{multiplot}
-\title{Spatial display using coordinates}
+\title{Slice by slice display}
 \alias{multiplot}
 \alias{multiplot,data.frame-method}
 \alias{multiplot,Carto3D-method}
 \alias{multiplot,MRIaggr-method}
 \description{
-Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or a \code{\linkS4class{MRIaggr}} object.
+Make a slice by slice display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
 \S4method{multiplot}{data.frame}(object,contrast=NULL,num=NULL,
@@ -42,7 +42,7 @@ Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or
   \item{contrast}{the intensities to display. \emph{numerical vector} or \code{NULL} leading to use the same color for all observations.}
   \item{num}{the slices to display. \emph{numeric vector} or \code{NULL}.}
   \item{index1,index2,index3}{the coordinates of additionnal points to display. \emph{data.frame} or \emph{list} or \code{NULL}.}
-  \item{midplane}{should the mid-saggital plan be displayed ? \emph{logical}.}
+  \item{midplane}{should the mid-sagittal plan be displayed ? \emph{logical}.}
  
   \item{slice_var}{the type of view to use. \code{"i"} for sagittal view, \code{"j"} for coronal view and \code{"k"} for transverse view. \emph{character}.}  
   \item{hemisphere}{the hemisphere to display. \emph{character}.}
@@ -59,7 +59,7 @@ Make a spatial display of a \emph{data.frame}, a \code{\linkS4class{Carto3D}} or
 
   \item{col.NA}{the color to use to plot the NAs. \emph{character}.}
   \item{pch.NA}{the label to use to plot the NAs. \emph{postive integer}.}
-  \item{col.midplane}{the color in which the mid-saggital plan should appear. \emph{character}.}
+  \item{col.midplane}{the color in which the mid-sagittal plan should appear. \emph{character}.}
   \item{xlim}{the x limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the x limits.}
   \item{ylim}{the y limits of the plot. \emph{numeric vector of size 2} or \code{NULL} leading to automatic setting of the y limits.}
   \item{axes}{should the axes be plotted ? \emph{logical}.}
@@ -144,7 +144,7 @@ multiplot(object=data[,c("i","j","k")],num=3,
              )
 			  
 #### 2- carto3D ####
-## load nifti files and convert them to carto3D
+## load NIFTI files and convert them to carto3D
 path.Pat1 <- system.file("nifti",package = "MRIaggr")
 nifti.Pat1_TTP_t0 <- readMRI(file=file.path(path.Pat1,"TTP_t0"),format="nifti")
 Carto3D.Pat1_TTP_t0 <- constCarto3D(nifti.Pat1_TTP_t0,identifier="Pat1",param="TTP_t0")

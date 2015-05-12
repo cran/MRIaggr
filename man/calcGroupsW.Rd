@@ -12,6 +12,9 @@ calcGroupsW(W,subset=NULL,max_groups=10000)
   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.}
   \item{max_groups}{the maximum number of groups. \emph{postive integer}.}
 }
+\details{
+This function requires to have installed the \emph{Matrix} and the \emph{spam} package to work.
+}
 \value{
   An \emph{list} containing :
   \itemize{

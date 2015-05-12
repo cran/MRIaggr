@@ -28,10 +28,10 @@ Information about the \code{hemisphere} argument can be found in the details sec
   A \emph{data.frame} or a \emph{list}.
 }
 \seealso{
- \code{\link{calcNormalization}} to compute and affect the normalisation values. \cr
- \code{\link{affectNormalization<-}} to affect the normalization values when obtained from an external source. \cr
+ \code{\link{calcNormalization}} to compute and allocate the normalisation values. \cr
+ \code{\link{allocNormalization<-}} to alloacte the normalization values when obtained from an external source. \cr
  \code{\link{calcHemisphere}} to identify the hemispheres. \cr
- \code{\link{affectHemisphere<-}} and \code{\link{affectContrast<-}} to affect hemispheres obtained from an external source.
+ \code{\link{allocHemisphere<-}} and \code{\link{allocContrast<-}} to allocate hemispheres obtained from an external source.
 }
 \examples{
 ## load a MRIaggr object

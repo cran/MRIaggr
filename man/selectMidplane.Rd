@@ -1,9 +1,9 @@
 \name{selectMidplane}
-\title{Extract the position of the mid-saggital plan}
+\title{Extract the position of the mid-sagittal plan}
 \alias{selectMidplane}
 \alias{selectMidplane,MRIaggr-method}
 \description{
-Extract the position of the mid-saggital plan from a \code{\linkS4class{MRIaggr}} object.
+Extract the position of the mid-sagittal plan from a \code{\linkS4class{MRIaggr}} object.
 }
 \usage{
 \S4method{selectMidplane}{MRIaggr}(object)

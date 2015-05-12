@@ -10,14 +10,14 @@
   \item{identifier}{the patient identifier. \emph{character}.}  
   \item{contrast}{the value of the contrast parameters for each observation. \emph{data.frame}.}  
   \item{clinic}{the clinical data of the patient. \emph{data.frame}.}  
-  \item{voxelDim}{the dimension of the lattice containing the observations expressed in number of voxels. \emph{data.frame}.}  
-  \item{voxelSize}{the spatial dimensions of a voxel with its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
-  \item{default_value}{the reference values of the contrast parameters. \emph{data.frame}.}  
+  \item{fieldDim}{the dimensions of the spatial field (expressed in number of voxels) containing the voxels. \emph{data.frame}.}  
+  \item{voxelDim}{the voxel size dimensions its unit of measure. A four columns \emph{data.frame} with names \code{"i"}, \code{"j"}, \code{"k"} and \code{"unit"}.}  
+  \item{default_value}{a reference value for each contrast parameter. \emph{data.frame}.}  
 
-  \item{history}{the list of the \code{calc} or \code{const} methods that have been already applied on the \code{MRIaggr} object. \emph{data.frame}.}  
-  \item{normalization}{the normalization values for the contrast parameters. \emph{list}.}  
-  \item{hemispheres}{the presence or absence of lesion in each cerebral hemisphere. \emph{data.frame}.}  
-  \item{midplane}{the position of the mid-sagittal plan. \emph{data.frame}.}  
+  \item{history}{a list of the \code{calc} or \code{const} methods that have been applied to the \code{MRIaggr} object . \emph{data.frame}.}  
+  \item{normalization}{the normalization values of each contrast parameter. \emph{list}.}  
+  \item{hemispheres}{the presence or absence of lesion(s) in each hemisphere. \emph{data.frame}.}  
+  \item{midplane}{the position of the mid-sagittal plane. \emph{data.frame}.}  
   
   \item{table_lesion}{the vertical distribution of the lesion volumes. \emph{data.frame}.}  
   \item{table_reperfusion}{the volumic reperfusion data. \emph{data.frame}.}  
@@ -36,23 +36,23 @@ Getters :
  \item{\code{\link{selectHemispheres}}}{return the position of the lesion in each hemisphere.}
  \item{\code{\link{selectHistory}}}{return the call of the methods applied on the object.}
  \item{\code{\link{selectIdentifier}}}{return the identifier of the patient}
- \item{\code{\link{selectMidplane}}}{return the position of the mid-saggital plan}
+ \item{\code{\link{selectMidplane}}}{return the position of the mid-sagittal plan}
  \item{\code{\link{selectN}}}{return the number of voxels}
  \item{\code{\link{selectNormalization}}}{return the normalization values of the contrast parameters}
  \item{\code{\link{selectParameter}}}{return the names of the parameters stored in the object}
  \item{\code{\link{selectTable}}}{return volumic information about the lesion or about the perfusion}
- \item{\code{\link{selectVoxelDim}}}{return the dimension of the lattice containing the observations}
- \item{\code{\link{selectVoxelSize}}}{return the dimension of a voxel}
+ \item{\code{\link{selectFieldDim}}}{return the dimension of the lattice containing the observations}
+ \item{\code{\link{selectVoxelDim}}}{return the dimension of a voxel}
 }
 
 Setters : 
 \describe{
-\item{\code{\link{affectContrast<-}}}{affect a contrast parameter}
-\item{\code{\link{affectClinic<-}}}{affect clinical data}
-\item{\code{\link{affectDescStats<-}}}{affect extra information}
-\item{\code{\link{affectHemisphere<-}}}{affect the position of the lesion in the hemisphere or the position of the mid-saggital brain}
-\item{\code{\link{affectNormalization<-}}}{affect normalization values}
-\item{\code{\link{affectTable<-}}}{affect volumic information}
+\item{\code{\link{allocContrast<-}}}{allocate a contrast parameter}
+\item{\code{\link{allocClinic<-}}}{allocate clinical data}
+\item{\code{\link{allocDescStats<-}}}{allocate extra information}
+\item{\code{\link{allocHemisphere<-}}}{allocate the position of the lesion in the hemisphere or the position of the mid-sagittal brain}
+\item{\code{\link{allocNormalization<-}}}{allocate normalization values}
+\item{\code{\link{allocTable<-}}}{allocate volumic information}
 \item{\code{\link{supprContrast<-}}}{remove a contrast parameter}
 \item{\code{\link{supprDescStats<-}}}{remove extra information}
 }
@@ -60,7 +60,7 @@ Setters :
 Calculators : 
 \describe{
 \item{\code{\link{calcBrainMask}}}{}
-\item{\code{\link{calcControlateral}}}{}
+\item{\code{\link{calcContralateral}}}{}
 \item{\code{\link{calcDistMask}}}{}
 \item{\code{\link{calcDistTissues}}}{}
 \item{\code{\link{calcFilter}}}{}
