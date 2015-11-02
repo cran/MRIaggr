@@ -18,7 +18,8 @@
   \item{normalization}{the normalization values of each contrast parameter. \emph{list}.}  
   \item{hemispheres}{the presence or absence of lesion(s) in each hemisphere. \emph{data.frame}.}  
   \item{midplane}{the position of the mid-sagittal plane. \emph{data.frame}.}  
-  
+  \item{W}{the neighbourhood matrix. \emph{list}.}  
+ 
   \item{table_lesion}{the vertical distribution of the lesion volumes. \emph{data.frame}.}  
   \item{table_reperfusion}{the volumic reperfusion data. \emph{data.frame}.}  
   \item{table_hypoperfusion}{the volumic hypoperfusion data. \emph{data.frame}.}  
