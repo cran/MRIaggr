@@ -5,7 +5,7 @@ importFrom("graphics", "abline", "axis", "box", "boxplot", "hist", "image", "lay
 importFrom("grDevices", "cm.colors", "dev.new", "dev.off", "graphics.off", "gray.colors", "grey.colors", "heat.colors", "pdf", "png", "postscript", "rainbow", "terrain.colors", "topo.colors", "svg")
 importFrom("Matrix", "drop0", "Matrix", "rowSums", "sparseMatrix")
 import("methods")
-importFrom("mritc", "initOtsu", "makeMRIspatial", "mritc.bayes")
+# importFrom("mritc", "initOtsu", "makeMRIspatial", "mritc.bayes")
 importFrom("oro.dicom", "readDICOMFile")
 import("oro.nifti")
 # importFrom("oro.nifti", "convert.units", "readANALYSE", "readNIfTI", "writeANALYSE", "writeNIfTI")

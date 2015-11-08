@@ -182,7 +182,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // simulPottsFast_cpp
-arma::mat simulPottsFast_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const NumericVector& W_x, const IntegerVector& site_order, arma::mat sample, double rho, int n, int p, int iter_nb);
+arma::mat simulPottsFast_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const NumericVector& W_x, const IntegerVector& site_order, arma::mat sample, double rho, int n, const int p, int iter_nb);
 RcppExport SEXP MRIaggr_simulPottsFast_cpp(SEXP W_iSEXP, SEXP W_pSEXP, SEXP W_xSEXP, SEXP site_orderSEXP, SEXP sampleSEXP, SEXP rhoSEXP, SEXP nSEXP, SEXP pSEXP, SEXP iter_nbSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
@@ -194,7 +194,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::mat >::type sample(sampleSEXP);
     Rcpp::traits::input_parameter< double >::type rho(rhoSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< const int >::type p(pSEXP);
     Rcpp::traits::input_parameter< int >::type iter_nb(iter_nbSEXP);
     __result = Rcpp::wrap(simulPottsFast_cpp(W_i, W_p, W_x, site_order, sample, rho, n, p, iter_nb));
     return __result;
@@ -217,15 +217,16 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcGroupsW_cpp
-List calcGroupsW_cpp(const S4& W, const IntegerVector& subset, int& max_groups);
-RcppExport SEXP MRIaggr_calcGroupsW_cpp(SEXP WSEXP, SEXP subsetSEXP, SEXP max_groupsSEXP) {
+List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups);
+RcppExport SEXP MRIaggr_calcGroupsW_cpp(SEXP W_iSEXP, SEXP W_pSEXP, SEXP subsetSEXP, SEXP max_groupsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
-    Rcpp::traits::input_parameter< const S4& >::type W(WSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type W_i(W_iSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type W_p(W_pSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type subset(subsetSEXP);
     Rcpp::traits::input_parameter< int& >::type max_groups(max_groupsSEXP);
-    __result = Rcpp::wrap(calcGroupsW_cpp(W, subset, max_groups));
+    __result = Rcpp::wrap(calcGroupsW_cpp(W_i, W_p, subset, max_groups));
     return __result;
 END_RCPP
 }

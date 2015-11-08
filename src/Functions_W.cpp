@@ -11,7 +11,7 @@ using namespace arma ;
 //// Fonctions de conversion vers R
 // fct 1 : List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& index_NNA, const arma::mat& Neighborhood, IntegerVector& coords_max, 
 //                          int& max_groups, bool& verbose)
-// fct 2 : List calcGroupsW_cpp(const S4& W, const IntegerVector& subset, int& max_groups)
+// fct 2 : List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups)
 // fct 3 : List calcRadius_cpp(const arma::mat& coords, const NumericVector& sample, double& threshold, const LogicalVector& subset_bary, bool& verbose)
 // fct 4 : List calcBlockW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& site_order, 
 //                    const NumericVector& dist_center, double dist_max, bool& verbose)
@@ -34,10 +34,12 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
 
 // fct 2 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
-List calcGroupsW_cpp(const S4& W, const IntegerVector& subset, int& max_groups){
- 
-  List res = calcGroupsW_hpp(Rcpp::as < std::vector < int > >(W.slot("i")), 
-                             Rcpp::as < std::vector < int > >(W.slot("p")), 
+List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups){
+  //vector < int > W_i_cpp = W_i;
+  //vector < int > W_p_cpp = W_p;
+  
+  List res = calcGroupsW_hpp(Rcpp::as < std::vector < int > >(W_i), 
+                             Rcpp::as < std::vector < int > >(W_p), 
                              Rcpp::as < std::vector < int > >(subset), 
                              max_groups);
 

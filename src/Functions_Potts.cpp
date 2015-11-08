@@ -205,7 +205,7 @@ List simulPotts_cpp (const S4& W_SR, const S4& W_LR, arma::mat sample, const arm
   
   // variables
   int n = sample.n_rows;
-  int p = sample.n_cols;
+  const int p = sample.n_cols;
   vector < int > W_i = W_SR.slot("i");
   vector < int > W_p = W_SR.slot("p");
   vector < double > W_x = W_SR.slot("x");
@@ -215,11 +215,12 @@ List simulPotts_cpp (const S4& W_SR, const S4& W_LR, arma::mat sample, const arm
   if(no_site_order == false){
     rang = site_order;
   }
-  int tirage_multinom[p];
+  IntegerVector tirage_multinom(p); // int tirage_multinom[p]; //  (generate a warning on linux : warning variable length arrays are a C99 feature)
+  NumericVector proba_site(p); //double proba_site[p]; // (generate a warning on linux : warning variable length arrays are a C99 feature)
   
   int index_px;
   arma::mat Wpred(n, p);
-  double norm, proba_site[p];
+  double norm;
   
   // regional
   arma::mat V(n, p);
@@ -305,7 +306,7 @@ List simulPotts_cpp (const S4& W_SR, const S4& W_LR, arma::mat sample, const arm
           }
         }
       } 
-      rmultinom(1, proba_site, p, tirage_multinom);
+      rmultinom(1, proba_site.begin(), p, tirage_multinom.begin()); // rmultinom(1, proba_site, p, tirage_multinom); //  (alternative version with the warning)
       
       for(int iter_p = 0; iter_p < p; iter_p++){
         sample(index_px, iter_p) = tirage_multinom[iter_p];
@@ -337,16 +338,26 @@ List simulPotts_cpp (const S4& W_SR, const S4& W_LR, arma::mat sample, const arm
 // [[Rcpp::export]]
 arma::mat simulPottsFast_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const NumericVector& W_x, 
                              const IntegerVector& site_order, 
-                             arma::mat sample, double rho, int n, int p, int iter_nb){
+                             arma::mat sample, double rho, int n, const int p, int iter_nb){
  
   // attention W est lu par lignes donc si elle doit etre normalisee c est par lignes !!!
   int index_px;
-  double norm;   
+  double norm;
   arma::mat Wpred(n, p);
   IntegerVector rang(n);
-  int tirage_multinom[p];
-  double proba_site[p];
+
+  IntegerVector tirage_multinom(p); 
+  NumericVector proba_site(p);
+//  int tirage_multinom[p]; //// (generate a warning on linux : warning variable length arrays are a C99 feature)
+//  double proba_site[p]; // // (generate a warning on linux : warning variable length arrays are a C99 feature)
   
+//// sinon essayer une allocation dynamic
+//   proba_site=malloc(p*sieof(double));
+//   int *tirage_multinom;
+//   tirage_multinom=calloc(p,sizeof(int));
+//   double *proba_site;
+//   proba_site=calloc(p,sizeof(double));
+
   bool no_site_order = (site_order[0] < 0);
   if(no_site_order == false){
     rang = site_order;
@@ -381,7 +392,8 @@ arma::mat simulPottsFast_cpp(const IntegerVector& W_i, const IntegerVector& W_p,
         proba_site[iter_p] = Wpred(index_px, iter_p) / norm;
       } 
       
-      rmultinom(1, proba_site, p, tirage_multinom);
+      rmultinom(1, proba_site.begin(), p, tirage_multinom.begin());
+      // rmultinom(1, proba_site, p, tirage_multinom);   //  (alternative version with the warning)
       
       for(int iter_p = 0; iter_p < p; iter_p++){
         sample(index_px, iter_p) = tirage_multinom[iter_p];
@@ -389,6 +401,10 @@ arma::mat simulPottsFast_cpp(const IntegerVector& W_i, const IntegerVector& W_p,
       
     }
   }
+  
+  //// sinon essayer une allocation dynamic
+//   free(proba_site);
+//   free(tirage_multinom);
   
   
   return(sample);

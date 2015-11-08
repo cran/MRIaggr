@@ -56,7 +56,7 @@ M. Pereyra, N. Dobigeon, H. Batatia, and J.Y. Tourneret. \emph{Estimation the gr
 n <- 50
 }
 \dontshow{
-n <- 10
+n <- 5
 }
 G <- 3
 coords <- which(matrix(0, nrow = n * G, ncol = n * G) == 0, arr.ind = TRUE)
@@ -75,8 +75,12 @@ multiplot(as.data.frame(coords), sample,palette = "rgb")
 
 # estimation
 
-rho <- rhoLvfree(Y = sample, W_SR = W_SR, site_order = site_order, n.sample = 1000)
-lapply(rho,quantile)
+\dontrun{
+rho <- rhoLvfree(Y = sample, W_SR = W_SR, site_order = site_order)
+}
+\dontshow{
+rho <- rhoLvfree(Y = sample, W_SR = W_SR, site_order = site_order, n.sample = 500)
+}
 }
 
 

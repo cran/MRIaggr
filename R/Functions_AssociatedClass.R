@@ -772,7 +772,7 @@ calcGroupsW <- function(W, subset = NULL, max_groups = 10000){
   }
   
   #### call C++ function
-  resCpp <- calcGroupsW_cpp(W = W, subset = subset, max_groups = max_groups)
+  resCpp <- calcGroupsW_cpp(W_i = W@i, W_p = W@p, subset = subset, max_groups = max_groups)
   
   if(resCpp$n > 0){
     warning("calcGroupsW : maximum number of groups reached \n", 

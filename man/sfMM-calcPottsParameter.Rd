@@ -35,7 +35,7 @@ M. Pereyra, N. Dobigeon, H. Batatia, and J.Y. Tourneret. \emph{Estimation the gr
 n <- 50
 }
 \dontshow{
-n <- 10
+n <- 5
 }
 G <- 3
 coords <- as.data.frame(which(matrix(0, nrow = n * G, ncol = n * G) == 0, arr.ind = TRUE))
@@ -53,14 +53,20 @@ sample <- simulPotts(W_SR, G = 3, rho = 3.5, iter_max = 500,
 #### estimation using the neighbourhood matrix
 rho_MF <- calcPottsParameter(Y = sample, W_SR = W_SR,  method = "MF")
 
-rho_Lvfree <- calcPottsParameter(Y = sample, W_SR = W_SR, n.sample = 1000, 
+\dontrun{
+rho_Lvfree <- calcPottsParameter(Y = sample, W_SR = W_SR, 
                                 site_order = site_order, method = "Lvfree", verbose = 2)
+}
 
 #### estimation using the coordinates
 rho_MF <- calcPottsParameter(Y = sample, coords = coords, range = sqrt(2), method = "MF")
 
 \dontrun{
-rho_Lvfree <- calcPottsParameter(Y = sample, coords = coords, range = sqrt(2), n.sample = 1000,
+rho_Lvfree <- calcPottsParameter(Y = sample, coords = coords, range = sqrt(2),
+                                site_order = site_order, method = "Lvfree", verbose = 2)
+}
+\dontshow{
+rho_Lvfree <- calcPottsParameter(Y = sample, coords = coords, range = sqrt(2), n.sample = 500,
                                 site_order = site_order, method = "Lvfree", verbose = 2)
 }
 }

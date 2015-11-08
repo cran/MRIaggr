@@ -3424,7 +3424,7 @@ methods::setMethod(f  = "calcTissueType",
                                          beta = if(sub == TRUE){0.3}else{0.7}, sub = TRUE, digit = 0, verbose = TRUE, 
                                          name_newparam = c("CSF","GM","WM"), update.object = FALSE, overwrite = FALSE){
                      
-                     #initPackage("mritc", method = "calcTissueType[MRIaggr]")
+                     initPackage("mritc", method = "calcTissueType[MRIaggr]")
                      
                      carto <- selectContrast(object, param = param, format = "vector")
                      coords <- selectCoords(object)

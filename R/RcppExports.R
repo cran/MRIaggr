@@ -45,8 +45,8 @@ calcGroupsCoords_cpp <- function(coords_NNA, index_NNA, Neighborhood, coords_max
     .Call('MRIaggr_calcGroupsCoords_cpp', PACKAGE = 'MRIaggr', coords_NNA, index_NNA, Neighborhood, coords_max, max_groups, verbose)
 }
 
-calcGroupsW_cpp <- function(W, subset, max_groups) {
-    .Call('MRIaggr_calcGroupsW_cpp', PACKAGE = 'MRIaggr', W, subset, max_groups)
+calcGroupsW_cpp <- function(W_i, W_p, subset, max_groups) {
+    .Call('MRIaggr_calcGroupsW_cpp', PACKAGE = 'MRIaggr', W_i, W_p, subset, max_groups)
 }
 
 calcRadius_cpp <- function(coords, sample, threshold, subset_bary, verbose) {
