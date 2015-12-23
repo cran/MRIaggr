@@ -18,11 +18,14 @@ using namespace arma ;
 
 //  fct 1 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
-List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& index_NNA, const arma::mat& Neighborhood, IntegerVector& coords_max, 
+List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& index_NNA, int min_index_NNA, int max_index_NNA,
+                          const arma::mat& Neighborhood, const IntegerVector& coords_max, 
                           int& max_groups, bool& verbose){
   
   List res = calcGroupsCoords_hpp(coords_NNA, 
                                   Rcpp::as < std::vector < int > >(index_NNA), 
+                                  min_index_NNA,
+                                  max_index_NNA,
                                   Neighborhood, 
                                   Rcpp::as < std::vector < int > >(coords_max), 
                                   max_groups, 
@@ -34,14 +37,15 @@ List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& inde
 
 // fct 2 ////////////////////////////////////////////////////////////
 // [[Rcpp::export]]
-List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups){
+List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups, bool verbose){
   //vector < int > W_i_cpp = W_i;
   //vector < int > W_p_cpp = W_p;
   
   List res = calcGroupsW_hpp(Rcpp::as < std::vector < int > >(W_i), 
                              Rcpp::as < std::vector < int > >(W_p), 
                              Rcpp::as < std::vector < int > >(subset), 
-                             max_groups);
+                             max_groups,
+                             verbose);
 
     //  export
   return(res);

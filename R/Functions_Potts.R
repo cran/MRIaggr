@@ -4,8 +4,7 @@ calcPotts <- function(W_SR, sample, rho, prior = TRUE, site_order = NULL,
                       W_LR = NULL, nbGroup_min = 100, coords = NULL, distance.ref = NULL, threshold = 0.1, multiV = TRUE, 
                       iter_max = 200, cv.criterion = 0.005, verbose = 2){
   
-  neutre <- 0
-  
+  neutre <- 0 
   if(is.data.frame(coords)){ coords <- as.matrix(coords) }
   if(is.data.frame(sample)){ sample <- as.matrix(sample) }
   
@@ -276,9 +275,9 @@ calcPottsParameter <- function(Y, W_SR, coords = NULL, range = NULL, method = "M
     
     if(verbose > 0 && sum(!is.na(rho)) > 0){
       cat("Estimated rho (by each chain) : ", paste(unlist(lapply(rho, 
-                                                                  function(x){paste(round(median(x), digits = optionsMRIaggr("digit.result")), 
-                                                                                    " [", round(quantile(x, 0.025), digits = optionsMRIaggr("digit.result")), 
-                                                                                    " ; ", round(quantile(x, 0.975), digits = optionsMRIaggr("digit.result")), "]",
+                                                                  function(x){paste(round(stats::median(x), digits = optionsMRIaggr("digit.result")), 
+                                                                                    " [", round(stats::quantile(x, 0.025), digits = optionsMRIaggr("digit.result")), 
+                                                                                    " ; ", round(stats::quantile(x, 0.975), digits = optionsMRIaggr("digit.result")), "]",
                                                                                     sep = "")})
       ), collpase = " "), "\n", sep = "")
     }
@@ -292,6 +291,8 @@ calcPottsParameter <- function(Y, W_SR, coords = NULL, range = NULL, method = "M
 rhoMF <- function(Y, W_SR, rho_max = 50, prior_prevalence = TRUE, 
                   test.regional = FALSE, W_LR, distance.ref, coords, threshold = 0.1, nbGroup_min = 100, 
                   regionalGroups = "last_vs_others", multiV = TRUE){
+  
+  neutre <- 0.5
   
   #### preparation
   n <- nrow(as.matrix(Y))
@@ -314,7 +315,7 @@ rhoMF <- function(Y, W_SR, rho_max = 50, prior_prevalence = TRUE,
     if(regionalGroups == "last_vs_others"){
       V[,p] <- calcMultiPotential_cpp(W_SR = W_SR, W_LR = W_LR, sample = Y[,p], threshold = threshold, 
                                       coords = coords, distance_ref = distance.ref, nbGroup_min = nbGroup_min, 
-                                      multiV = multiV, neutre = 0.5)$V
+                                      multiV = multiV, neutre = neutre)$V
       
       V[,-p] <- matrix(1 - V[,p], n, p - 1, byrow = FALSE)
       
@@ -323,7 +324,7 @@ rhoMF <- function(Y, W_SR, rho_max = 50, prior_prevalence = TRUE,
       for(iter_regionalGroup in 1:p){
         V[,iter_regionalGroup] <- calcMultiPotential_cpp(W_SR = W_SR, W_LR = W_LR, sample = Y[,iter_regionalGroup], threshold = threshold, 
                                                          coords = coords, distance_ref = distance.ref, nbGroup_min = nbGroup_min, 
-                                                         multiV = multiV, neutre = 0.5)$V
+                                                         multiV = multiV, neutre = neutre)$V
       }
       
     }

@@ -1897,6 +1897,7 @@ methods::setMethod(f  = "calcFilter",
                      validDim_vector(value1 = param, value2 = name_newparam, name1 = "param", name2 = "name_newparam", type = "length", method = "calcFilter[MRIaggr]")
                      
                      carto <- selectContrast(object, param = param, coords = TRUE, format = "data.frame")
+                     
                      carto <- df2array(contrast = carto[,param], 
                                        range.coords = object@fieldDim, 
                                        coords = carto[,c("i", "j", "k")])
@@ -1993,7 +1994,7 @@ methods::setMethod(f  = "calcGroupsMask",
                            W_lesion <- W[index_N, index_N]
                          }
                          
-                         res[[iter_param]] <-  calcGroupsW(W_lesion, max_groups = 10000)               
+                         res[[iter_param]] <-  calcGroupsW(W_lesion, max_groups = 10000, verbose = FALSE)               
                          carto[index_N, iter_param] <- res[[iter_param]]$group
                          res[[iter_param]]$group <- carto[,iter_param]
                          
@@ -2838,7 +2839,8 @@ methods::setMethod(f  = "calcSmoothMask",
                      
                      #### Exclusion des petits groupes 2D
                      if( identical(size_2Dgroup, FALSE) == FALSE && length(index_mask) > 0)
-                     { if(verbose){cat("rm small2D : ")}       
+                     { if(verbose){cat("rm small2D : ")} 
+
                        group2D <- calcGroupsCoords(coords = coords[index_mask,], 
                                                    Neighborhood = Neighborhood_2D, verbose = FALSE)
                        
@@ -2855,7 +2857,7 @@ methods::setMethod(f  = "calcSmoothMask",
                                               group2D_num[group2D$group_size[group2D_num] > size_2Dgroup])
                          }
                        }
-                       index_unvalid <- group2D$df.group$index[group2D$df.group$group %in%  valid_group2D == FALSE]
+                       index_unvalid <- which(group2D$df.group$group %in%  valid_group2D == FALSE)
                        
                        if(length(index_unvalid > 0)){
                          index_fond <- sort(union(index_fond, index_mask[index_unvalid]))
@@ -2881,7 +2883,7 @@ methods::setMethod(f  = "calcSmoothMask",
                          valid_group2D <- c(valid_group2D, 
                                             group2D_num[which.max(group2D$group_size[group2D_num])])                 
                        }
-                       index_unvalid <- group2D$df.group$index[group2D$df.group$group %in%  valid_group2D == FALSE]
+                       index_unvalid <- which(group2D$df.group$group %in%  valid_group2D == FALSE)
                        
                        if(length(index_unvalid > 0)){
                          index_mask <- sort(union(index_mask, index_fond[index_unvalid]))
@@ -2895,7 +2897,7 @@ methods::setMethod(f  = "calcSmoothMask",
                      #### Exclusion des petits groupes 3D
                      if( identical(size_3Dgroup, FALSE) == FALSE && length(index_mask) > 0)
                      { if(verbose){cat("rm small3D : ")}
-                       
+                      
                        group3D <- calcGroupsCoords(coords = coords[index_mask,], 
                                                    Neighborhood = Neighborhood_3D, verbose = FALSE)
                        
@@ -2904,7 +2906,7 @@ methods::setMethod(f  = "calcSmoothMask",
                        }else{
                          valid_group3D <- which(group3D$group_size > size_3Dgroup)                          
                        }         
-                       index_unvalid <- group3D$df.group$index[group3D$df.group$group %in% valid_group3D == FALSE]
+                       index_unvalid <- which(group3D$df.group$group %in% valid_group3D == FALSE)
                        
                        if(length(index_unvalid > 0)){
                          index_fond <- sort(union(index_fond, index_mask[index_unvalid]))              
@@ -2942,7 +2944,7 @@ methods::setMethod(f  = "calcSmoothMask",
                        
                        valid_group3D <- which.max(group3D$group_size)
                        
-                       index_unvalid <- group3D$df.group$index[group3D$df.group$group %in%  valid_group3D == FALSE]
+                       index_unvalid <- which(group3D$df.group$group %in%  valid_group3D == FALSE)
                        
                        if(length(index_unvalid > 0)){
                          index_fond <- sort(union(index_fond, index_mask[index_unvalid]))
@@ -2971,7 +2973,7 @@ methods::setMethod(f  = "calcSmoothMask",
                                                    Neighborhood = Neighborhood_3D, verbose = FALSE)
                        
                        valid_group3D <- which.max(group3D$group_size)                         
-                       index_unvalid <- group3D$df.group$index[group3D$df.group$group %in%  valid_group3D == FALSE]
+                       index_unvalid <-which(group3D$df.group$group %in%  valid_group3D == FALSE)
                        
                        if(length(index_unvalid > 0)){
                          index_mask <- sort(union(index_mask, index_fond[index_unvalid]))

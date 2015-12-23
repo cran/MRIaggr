@@ -1,8 +1,24 @@
 ########################################
-	CHANGES IN VERSION 1.1.2 and 1.1.3
+	CHANGES IN VERSION 1.1.4 and 1.1.5
 ########################################
 
-SIGNIFICANT USER-VISIBLE CHANGES
+BUG FIXES
+o    fix a bug in df2array
+o    fix a bug in calcGroupsW_hpp
+
+########################################
+	CHANGES IN VERSION 1.1.3 and 1.1.4
+########################################
+
+NEW FEATURES
+o    New functions for spatial analysis: simulation and estimation of the parameters from a Markov Random Field calcPotts, calcPottsParameter, simulPotts
+
+INTERNAL CHANGES
+o    valid functions for checking the validity of the arguments of the functions
+
+########################################
+	CHANGES IN VERSION 1.1.2 and 1.1.3
+########################################
 
 NEW FEATURES
 o    New function (multipar) enable to specify the default settings for the multiplot method.

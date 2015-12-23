@@ -5,12 +5,14 @@
 Compute the spatial groups using a neighbourhood matrix.
 }
 \usage{
-calcGroupsW(W, subset = NULL, max_groups = 10000)
+calcGroupsW(W, subset = NULL, max_groups = 10000, 
+         verbose = optionsMRIaggr("verbose"))
 }
 \arguments{
   \item{W}{the neighbourhood matrix. \emph{dgCMatrix}. REQUIRED.}
   \item{subset}{the subset of observations to use. \emph{positive integer vector} or \code{NULL} leading to use all observations.}
   \item{max_groups}{the maximum number of groups. \emph{postive integer}.}
+  \item{verbose}{should the execution of the function be traced ? \emph{logical}.}
 }
 \details{
 This function requires to have installed the \emph{Matrix} and the \emph{spam} package to work.

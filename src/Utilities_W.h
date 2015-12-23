@@ -22,238 +22,291 @@ inline  List subsetW_hpp(const vector < int>& W_i, const vector < int>& W_p, vec
 #ifndef __WUTILITIES__
 #define __WUTILITIES__
 
+
 //  fct 1 ////////////////////////////////////////////////////////////
-inline List calcGroupsCoords_hpp(const arma::mat& coords_NNA, const vector < int>& index_NNA, const arma::mat& Neighborhood, vector < int > coords_max, 
-                                 int max_groups, bool verbose){
+inline List calcGroupsCoords_hpp(const arma::mat& coords_NNA, vector<int> index_NNA, int min_index_NNA, int max_index_NNA,
+                                 const arma::mat& Neighborhood, vector < int > coords_max, int max_groups,  bool verbose){
   
   // verbose function
   Progress testUser(verbose * CST_PROGRESS, verbose);
   double value_trace = 0 ;
+  int n_allocated = 0;
   
-  //
+  // preparation
   int n = coords_NNA.n_rows; // nb de vx
-  int p_Mneighbors = Neighborhood.n_cols; // dim du voisinage
-  int n_Mneighbors = Neighborhood.n_rows; // taille du voisinage
-  vector < int > cum_coords_max(coords_max.size());
+  int n_coords = Neighborhood.n_cols; // dim du voisinage
+  int n_neighbors = Neighborhood.n_rows; // taille du voisinage
+  
+  vector < int > cum_coords_max(n_coords);
   cum_coords_max[0] = 1;
-  for (size_t iter = 1; iter < coords_max.size(); iter++){cum_coords_max[iter] = cum_coords_max[iter - 1] * coords_max[iter - 1];}  
-  
-  int iter_group = 0; // iteration sur les groupes
-  int iter_res; // iteration pour le stockage
-  int n_neighbors, n_neighbors_new; // nb de nouveaux voisins
-  int Sum_group_size = 0 ;
-  int index_tempo ;
-  double sum_tempo ; // int sum_tempo ;
-  size_t iter_vois_min ;
-  
-  vector < int > group_size(0); // taille de chaque groupe
-  vector < int > residual(n); // index des voxels a classer
-  vector < int > coords_newVoisin(0);
-  for(int iter = 0 ; iter < n ; iter++){residual[iter] = iter;}
-  int n_allocated = 0; // iteration sur les voxels
-  arma::mat group(n, 2);  // definition des groupes  
-  bool test_newVoisin;
-  
-  while(n_allocated < n && iter_group<=max_groups){ // tant qu il reste des vx a classer et que le nb max de groupe n est pas atteint
-    iter_group = iter_group + 1 ;
-    
-    // ajout d un nouveau groupe
-    group(n_allocated, 0) = residual[0];
-    group(n_allocated, 1) = iter_group ;
-    n_allocated ++;  
-    residual.erase(residual.begin()); // elimine le voxel affecte des voxels restants    
-    
-    group_size.push_back(group_size.size());
-    group_size[group_size.size() - 1] = 1 ;
-    n_neighbors = 1;
-    
-    while(n_neighbors > 0 && n_allocated < n){ // tant qu il reste des nouveaux voisins
-      n_neighbors_new = 0;
-      coords_newVoisin.resize(0);
-      
-      for(int iter_vois = Sum_group_size + group_size[iter_group - 1]-n_neighbors ; iter_vois < Sum_group_size + group_size[iter_group - 1] ; iter_vois++){ // pour chaque voisin
-        
-        for(int iter_l = 0 ; iter_l < n_Mneighbors ; iter_l++){ // identifier les nouveaux voisins potentiels
-          test_newVoisin = true;    
-          index_tempo = 0;
-          
-          for(int iter_p = 0 ; iter_p < p_Mneighbors ; iter_p++){
-            
-            sum_tempo = coords_NNA(group(iter_vois, 0), iter_p) + Neighborhood(iter_l, iter_p);
-            
-            if(sum_tempo < 0 || sum_tempo >= coords_max[iter_p] ){ // rejet immediat si hors du domaine
-              test_newVoisin = false;
-              break;                     
-            }else{
-              index_tempo += sum_tempo * cum_coords_max[iter_p] ;
-            }                 
-            
-          }
-          
-          if(test_newVoisin){   // indice du nouveau voising potentiel
-            coords_newVoisin.push_back(coords_newVoisin.size());  
-            coords_newVoisin[coords_newVoisin.size() - 1] = index_tempo;
-          } 
-        }
-      }  
-      
-      std::sort(coords_newVoisin.begin(), coords_newVoisin.end());
-      iter_vois_min = 0;       
-      
-      iter_res = 0 ;
-      while(iter_res < n-n_allocated && iter_vois_min < coords_newVoisin.size()){
-        
-        while(index_NNA[residual[iter_res]] > coords_newVoisin[iter_vois_min] && iter_vois_min < coords_newVoisin.size()){
-          coords_newVoisin.erase(coords_newVoisin.begin() + iter_vois_min); // iter_vois_min++;                
-        }
-        
-        if(index_NNA[residual[iter_res]] == coords_newVoisin[iter_vois_min]){ // matching               
-          // attribution du groupe au voxel
-          group(n_allocated, 0) = residual[iter_res];
-          group(n_allocated, 1) = iter_group ;
-          n_allocated++ ;  
-          
-          // maj de residual et neighbors_new
-          residual.erase(residual.begin() + iter_res);
-          n_neighbors_new++ ;
-          iter_vois_min++;                                
-        }else{
-          iter_res++;
-        }              
-      }
-      
-      n_neighbors = n_neighbors_new;
-      group_size[iter_group - 1] += n_neighbors;
-      
-      if(verbose && n_allocated>=value_trace){
-        value_trace = min(1.0 * n, value_trace + n / CST_PROGRESS);
-        testUser.increment();
-      }
-      if (Progress::check_abort() ){
-        return Rcpp::List::create(Rcpp::Named("group") = NA_REAL, 
-                                  Rcpp::Named("group_size") = NA_REAL
-        );
-      }
-      
-    }
-    
-    Sum_group_size += group_size[iter_group - 1];
-    
+  for (int iter_coords = 1; iter_coords < n_coords; iter_coords++){
+    cum_coords_max[iter_coords] = cum_coords_max[iter_coords - 1] * coords_max[iter_coords - 1];
   }  
   
-  //  export
-  return(List::create(Named("group")  = group, 
-                      Named("group_size")  = group_size)                     
-  );
-  
-}
-
-// fct 2 ////////////////////////////////////////////////////////////
-inline List calcGroupsW_hpp(const vector < int>& W0_i, const vector < int>& W0_p, const vector < int>& subset, int max_groups){
-  
-  int n;
-  
-  if(subset[0] >= 0){
-    n = subset.size(); 
-  }else{
-    n = W0_p.size() - 1;
+  if(min_index_NNA > 0){
+    for(int iter_obs = 0; iter_obs < n ; iter_obs++){
+      index_NNA[iter_obs] -= min_index_NNA;
+    }
+    max_index_NNA -= min_index_NNA;
   }
   
-  // cas pathologique
+  // pathological cases
+  if(n == 0){    
+    return(List::create(Named("group")  = NA_REAL, 
+                        Named("group_subset")  = NA_REAL, 
+                        Named("group_size")  = NA_REAL, 
+                        Named("nb_groups") = 0, 
+                        Named("cv")  = true)                     
+    );
+  }
   if(n == 1){    
     return(List::create(Named("group")  = 1, 
                         Named("group_subset")  = NA_REAL, 
                         Named("group_size")  = 1, 
                         Named("nb_groups") = 1, 
-                        Named("n")  = 1)                     
+                        Named("cv")  = true)                     
     );
   }
   
-  // subset
-  int n_all;
+  // initialisation
+  vector < int > group(n, -1); 
+  vector < int > groupeSize(0);  
+  
+  vector < bool > availableObs(max_index_NNA + 1,false);           // [TO BE THINK] may not be optimal if the field is large and the group is small
+  vector < int > availableObs_indexCoords(max_index_NNA + 1, -1);  // [TO BE THINK] may not be optimal if the field is large and the group is small
+  
+  for(int iter_obs = 0; iter_obs < n ; iter_obs++){
+    availableObs[index_NNA[iter_obs]] = true;
+    availableObs_indexCoords[index_NNA[iter_obs]] = iter_obs;
+  }
+  
+  int firstObs = 0; 
+  
+  vector < int > extension; 
+  vector < int > extension_save; 
+  
+  int iter_group = 0; 
+  int indexCoords_vois, coord_tempo, indexArray_newvois, indexCoord_newvois;
+  bool test_newvois;
+  
+  while(firstObs < n && iter_group < max_groups){ // tant qu il reste des vx a classer et que le nb max de groupe n est pas atteint
+    
+    groupeSize.push_back(1); // add a new group
+    group[firstObs] = iter_group + 1 ;  // first remaining observation is associated with the new group
+    extension_save.resize(1); // new group initialized with one point
+    extension_save[0] = firstObs;  // which is the first remaining observation
+    availableObs[index_NNA[firstObs]] = false; // which is no more available
+    
+    while(firstObs < n && availableObs[index_NNA[firstObs]] == false){firstObs++;} // search for the next first remaining observation
+    
+    if(verbose){n_allocated += extension_save.size();}
+    
+    while(firstObs < n && extension_save.size() > 0){ // tant qu il reste des nouveaux voisins
+      
+      extension.resize(0); // potential extention for the group
+      
+      for(size_t iter_vois = 0 ; iter_vois < extension_save.size() ; iter_vois++){ // among the points from the previous extension
+        if(firstObs >= n){break;}
+        indexCoords_vois = extension_save[iter_vois]; // index of a given point from the previous extension
+        
+        for(int iter_newvois = 0 ; iter_newvois < n_neighbors ; iter_newvois++){ // among the neighbors of a given point from the previous extension
+          if(firstObs >= n){break;}
+          test_newvois = true;    
+          indexArray_newvois = 0;
+          
+          for(int iter_coord = 0 ; iter_coord < n_coords ; iter_coord++){
+            
+            coord_tempo = coords_NNA(indexCoords_vois, iter_coord) + Neighborhood(iter_newvois, iter_coord);
+            
+            if(coord_tempo < 0 || coord_tempo >= coords_max[iter_coord] ){ // First check: observation within the domain
+              test_newvois = false;
+              break;                     
+            }else{
+              indexArray_newvois += coord_tempo * cum_coords_max[iter_coord] ;
+            }                 
+            
+          }
+          
+          if(min_index_NNA>0){indexArray_newvois -= min_index_NNA;}
+          
+          if(test_newvois && indexArray_newvois >= 0 && indexArray_newvois <= max_index_NNA && availableObs[indexArray_newvois]){   // indice du nouveau voising potentiel dans array
+            indexCoord_newvois = availableObs_indexCoords[indexArray_newvois]; 
+            extension.push_back(indexCoord_newvois);  
+            
+            group[indexCoord_newvois] = iter_group + 1;
+            availableObs[indexArray_newvois] = false;
+            while(firstObs < n && availableObs[index_NNA[firstObs]] == false){firstObs++;}
+          } 
+        } 
+      }  
+      
+      extension_save = extension;
+      groupeSize[iter_group] += extension_save.size();
+      
+      // check abort
+      if (Progress::check_abort() ){
+        return Rcpp::List::create(Named("group")  = NA_REAL, 
+                                  Named("group_subset")  = NA_REAL, 
+                                  Named("group_size")  = NA_REAL, 
+                                  Named("nb_groups") = NA_REAL, 
+                                  Named("cv")  = false
+        );
+      }
+      
+      // display
+      if(verbose){
+        
+        n_allocated += extension_save.size();
+        
+        if(n_allocated>=value_trace){
+          value_trace = min(1.0 * n, value_trace + n / CST_PROGRESS);
+          testUser.increment();
+        }
+        
+      }
+      
+    }
+    
+    iter_group++;
+    
+  }  
+  
+  //  export
+  return(List::create(Named("group")  = group, 
+                      Named("group_subset")  = NA_REAL, 
+                      Named("group_size")  = groupeSize, 
+                      Named("nb_groups") = iter_group,
+                      Named("cv") = firstObs >= n,
+                      Named("availableObs") = availableObs_indexCoords)                     
+  );
+  
+}
+
+// fct 2 ////////////////////////////////////////////////////////////
+inline List calcGroupsW_hpp(const vector < int>& W0_i, const vector < int>& W0_p, const vector <int>& subset, int max_groups, bool verbose){
+  
+  // verbose function
+  Progress testUser(verbose * CST_PROGRESS, verbose);
+  double value_trace = 0 ;
+  int n_allocated = 0;
+  
+  // preparation
+  int n_all, n;
   vector < int > W_i;
   vector < int > W_p;
   
+  n_all = W0_p.size() - 1;
   if(subset[0] >= 0){
-    n_all = W0_p.size() - 1;
-    
+    n = subset.size(); 	
+  }else{
+    n = n_all;
+  }
+  
+  // pathological case
+  if(n == 0){    
+    return(List::create(Named("group")  = NA_REAL, 
+                        Named("group_subset")  = NA_REAL, 
+                        Named("group_size")  = NA_REAL, 
+                        Named("nb_groups") = 0, 
+                        Named("cv")  = true)                     
+    );
+  }
+  if(n == 1){    
+    return(List::create(Named("group")  = 1, 
+                        Named("group_subset")  = NA_REAL, 
+                        Named("group_size")  = 1, 
+                        Named("nb_groups") = 1, 
+                        Named("cv")  = true)                     
+    );
+  }
+  
+  if(subset[0] >= 0){
     List res_subset = subsetW_hpp(W0_i, W0_p, subset);
     
     W_i = res_subset[0];  
     W_p = res_subset[1]; 
   }else{
-    W_i = W0_i;  // \Achanger car pas optimal du tout
-    W_p = W0_p;  // \Achanger car pas optimal du tout
+    W_i = W0_i;  // TO BE CHANGED 
+    W_p = W0_p;  // TO BE CHANGED 
   }
   
   // initialization
   vector < int > group(n, -1); 
   vector < int > groupeSize(0);  
-  vector < int > indexObs(n); 
   
-  // loop
-  for(int iter = 0 ; iter < n ; iter++){indexObs[iter] = iter;}
+  vector < bool > availableObs(n,true); 
+  int firstObs = 0; 
   
-  vector < int > voisin_0; 
-  vector < int > voisin_1; 
+  vector < int > extension; 
+  vector < int > extension_save; 
   
-  size_t iter_newvois, iter_index;
+  int newvois_tempo;
   
   // iteration sur les groupes
   int iter_group = 0; 
   
-  while(iter_group < max_groups && indexObs.size() > 0){
+  while(firstObs < n && iter_group < max_groups){
     
-    group[indexObs[0]] = iter_group + 1 ; 
-    groupeSize.push_back(1);
+    groupeSize.push_back(1); // add a new group
+    group[firstObs] = iter_group + 1 ;  // first remaining observation is associated with the new group
+    extension_save.resize(1); // new group initialized with one point
+    extension_save[0] = firstObs;  // which is the first remaining observation
+    availableObs[firstObs] = false; // which is no more available
     
-    voisin_0.resize(1);
-    voisin_0[0] = indexObs[0]; 
-    indexObs.erase( indexObs.begin() );
+    while(firstObs < n && availableObs[firstObs] == false){firstObs++;} // search for the next first remaining observation
     
-    while(voisin_0.size() > 0 && indexObs.size() > 0){ // tant qu il y a des nouveaux voisins
-      voisin_1.resize(0);
+    while(firstObs < n && extension_save.size() > 0){ // while the group extends and there are still remaining points, continue to extend the group
+      extension.resize(0); // potential extention for the group
       
-      for(size_t iter_vois = 0 ; iter_vois < voisin_0.size() ; iter_vois++){ // chercher les nouveaux voisins
+      for(size_t iter_vois = 0 ; iter_vois < extension_save.size() ; iter_vois++){ // among the points from the previous extension
+        if(firstObs >= n){break;}
         
-        if(abs(W_p[voisin_0[iter_vois]] - W_p[voisin_0[iter_vois] + 1]) > 0.1){ // si le point a des voisins
+        if(abs(W_p[extension_save[iter_vois]] - W_p[extension_save[iter_vois] + 1]) > 0.1){ // if a given point from the previous extension has neighbors
           
-          for(int iter_newvois = W_p[voisin_0[iter_vois]]; iter_newvois < W_p[voisin_0[iter_vois] + 1]; iter_newvois++){
-            voisin_1.push_back(W_i[iter_newvois]);  
+          for(int iter_newvois = W_p[extension_save[iter_vois]]; iter_newvois < W_p[extension_save[iter_vois] + 1]; iter_newvois++){ // all of them are candidates for the new extension
+            if(firstObs >= n){break;}
+            
+            if(availableObs[W_i[iter_newvois]]){ // if they are still available
+              
+              newvois_tempo = W_i[iter_newvois]; 
+              
+              extension.push_back(newvois_tempo);     // add them as a new extension
+              group[newvois_tempo] = iter_group + 1;  // associate a group number
+              
+              // update remaining points
+              availableObs[newvois_tempo] = false;
+              
+              // update first observation
+              while(firstObs < n && availableObs[firstObs] == false){firstObs++;}
+            }
+            
           }
-        }
-        
-      }    
-      
-      std::sort(voisin_1.begin(), voisin_1.end()); // rangement par ordre croissant
-      
-      iter_newvois = 0;
-      iter_index = 0;
-      
-      while(iter_newvois < voisin_1.size() && iter_index < indexObs.size()){
-        
-        while(voisin_1[iter_newvois] < indexObs[iter_index] && iter_newvois < voisin_1.size()){
-          voisin_1.erase(voisin_1.begin() + iter_newvois); 
-        }     
-        
-        if(voisin_1[iter_newvois] == indexObs[iter_index]){ 
           
-          group[voisin_1[iter_newvois]] = iter_group + 1;
-          indexObs.erase(indexObs.begin() + iter_index);   
-          iter_newvois++; 
           
-        }else{
-          iter_index++;
         }
+      }  
+      
+      extension_save = extension;
+      groupeSize[iter_group] += extension_save.size(); // update group size
+      
+      if (Progress::check_abort() ){
+        return Rcpp::List::create(Named("group")  = NA_REAL, 
+                                  Named("group_subset")  = NA_REAL, 
+                                  Named("group_size")  = NA_REAL, 
+                                  Named("nb_groups") = NA_REAL, 
+                                  Named("cv")  = false
+        );
         
+        if(verbose){
+          n_allocated += extension_save.size();
+          
+          if(n_allocated>=value_trace){
+            value_trace = min(1.0 * n, value_trace + n / CST_PROGRESS);
+            testUser.increment();
+          }
+          
+        }
       }
-      
-      if(iter_newvois < voisin_1.size()){    
-        voisin_1.erase(voisin_1.begin() + iter_newvois, voisin_1.begin() + voisin_1.size());          
-      }
-      
-      voisin_0 = voisin_1;
-      groupeSize[iter_group] += voisin_0.size();
     }
     
     iter_group++;
@@ -262,15 +315,14 @@ inline List calcGroupsW_hpp(const vector < int>& W0_i, const vector < int>& W0_p
   
   // export
   int group_length = groupeSize.size();
-  int nbObsRes = indexObs.size();
   
   if(subset[0] < 0){
     return(List::create(
         Named("group")  = group, 
         Named("group_subset")  = NA_REAL,                    
         Named("group_size")  = groupeSize, 
-        Named("nb_groups") = group_length, 
-        Named("n")  = nbObsRes)                     
+        Named("nb_groups") = group_length,
+        Named("cv") = firstObs >= n)                     
     );
   }else{
     vector < int > group_all(n_all, -1);
@@ -282,8 +334,8 @@ inline List calcGroupsW_hpp(const vector < int>& W0_i, const vector < int>& W0_p
         Named("group")  = group_all, 
         Named("group_subset")  = group,                    
         Named("group_size")  = groupeSize, 
-        Named("nb_groups") = group_length, 
-        Named("n")  = nbObsRes)                     
+        Named("nb_groups") = group_length,
+        Named("cv") = firstObs >= n)                     
     );
   }
   

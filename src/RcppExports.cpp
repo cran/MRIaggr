@@ -201,24 +201,26 @@ BEGIN_RCPP
 END_RCPP
 }
 // calcGroupsCoords_cpp
-List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& index_NNA, const arma::mat& Neighborhood, IntegerVector& coords_max, int& max_groups, bool& verbose);
-RcppExport SEXP MRIaggr_calcGroupsCoords_cpp(SEXP coords_NNASEXP, SEXP index_NNASEXP, SEXP NeighborhoodSEXP, SEXP coords_maxSEXP, SEXP max_groupsSEXP, SEXP verboseSEXP) {
+List calcGroupsCoords_cpp(const arma::mat& coords_NNA, const IntegerVector& index_NNA, int min_index_NNA, int max_index_NNA, const arma::mat& Neighborhood, const IntegerVector& coords_max, int& max_groups, bool& verbose);
+RcppExport SEXP MRIaggr_calcGroupsCoords_cpp(SEXP coords_NNASEXP, SEXP index_NNASEXP, SEXP min_index_NNASEXP, SEXP max_index_NNASEXP, SEXP NeighborhoodSEXP, SEXP coords_maxSEXP, SEXP max_groupsSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
     Rcpp::traits::input_parameter< const arma::mat& >::type coords_NNA(coords_NNASEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type index_NNA(index_NNASEXP);
+    Rcpp::traits::input_parameter< int >::type min_index_NNA(min_index_NNASEXP);
+    Rcpp::traits::input_parameter< int >::type max_index_NNA(max_index_NNASEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type Neighborhood(NeighborhoodSEXP);
-    Rcpp::traits::input_parameter< IntegerVector& >::type coords_max(coords_maxSEXP);
+    Rcpp::traits::input_parameter< const IntegerVector& >::type coords_max(coords_maxSEXP);
     Rcpp::traits::input_parameter< int& >::type max_groups(max_groupsSEXP);
     Rcpp::traits::input_parameter< bool& >::type verbose(verboseSEXP);
-    __result = Rcpp::wrap(calcGroupsCoords_cpp(coords_NNA, index_NNA, Neighborhood, coords_max, max_groups, verbose));
+    __result = Rcpp::wrap(calcGroupsCoords_cpp(coords_NNA, index_NNA, min_index_NNA, max_index_NNA, Neighborhood, coords_max, max_groups, verbose));
     return __result;
 END_RCPP
 }
 // calcGroupsW_cpp
-List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups);
-RcppExport SEXP MRIaggr_calcGroupsW_cpp(SEXP W_iSEXP, SEXP W_pSEXP, SEXP subsetSEXP, SEXP max_groupsSEXP) {
+List calcGroupsW_cpp(const IntegerVector& W_i, const IntegerVector& W_p, const IntegerVector& subset, int& max_groups, bool verbose);
+RcppExport SEXP MRIaggr_calcGroupsW_cpp(SEXP W_iSEXP, SEXP W_pSEXP, SEXP subsetSEXP, SEXP max_groupsSEXP, SEXP verboseSEXP) {
 BEGIN_RCPP
     Rcpp::RObject __result;
     Rcpp::RNGScope __rngScope;
@@ -226,7 +228,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const IntegerVector& >::type W_p(W_pSEXP);
     Rcpp::traits::input_parameter< const IntegerVector& >::type subset(subsetSEXP);
     Rcpp::traits::input_parameter< int& >::type max_groups(max_groupsSEXP);
-    __result = Rcpp::wrap(calcGroupsW_cpp(W_i, W_p, subset, max_groups));
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    __result = Rcpp::wrap(calcGroupsW_cpp(W_i, W_p, subset, max_groups, verbose));
     return __result;
 END_RCPP
 }

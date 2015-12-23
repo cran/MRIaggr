@@ -13,6 +13,7 @@ using namespace arma ;
 // fct 4 : inline double medianVecDouble_hpp(std::vector < double > data);
 // fct 5 : inline IntegerVector rank_hpp(NumericVector x);
 inline IntegerVector order_hpp(const NumericVector& x); // fct 6 :
+// fct 7 : inline int max_vec(vector<int>& vec);
 
 #ifndef __UTILITIES__
 #define __UTILITIES__
@@ -115,6 +116,31 @@ inline IntegerVector rank_hpp(NumericVector x) {
 inline IntegerVector order_hpp(const NumericVector& x) {
   NumericVector sorted = clone(x).sort();
   return match(sorted, x);
+}
+
+
+// fct 7 ////////////////////////////////////////////////////////////
+
+inline int max_vec(const vector<int>& vec){
+  
+  size_t n_vec = vec.size();
+  
+  if (n_vec == 1) {
+    
+    return vec[1];
+    
+  }else{
+    int max = vec[0];
+    
+    for (size_t iter=1 ; iter < n_vec; iter++) {
+      if (max < vec[iter]) {
+        max = vec[iter];
+      }
+    }
+    
+    return max;
+  }
+  
 }
 
 #endif //__UTILITIES__

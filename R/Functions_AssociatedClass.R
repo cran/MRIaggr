@@ -60,7 +60,7 @@ constCarto3D <- function(array, identifier, param, default_value = NULL,
   }
   
   ##### construction de la carto3D ####  
-  res <- new(Class = "Carto3D", 
+  res <- methods::new(Class = "Carto3D", 
              identifier = identifier, 
              parameter = param, 
              voxelDim = voxelDim, 
@@ -249,12 +249,12 @@ Carto3D2MRIaggr <- function(ls.Carto3D, rm.Carto3D = FALSE, tol = 10^{-10},
   }
   
   #### export ####
-  res <- new(Class = "MRIaggr", 
-             identifier = identifiant, 
-             contrast = data_global, 
-             default_value = default_value, 
-             fieldDim = fieldDim, 
-             voxelDim = size)
+  res <- methods::new(Class = "MRIaggr", 
+                      identifier = identifiant, 
+                      contrast = data_global, 
+                      default_value = default_value, 
+                      fieldDim = fieldDim, 
+                      voxelDim = size)
   
   return(res)
 }
@@ -326,7 +326,7 @@ df2array <- function(contrast, coords, format = "any", default_value = NA,
   
   for(iter_m in 1:M){
     
-    dataM[[iter_m]] <- array(default_value, dim = range.coords, dimnames = dimnames)
+    dataM[[iter_m]] <- array(default_value, dim = range.coords)
     dataM[[iter_m]][Mindex] <- contrast[,iter_m]
     
     if(format == "matrix" && p == 2){
@@ -493,14 +493,16 @@ calcGroupsCoords <- function(coords, array = NULL, Neighborhood, max_groups = 10
     }
     
     if(nrow(coords) == 0){
-      return(list(ls.group = NULL, 
+      return(list(indexArray.group = NULL,
+                  indexCoords.group = NULL, 
                   df.group = NULL, 
                   group_size = 0)
       )
     }
     
     if(nrow(coords) == 1){
-      return(list(ls.group = list(1), 
+      return(list(indexArray.group = NULL,
+                  indexCoords.group = list(1),  
                   df.group = data.frame(coords, index = 1, group = 1), 
                   group_size = 1)
       )
@@ -514,7 +516,8 @@ calcGroupsCoords <- function(coords, array = NULL, Neighborhood, max_groups = 10
     coords_NNA <- which(!is.na(array), arr.ind = TRUE) - 1
     
     if(nrow(coords_NNA) == 0){
-      return(list(ls.group = NULL, 
+      return(list(indexArray.group = NULL,
+                  indexCoords.group = NULL, 
                   df.group = NULL, 
                   group_size = 0)
       )
@@ -542,34 +545,38 @@ calcGroupsCoords <- function(coords, array = NULL, Neighborhood, max_groups = 10
   #### Rcpp
   res_cpp <-  calcGroupsCoords_cpp(coords_NNA = coords_NNA, 
                                    index_NNA = index_NNA, 
+                                   min_index_NNA = 0,#index_NNA[1],
+                                   max_index_NNA = index_NNA[length(index_NNA)],
                                    Neighborhood = Neighborhood, 
                                    coords_max = dim_coordsNNA, 
                                    max_groups = max_groups, 
                                    verbose = verbose)
   
-  if(length(res_cpp$group_size) == max_groups && sum(res_cpp$group_size) < nrow(res_cpp$group)){
+  if(res_cpp$cv == FALSE){
     warning("calcGroupsCoords : maximum number of groups reached \n", 
             "the identification of the spatial groups may not be complet \n", 
             "set \'max_groups\' higher to allow more groups \n")
   }
   
-  ## conversion des indices depuic C a R
-  res_cpp$group[,1] <- res_cpp$group[,1] + 1
-  
   #### export  
-  ls.group <- list()
+  indexArray.group <- list()
   for(iter_group in 1:length(res_cpp$group_size)){
-    ls.group[[iter_group]] <- res_cpp$group[res_cpp$group[,2] == iter_group, 1]
+    indexArray.group[[iter_group]] <- index_NNA[res_cpp$group == iter_group]
   }
+  
+  indexCoords.group <- list()
+  for(iter_group in 1:length(res_cpp$group_size)){
+    indexCoords.group[[iter_group]] <- which(res_cpp$group == iter_group)
+  }
+ 
   if(is.null(array)){
-    df.group <- as.data.frame(cbind(coords[res_cpp$group[,1],], res_cpp$group))
-    names(df.group) <- c(letters[8 + 1:p], "index", "group")
-    df.group$index <- df.group$index + 1
+    df.group <- data.frame(coords, group = res_cpp$group)
   }else{
     df.group <- NULL
   }
   
-  return(list(ls.group = ls.group, 
+  return(list(indexArray.group = indexArray.group,
+              indexCoords.group = indexCoords.group, 
               df.group = df.group, 
               group_size = res_cpp$group_size)
   )
@@ -755,7 +762,7 @@ calcThreshold <- function(contrast, param, hemisphere = NULL, rm.CSF = FALSE, th
   return(as.data.frame(contrast))
 }
 
-calcGroupsW <- function(W, subset = NULL, max_groups = 10000){ 
+calcGroupsW <- function(W, subset = NULL, max_groups = 10000, verbose = optionsMRIaggr("verbose")){ 
   
   #### tests
   # initPackage(package = "spam", method = "calcGroupsW")
@@ -772,17 +779,17 @@ calcGroupsW <- function(W, subset = NULL, max_groups = 10000){
   }
   
   #### call C++ function
-  resCpp <- calcGroupsW_cpp(W_i = W@i, W_p = W@p, subset = subset, max_groups = max_groups)
-  
-  if(resCpp$n > 0){
+  resCpp <- calcGroupsW_cpp(W_i = W@i, W_p = W@p, subset = subset, max_groups = max_groups, verbose = verbose)
+
+  if(resCpp$cv == FALSE){
     warning("calcGroupsW : maximum number of groups reached \n", 
             "the identification of the spatial groups may not be complet \n", 
             "set \'max_groups\' higher to allow more groups \n")
   }
   
   #### export
-  res <- list(group = resCpp$group + 1, 
-              group_subset = resCpp$group_subset + 1, 
+  res <- list(group = resCpp$group, 
+              group_subset = resCpp$group_subset, 
               group_size = resCpp$group_size, 
               group_number = resCpp$nb_groups, 
               group_max = which.max(resCpp$group_size)              

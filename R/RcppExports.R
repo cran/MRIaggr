@@ -41,12 +41,12 @@ simulPottsFast_cpp <- function(W_i, W_p, W_x, site_order, sample, rho, n, p, ite
     .Call('MRIaggr_simulPottsFast_cpp', PACKAGE = 'MRIaggr', W_i, W_p, W_x, site_order, sample, rho, n, p, iter_nb)
 }
 
-calcGroupsCoords_cpp <- function(coords_NNA, index_NNA, Neighborhood, coords_max, max_groups, verbose) {
-    .Call('MRIaggr_calcGroupsCoords_cpp', PACKAGE = 'MRIaggr', coords_NNA, index_NNA, Neighborhood, coords_max, max_groups, verbose)
+calcGroupsCoords_cpp <- function(coords_NNA, index_NNA, min_index_NNA, max_index_NNA, Neighborhood, coords_max, max_groups, verbose) {
+    .Call('MRIaggr_calcGroupsCoords_cpp', PACKAGE = 'MRIaggr', coords_NNA, index_NNA, min_index_NNA, max_index_NNA, Neighborhood, coords_max, max_groups, verbose)
 }
 
-calcGroupsW_cpp <- function(W_i, W_p, subset, max_groups) {
-    .Call('MRIaggr_calcGroupsW_cpp', PACKAGE = 'MRIaggr', W_i, W_p, subset, max_groups)
+calcGroupsW_cpp <- function(W_i, W_p, subset, max_groups, verbose) {
+    .Call('MRIaggr_calcGroupsW_cpp', PACKAGE = 'MRIaggr', W_i, W_p, subset, max_groups, verbose)
 }
 
 calcRadius_cpp <- function(coords, sample, threshold, subset_bary, verbose) {

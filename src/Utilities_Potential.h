@@ -55,7 +55,7 @@ inline List calcMultiPotential_hpp(const S4& W_SR, const S4& W_LR, const vector 
     
     List resR = calcGroupsW_hpp( Rcpp::as < std::vector < int > >(W_SR.slot("i")), 
                                  Rcpp::as < std::vector < int > >(W_SR.slot("p")), 
-                                 Vsubset, 10000);
+                                 Vsubset, 10000, false);
     
     Groupes = resR[0];   
     size_groups_with0 = resR[2];
